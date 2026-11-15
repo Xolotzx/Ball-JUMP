@@ -149,7 +149,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 ## 5. Estado atual
 
 - Publicado em Cloudflare Pages: https://ted-io.pages.dev
-- Repositório GitHub privado: `Xolotzx/Ball-JUMP`
+- Repositório GitHub privado: `Xolotzx/Ted-io`
 - Branch principal: `main`
 - Deploy atual: **upload direto** pelo Wrangler a partir de `dist/` (allowlist: jogo, página 404 e headers); `git push` não dispara deploy automático.
 - Documentação interna (`docs/`, `AGENTS.md`, `context/`) não é publicada no site.

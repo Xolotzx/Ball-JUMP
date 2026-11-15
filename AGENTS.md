@@ -9,7 +9,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 - **Tamanho atual:** ~202 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `ted-io`.
 - **URL:** https://ted-io.pages.dev
-- **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
+- **Repositório:** privado em GitHub (`Xolotzx/Ted-io`).
 - **Idioma da interface:** português do Brasil (pt-BR).
 
 ## Ordem de leitura do contexto
