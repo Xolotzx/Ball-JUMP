@@ -6,7 +6,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 
 - **Produto:** jogo web de estratégia inspirado no clássico JezzBall.
 - **Arquivo de runtime:** `index.html` (HTML + CSS + JavaScript em um único arquivo).
-- **Tamanho atual:** ~152 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
+- **Tamanho atual:** ~156 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `balljump-game`.
 - **URL:** https://balljump-game.pages.dev
 - **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
@@ -43,7 +43,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - Bolinhas: velocidade base `1.2`, ângulo diagonal com pequena variação.
 - Interface: menu inicial, tutorial, HUD, configurações, modos escuro/claro, overlay de nível e game over.
 - Áudio: Web Audio API sintetizada; sem arquivos de mídia.
-- Persistência: apenas `localStorage` (`kbounce.settings.v1`) para tema, dificuldade e som.
+- Persistência: apenas `localStorage` (`kbounce.settings.v1`) para tema, dificuldade, som e volume (0–100).
 - Deploy atual: **upload direto** no Cloudflare Pages; `git push` **não** publica automaticamente.
 - **Firebase:** projeto compartilhado `botanicstudio`; Auth Google habilitado; Firestore `(default)`; coleções `balljumpProfiles` e `balljumpNicknames`; domínio `balljump-game.pages.dev` autorizado.
 - **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
@@ -70,7 +70,8 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 13. Manter a foto como data URL validada, limitada a 90.000 caracteres, e nunca inseri-la via `innerHTML`.
 14. Manter nicks únicos por reserva transacional em `balljumpNicknames`; não remover a normalização de caixa/acentos nem a liberação do nick antigo ao renomear.
 15. Manter o ranking por dificuldade (`scores.<modo>`) e o ranking geral; o modo da corrida deve ser salvo junto ao resultado pendente.
-16. Atualizar a documentação de contexto junto com mudanças de comportamento.
+16. Manter o volume dos efeitos (0–100, persistido) e o botão **Como jogar** dentro das configurações.
+17. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 

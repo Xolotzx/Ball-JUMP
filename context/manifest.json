@@ -103,6 +103,7 @@
     "baseSpeed": 1.2,
     "wallGrowthMsPerTile": "difficulty.divisor * 23; easy = 1 ms with up to 32 steps per update",
     "storageKey": "kbounce.settings.v1",
+    "preferences": "theme, difficulty, sound, volume 0-100",
     "streak": "increments per completed wall, resets on damage or new game, persists across levels"
   },
   "difficulty": {
@@ -176,6 +177,8 @@
     "player gains one life per completed level",
     "share button remains removed",
     "menu, tutorial, settings, death screen, profile editor and ranking remain available",
+    "settings include a 0-100 volume slider persisted in localStorage",
+    "tutorial can be opened from settings and returns to settings when closed",
     "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",
     "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",

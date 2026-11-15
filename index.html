@@ -581,9 +581,19 @@
   .switch::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
   .switch-row[aria-pressed="true"] .switch{background:var(--accent)}
   .switch-row[aria-pressed="true"] .switch::after{transform:translateX(16px)}
+  .volume-control{
+    margin-top:9px;padding:10px 13px 12px;border-radius:14px;
+    background:var(--surface);border:1px solid var(--glass-border);
+    transition:opacity .2s;
+  }
+  .volume-control.is-muted{opacity:.55}
+  .volume-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;font-size:11px;font-weight:700;color:var(--text)}
+  .volume-head output{font-family:var(--mono);font-size:10.5px;font-weight:800;color:var(--accent)}
+  .volume-slider{display:block;width:100%;height:20px;accent-color:var(--accent);cursor:pointer}
+  .settings-how-btn{width:100%;min-height:44px;justify-content:center}
   .modal-foot{padding:0 20px 18px;font-size:10px;color:var(--muted);line-height:1.5}
   .modal-foot b{color:var(--text)}
-  .settings-status{min-height:14px;margin:6px 0 0;color:var(--accent);font-weight:700;font-size:10.5px}
+  .settings-status{display:block;min-height:14px;margin:6px 0 0;color:var(--accent);font-weight:700;font-size:10.5px}
   .modal-backdrop::-webkit-scrollbar,.modal::-webkit-scrollbar{width:10px}
   .modal-backdrop::-webkit-scrollbar-thumb,.modal::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--text) 18%,transparent);border-radius:99px}
 
@@ -790,6 +800,20 @@
           <span>Efeitos sonoros <small style="color:var(--muted);font-weight:500">(Web Audio)</small></span>
           <span class="switch" aria-hidden="true"></span>
         </button>
+        <div class="volume-control" id="volumeControl">
+          <div class="volume-head">
+            <label for="volumeSlider">Volume</label>
+            <output id="volumeValue" for="volumeSlider">78%</output>
+          </div>
+          <input id="volumeSlider" class="volume-slider" type="range" min="0" max="100" step="1" value="78" aria-label="Volume dos efeitos sonoros">
+        </div>
+      </section>
+      <section class="settings-help">
+        <div class="setting-head">
+          <h3>Ajuda</h3>
+          <p>Regras e controles</p>
+        </div>
+        <button id="settingsHowBtn" class="secondary-btn settings-how-btn" type="button">Como jogar</button>
       </section>
       <div class="modal-foot">
         <span id="settingsStatus" class="settings-status" role="status"></span>
@@ -1115,7 +1139,7 @@ const THEMES = {
 /* =========================================================
    PREFERÊNCIAS
    ========================================================= */
-const prefs = { theme: 'dark', difficulty: 'normal', sound: true };
+const prefs = { theme: 'dark', difficulty: 'normal', sound: true, volume: 78 };
 (function loadPrefs() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -1127,6 +1151,7 @@ const prefs = { theme: 'dark', difficulty: 'normal', sound: true };
     if (THEMES[data.theme]) prefs.theme = data.theme;
     if (DIFFICULTIES[data.difficulty]) prefs.difficulty = data.difficulty;
     if (typeof data.sound === 'boolean') prefs.sound = data.sound;
+    if (Number.isFinite(Number(data.volume))) prefs.volume = Math.max(0, Math.min(100, Math.round(Number(data.volume))));
   } catch (_) { /* modo privado / armazenamento bloqueado */ }
 })();
 function savePrefs() {
@@ -1154,6 +1179,8 @@ const ui = {
   overlayText: $('overlayText'), overlayBtn: $('overlayBtn'), toast: $('toast'),
   modal: $('settingsModal'), closeSettings: $('closeSettings'), difficultyList: $('difficultyList'),
   themeGrid: $('themeGrid'), soundToggle: $('soundToggle'), settingsStatus: $('settingsStatus'),
+  volumeControl: $('volumeControl'), volumeSlider: $('volumeSlider'), volumeValue: $('volumeValue'),
+  settingsHow: $('settingsHowBtn'),
   themeColor: $('themeColor'),
   startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'), menuHow: $('menuHowBtn'),
   menuRanking: $('menuRankingBtn'),
@@ -1192,6 +1219,10 @@ const Sound = (() => {
   let noiseBuffer = null;
 
   const clampPan = (v) => Math.max(-1, Math.min(1, v || 0));
+  const volumeGain = (value) => {
+    const pct = Math.max(0, Math.min(100, Number(value) || 0));
+    return Math.max(0.0001, (pct / 100) * 0.9);
+  };
 
   function makeImpulse(seconds = 1.7, decay = 2.6) {
     const rate = ac.sampleRate;
@@ -1218,7 +1249,7 @@ const Sound = (() => {
       try {
         ac = new AC();
         master = ac.createGain();
-        master.gain.value = 0.7;
+        master.gain.value = volumeGain(prefs.volume);
         const comp = ac.createDynamicsCompressor();
         comp.threshold.value = -20;
         comp.knee.value = 24;
@@ -1254,7 +1285,7 @@ const Sound = (() => {
   }
 
   function voice(freq, duration, options = {}) {
-    if (!enabled || !ensure()) return;
+    if (!enabled || prefs.volume <= 0 || !ensure()) return;
     const {
       type = 'sine', vol = 0.045, delay = 0, attack = 0.008,
       slide = null, pan = 0, send = 0.2, cutoff = null, q = 0.7, detune = 0
@@ -1543,15 +1574,23 @@ const Sound = (() => {
     if (!enabled) stopBuild();
     if (ac) {
       try {
-        master.gain.setTargetAtTime(enabled ? 0.7 : 0.0001, ac.currentTime, 0.02);
+        master.gain.setTargetAtTime(enabled ? volumeGain(prefs.volume) : 0.0001, ac.currentTime, 0.02);
       } catch (_) {}
     }
     if (enabled) ensure();
   }
 
+  function setVolume(value) {
+    if (ac && enabled) {
+      try {
+        master.gain.setTargetAtTime(volumeGain(value), ac.currentTime, 0.02);
+      } catch (_) {}
+    }
+  }
+
   function unlock() { ensure(); }
 
-  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, setEnabled, unlock };
+  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, setEnabled, setVolume, unlock };
 })();
 
 /* =========================================================
@@ -1586,6 +1625,7 @@ let toastTimer = 0;
 let modalOpen = false;
 let menuOpen = true;
 let tutorialOpen = false;
+let tutorialFromSettings = false;
 let deathOpen = false;
 let rankOpen = false;
 let profileOpen = false;
@@ -1887,6 +1927,20 @@ function syncSettingsUI() {
     btn.setAttribute('aria-pressed', String(active));
   }
   ui.soundToggle.setAttribute('aria-pressed', String(prefs.sound));
+  ui.volumeSlider.value = String(prefs.volume);
+  ui.volumeValue.textContent = prefs.volume + '%';
+  ui.volumeSlider.setAttribute('aria-valuetext', prefs.volume + '%');
+  ui.volumeControl.classList.toggle('is-muted', !prefs.sound);
+}
+
+function changeVolume(value) {
+  prefs.volume = clampInt(value, 0, 100);
+  savePrefs();
+  Sound.setVolume(prefs.volume);
+  ui.volumeSlider.value = String(prefs.volume);
+  ui.volumeValue.textContent = prefs.volume + '%';
+  ui.volumeSlider.setAttribute('aria-valuetext', prefs.volume + '%');
+  ui.settingsStatus.textContent = prefs.volume === 0 ? 'Volume no mudo.' : 'Volume em ' + prefs.volume + '%.';
 }
 
 function changeDifficulty(key) {
@@ -2632,6 +2686,7 @@ function syncOverlayLock() {
   const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen;
   if (appRoot && 'inert' in appRoot) appRoot.inert = locked;
   if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen;
+  if (ui.modal && 'inert' in ui.modal) ui.modal.inert = tutorialOpen;
   if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen || profileOpen;
   if (ui.rankModal && 'inert' in ui.rankModal) ui.rankModal.inert = profileOpen;
   document.body.style.overflow = locked ? 'hidden' : '';
@@ -3625,13 +3680,15 @@ function startGame() {
   try { canvas.focus({ preventScroll: true }); } catch (_) {}
 }
 
-function openTutorial() {
+function openTutorial(fromSettings = false) {
   if (tutorialOpen) return;
+  tutorialFromSettings = !!fromSettings && modalOpen;
   tutorialOpen = true;
   lastFocused = document.activeElement;
   state.paused = true;
   Sound.stopBuild();
   Sound.click();
+  ui.tutorialPlay.textContent = tutorialFromSettings ? 'Voltar ao jogo' : 'Jogar agora';
   clearTimeout(tutorialHideTimer);
   ui.tutorial.hidden = false;
   requestAnimationFrame(() => {
@@ -3643,6 +3700,8 @@ function openTutorial() {
 
 function closeTutorial() {
   if (!tutorialOpen) return;
+  const returnToSettings = tutorialFromSettings && modalOpen;
+  tutorialFromSettings = false;
   tutorialOpen = false;
   ui.tutorial.classList.remove('is-open');
   state.paused = menuOpen || modalOpen;
@@ -3652,8 +3711,13 @@ function closeTutorial() {
   tutorialHideTimer = setTimeout(() => { if (!tutorialOpen) ui.tutorial.hidden = true; }, 220);
   setTimeout(() => {
     try {
-      if (menuOpen) ui.menuHow.focus();
-      else if (!modalOpen) canvas.focus({ preventScroll: true });
+      if (returnToSettings && lastFocused && lastFocused.focus && !lastFocused.hidden) {
+        lastFocused.focus();
+      } else if (menuOpen) {
+        ui.menuHow.focus();
+      } else if (!modalOpen) {
+        canvas.focus({ preventScroll: true });
+      }
     } catch (_) {}
   }, 40);
 }
@@ -3722,14 +3786,29 @@ function bindEvents() {
   });
 
   ui.soundToggle.addEventListener('click', toggleSound);
+  ui.volumeSlider.addEventListener('input', () => changeVolume(ui.volumeSlider.value));
+  ui.volumeSlider.addEventListener('change', () => {
+    if (prefs.sound && prefs.volume > 0) Sound.click();
+  });
+  ui.settingsHow.addEventListener('click', () => openTutorial(true));
 
   ui.playBtn.addEventListener('click', startGame);
   ui.menuRanking.addEventListener('click', openRankModal);
   ui.menuSettings.addEventListener('click', openSettings);
-  ui.menuHow.addEventListener('click', openTutorial);
+  ui.menuHow.addEventListener('click', () => openTutorial(false));
   ui.closeTutorial.addEventListener('click', closeTutorial);
   ui.closeTutorialBtn.addEventListener('click', closeTutorial);
-  ui.tutorialPlay.addEventListener('click', () => { closeTutorial(); startGame(); });
+  ui.tutorialPlay.addEventListener('click', () => {
+    const returnToGame = tutorialFromSettings;
+    closeTutorial();
+    if (returnToGame) {
+      closeSettings();
+      if (menuOpen) startGame();
+      else setTimeout(() => { try { canvas.focus({ preventScroll: true }); } catch (_) {} }, 60);
+      return;
+    }
+    startGame();
+  });
 
   ui.deathLoginBtn.addEventListener('click', handleGoogleLogin);
   ui.rankLoginBtn.addEventListener('click', handleGoogleLogin);

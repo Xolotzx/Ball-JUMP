@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~152 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~156 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://balljump-game.pages.dev
 - **Projeto Cloudflare:** `balljump-game`
 - **Repositório:** privado, branch `main`
@@ -22,6 +22,8 @@
 - 4 dificuldades.
 - Menus: Jogar, Ranking, Configurações, Como jogar.
 - Modos escuro/claro; sem botão de compartilhamento.
+- Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
+- Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
 - Ranking por dificuldade: **Geral / Fácil / Normal / Difícil / Hardcore**, com streak e níveis separados; título dinâmico “Ranking modo fácil”.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
@@ -48,6 +50,8 @@
 - Nicks únicos implementados com `balljumpNicknames` e transação; regras publicadas preservando Botanica e Balljump.
 - Rankings por dificuldade implementados (`scores.easy/normal/hard/hardcore`) e ranking Geral; seletor no modal de ranking.
 - Regras do Firestore atualizadas para validar `scores` e publicadas.
+- Slider de volume 0–100% adicionado às configurações, persistido e aplicado ao ganho mestre.
+- Botão **Como jogar** adicionado às configurações, abrindo o tutorial por cima do modal.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.
 - Ranking com abas de streak/níveis e top 10.

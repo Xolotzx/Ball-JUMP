@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~152 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~156 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -216,3 +216,16 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - as consultas usam campos aninhados e dependem dos índices automáticos do Firestore;
   - as regras validam o mapa `scores` e mantêm o schema compatível com perfis antigos;
   - o cache do ranking é por modo e descarta respostas antigas.
+
+## ADR-018 — Volume ajustável e tutorial dentro das configurações
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** o jogador precisa controlar a intensidade dos efeitos e acessar as regras sem voltar ao menu.
+- **Decisão:** adicionar `volume` (0–100, padrão 78) às preferências e um slider no modal de configurações. O ganho mestre usa `volume/100 * 0.9`; o slider atualiza em tempo real e persiste em `localStorage`. Adicionar também o botão **Como jogar** nas configurações, abrindo o tutorial por cima do modal; ao fechar, as configurações continuam abertas.
+- **Consequências:**
+  - o volume é linear e previsível, com 78%≈ganho 0,70 (equivalente ao antigo 0,7);
+  - volume 0 silencia sem desligar o contexto de áudio;
+  - o tutorial compartilha o mesmo modal, reduzindo duplicação;
+  - `inert` é aplicado às configurações enquanto o tutorial está por cima;
+  - **Voltar ao jogo** fecha tutorial e configurações e retoma a partida.

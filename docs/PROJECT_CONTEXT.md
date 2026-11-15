@@ -86,6 +86,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Queda grave e macia ao perder vida.
 - Fanfarra e acorde de vitória.
 - Quique sutil com variação de tom e posição estéreo.
+- Volume mestre ajustável de 0 a 100% (padrão 78%), persistido nas preferências.
 - O contexto de áudio é desbloqueado por gesto do usuário.
 
 ### Interface
@@ -99,6 +100,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Fundo ambiente em SVG inline: ondas desfocadas à direita no tema escuro e fita laranja desfocada sobre creme no tema claro.
 - Estética “liquid glass”, com brilho reduzido.
 - Configurações pausam o jogo; fechar retorna ao jogo ou ao menu, conforme a origem.
+- Configurações incluem tema, dificuldade, som, volume (0–100%) e atalho **Como jogar**.
+- O tutorial aberto pelas configurações volta para elas ao fechar; **Voltar ao jogo** fecha ambos e retoma a partida.
 - Tela de fim de jogo com estatísticas da corrida, **Entrar com Google**, perfil e acesso ao ranking.
 - Ranking com seletor **Geral / Fácil / Normal / Difícil / Hardcore** e abas **🔥 Streak** e **🏆 Níveis**, top 10 por modo.
 - O título do ranking acompanha o modo: “Ranking geral” ou “Ranking modo fácil”.

@@ -88,6 +88,7 @@ try {
 }
 
 check(manifest?.runtimeFacts?.goalPercent === 75, 'manifesto declara meta de 75%');
+check(String(manifest?.runtimeFacts?.preferences || '').includes('volume'), 'manifesto declara volume nas preferências');
 check(manifest?.firebase?.collection === 'balljumpProfiles', 'manifesto declara coleção do ranking');
 check(manifest?.firebase?.nicknameCollection === 'balljumpNicknames', 'manifesto declara coleção de nicks');
 check(manifest?.firebase?.profileFields?.includes('photo'), 'manifesto declara foto no perfil');
@@ -178,6 +179,9 @@ check(index.includes('function nicknameKeyFor') && index.includes('function clai
 check(index.includes('nickname-taken'), 'erro de nick duplicado presente');
 check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade presente');
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
+check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
+check(index.includes("setVolume"), 'controle de volume do áudio presente');
+check(index.includes('id="settingsHowBtn"') && index.includes('openTutorial(true)'), 'como jogar nas configurações presente');
 check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
 check(index.includes('function isPhotoDataURL'), 'validação de foto presente');
 check(index.includes('90000'), 'limite de foto presente no cliente');

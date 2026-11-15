@@ -67,7 +67,7 @@
 - `innerHTML` usado apenas com dados constantes do próprio código (dificuldades e temas); nicks do ranking usam `textContent`.
 - Fotos de perfil são data URLs validadas e aplicadas via `background-image`, nunca via `innerHTML`.
 - Canvas 2D e Web Audio API nativos.
-- `localStorage` limitado a tema, dificuldade e som, com fallback.
+- `localStorage` limitado a tema, dificuldade, som e volume, com fallback.
 - Sem analytics, cookies de rastreamento ou coleta de dados além do perfil mínimo do ranking (nick, foto opcional e scores).
 
 ### Headers HTTP (`_headers`)

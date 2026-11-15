@@ -24,7 +24,8 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.
-- Efeitos sonoros gerados com Web Audio API, com reverb, harmônicos e pan estéreo.
+- Tutorial **Como jogar** acessível pelo menu e pelas configurações.
+- Efeitos sonoros gerados com Web Audio API, com reverb, harmônicos e pan estéreo, além de controle de volume (0–100%) nas configurações.
 - Layout responsivo com suporte a toque.
 - Núcleo do jogo em arquivo único; Firebase carregado sob demanda para login/ranking.
 

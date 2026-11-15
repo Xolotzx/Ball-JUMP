@@ -57,7 +57,12 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Alterar dificuldade reinicia no nível 1.
 - [ ] Tema escuro/claro alterna sem reiniciar a fase.
 - [ ] Som liga/desliga e persiste.
-- [ ] Recarregar a página preserva tema, dificuldade e som, mas volta ao menu.
+- [ ] Slider de volume ajusta de 0 a 100%, mostra a porcentagem e persiste.
+- [ ] Volume 0 deixa o jogo em silêncio; ao subir, os efeitos voltam.
+- [ ] Slider fica visualmente esmaecido quando o som está desligado, mas continua ajustável.
+- [ ] **Como jogar** dentro das configurações abre o tutorial por cima; **Voltar** retorna às configurações.
+- [ ] **Voltar ao jogo** no tutorial aberto pelas configurações fecha os dois e retoma a partida.
+- [ ] Recarregar a página preserva tema, dificuldade, som e volume, mas volta ao menu.
 
 ## 5. Mobile e acessibilidade
 

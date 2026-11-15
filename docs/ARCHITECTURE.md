@@ -147,13 +147,15 @@ Componentes de UI:
 - HUD, toast e meta-informações;
 - chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero;
 - tela de fim de jogo: `#deathModal` com estatísticas, login Google, perfil e acesso ao ranking;
-- ranking: `#rankModal` com abas de streak/níveis e top 10.
+- ranking: `#rankModal` com seletor Geral/Fácil/Normal/Difícil/Hardcore, abas de streak/níveis e top 10.
+- configurações incluem volume (0–100%) e botão **Como jogar**.
 
 Controle de sobreposição:
 
 - `menuOpen`, `tutorialOpen`, `modalOpen`;
 - `syncOverlayLock()` aplica `inert` no conteúdo de fundo, bloqueia scroll do body e libera ao fechar;
 - foco é enviado para o overlay ativo;
+- o tutorial aberto pelas configurações fica por cima delas; ao fechar, as configurações continuam abertas (exceto em **Voltar ao jogo**);
 - `Escape` fecha tutorial/configurações;
 - o jogo não inicia até **Jogar**.
 
@@ -167,6 +169,7 @@ O módulo `Sound` encapsula:
 - tons com harmônicos, envelopes suaves e pan estéreo;
 - bipe contínuo de construção;
 - efeitos de sucesso, perda de vida, fanfarra, vitória e quique;
+- volume mestre 0–100% (ganho linear até 0,9) persistido e ajustável em tempo real;
 - ativação/desativação persistida.
 
 O áudio é desbloqueado no primeiro gesto do usuário; se o contexto estiver suspenso, `resume()` é chamado.
@@ -176,7 +179,7 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 ## 12. Persistência
 
 - Chave: `kbounce.settings.v1`.
-- Campos: `theme`, `difficulty`, `sound`.
+- Campos: `theme`, `difficulty`, `sound`, `volume` (0–100).
 - Leitura/escrita em `localStorage` com tratamento de exceção para modo privado.
 - Nenhum dado pessoal é coletado.
 - O valor é tratado como preferência, nunca como fonte de segurança.
