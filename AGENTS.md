@@ -6,7 +6,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 
 - **Produto:** site de jogos casuais **ted-io**, com Modo Clássico (JezzBall) e Modo Doce (match-3).
 - **Arquivo de runtime:** `index.html` (HTML + CSS + JavaScript em um único arquivo).
-- **Tamanho atual:** ~197 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
+- **Tamanho atual:** ~198 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `ted-io`.
 - **URL:** https://ted-io.pages.dev
 - **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
@@ -76,7 +76,8 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 18. O botão **Jogar** deve abrir a escolha entre **Clássico** e **Doce**; não adicionar atalhos duplicados no menu.
 19. Manter as configurações acessíveis no modo doce pela engrenagem, pausando o timer e ocultando a dificuldade.
 20. Manter o menu principal com fundo ambiente do tema (ondas/fita) e a marca **ted-io** no título e no cartão.
-21. Atualizar a documentação de contexto junto com mudanças de comportamento.
+21. Manter o botão **← Menu** no HUD clássico, pausando a partida e preservando o estado para retomar.
+22. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 

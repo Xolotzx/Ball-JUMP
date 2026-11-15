@@ -23,6 +23,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Escolher **Modo Clássico** fecha o menu e inicia a partida clássica.
 - [ ] Escolher **Modo Doce** fecha o menu e abre o tabuleiro de doces.
 - [ ] Fechar o seletor (X, clique fora ou Esc) retorna ao menu sem iniciar partida.
+- [ ] **← Menu** no HUD clássico pausa a partida e volta ao menu; **Jogar → Modo Clássico** retoma nível, vidas e progresso.
 - [ ] **Como jogar** dentro das configurações abre o tutorial; “Voltar” retorna às configurações.
 - [ ] “Voltar ao jogo” no tutorial aberto pelas configurações retoma a partida.
 - [ ] “Configurações” abre o modal, pausa o jogo e, ao fechar, retorna ao menu ou ao jogo.

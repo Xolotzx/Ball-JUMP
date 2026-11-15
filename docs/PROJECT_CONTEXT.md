@@ -101,7 +101,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
 - O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.
 - Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.
-- HUD: sequência, nível, vidas, área, direção, configurações.
+- HUD: sequência, nível, vidas, área, direção, configurações e botão **← Menu**.
 - Botão de compartilhar removido por decisão de produto.
 - Modo **Escuro**: preto e laranja.
 - Modo **Claro**: laranja e branco.

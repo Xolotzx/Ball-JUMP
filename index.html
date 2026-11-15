@@ -83,6 +83,13 @@
   .hud{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
   .hud-stats{display:flex;gap:8px;flex:1 1 360px;min-width:0}
   .hud-actions{display:flex;gap:8px;align-items:stretch}
+  .classic-menu-btn{
+    min-height:40px;padding:0 11px;border-radius:10px;border:1px solid var(--glass-border);cursor:pointer;
+    background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom));color:var(--muted);
+    font-size:10px;font-weight:800;white-space:nowrap;display:inline-flex;align-items:center;
+    box-shadow:inset 0 1px 0 var(--glass-highlight);transition:color .2s,border-color .2s;
+  }
+  .classic-menu-btn:hover{color:var(--text);border-color:color-mix(in srgb,var(--accent) 40%,var(--glass-border))}
   .stat{
     display:flex;flex-direction:column;justify-content:center;gap:4px;position:relative;overflow:hidden;isolation:isolate;
     border-radius:16px;padding:8px 12px;min-height:54px;min-width:74px;
@@ -863,6 +870,7 @@
         </div>
       </div>
       <div class="hud-actions">
+        <button id="classicMenuBtn" class="classic-menu-btn" type="button" aria-label="Voltar ao menu principal">← Menu</button>
         <button id="dirBtn" class="dir-btn is-horiz" type="button" aria-label="Direção da parede: horizontal. Toque para alternar.">
           <span class="dir-icon" aria-hidden="true"></span><span id="dirText">HORIZ</span>
         </button>
@@ -1452,7 +1460,7 @@ sceneCanvas.height = GAME_H * SCENE_SCALE;
 
 const ui = {
   level: $('levelVal'), lives: $('livesVal'), pct: $('pctVal'), bar: $('pctBar'),
-  dirBtn: $('dirBtn'), dirText: $('dirText'), settings: $('settingsBtn'),
+  dirBtn: $('dirBtn'), dirText: $('dirText'), settings: $('settingsBtn'), classicMenu: $('classicMenuBtn'),
   diffChip: $('diffChip'), ballChip: $('ballChip'),
   streakChip: $('streakChip'), streakVal: $('streakVal'),
   overlay: $('overlay'), overlayKicker: $('overlayKicker'), overlayTitle: $('overlayTitle'),
@@ -4638,6 +4646,11 @@ function openStartMenu() {
   ui.startMenu.hidden = false;
   ui.startMenu.classList.remove('is-leaving');
   syncOverlayLock();
+  setTimeout(() => {
+    if (menuOpen) {
+      try { ui.playBtn.focus(); } catch (_) {}
+    }
+  }, 80);
 }
 
 function openModeChooser() {
@@ -4675,6 +4688,12 @@ function chooseMode(mode) {
   closeModeChooser(false);
   if (mode === 'candy') startCandyMode();
   else startGame();
+}
+
+function returnClassicToMenu() {
+  if (menuOpen || candyOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || profileOpen) return;
+  Sound.click();
+  openStartMenu();
 }
 
 function startGame() {
@@ -4801,6 +4820,7 @@ function bindEvents() {
   canvas.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
 
   ui.dirBtn.addEventListener('click', () => { Sound.unlock(); toggleDirection(); });
+  ui.classicMenu.addEventListener('click', returnClassicToMenu);
   ui.settings.addEventListener('click', openSettings);
   ui.closeSettings.addEventListener('click', closeSettings);
 

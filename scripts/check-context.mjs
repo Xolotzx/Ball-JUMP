@@ -196,6 +196,7 @@ check(index.includes('id="modeModal"') && index.includes('id="modeClassicBtn"') 
 check(index.includes('function openModeChooser') && index.includes('function chooseMode'), 'lógica do seletor de modo presente');
 check(!index.includes('menuCandyBtn'), 'sem botão duplicado de modo doce no menu');
 check(index.includes('id="candyBoard"'), 'tabuleiro do modo doce presente');
+check(index.includes('id="classicMenuBtn"') && index.includes('function returnClassicToMenu'), 'botão menu do clássico presente');
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');
 check(index.includes('id="settingsHowBtn"') && index.includes('openTutorial(true)'), 'como jogar nas configurações presente');

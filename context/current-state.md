@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~197 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~198 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://ted-io.pages.dev
 - **Projeto Cloudflare:** `ted-io`
 - **Repositório:** privado, branch `main`
@@ -62,6 +62,7 @@
 - Configurações adicionadas ao modo doce (engrenagem), com timer pausado e dificuldade oculta.
 - Menu principal passou a usar o fundo do tema e o app clássico fica oculto enquanto o menu está aberto.
 - Site renomeado para **ted-io** no título da aba e no cartão do menu.
+- Botão **← Menu** adicionado ao HUD clássico; ele pausa a partida e preserva nível/vidas/área para retomar.
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.

@@ -190,6 +190,7 @@
     "menu, tutorial, settings, death screen, profile editor and ranking remain available",
     "site name is ted-io in the document title and main menu card",
     "main menu uses the theme ambient background and hides the classic app while open",
+    "classic HUD has a back-to-menu button that pauses and preserves the run",
     "candy screen has a settings gear that pauses the timer and hides the difficulty section",
     "Jogar opens a mode chooser with classic and candy; no duplicate mode button in the menu",
     "settings include a 0-100 volume slider persisted in localStorage",

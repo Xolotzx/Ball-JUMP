@@ -147,6 +147,7 @@ Componentes de UI:
 - menu principal sobre o fundo ambiente do tema; `body.menu-active` oculta o `.app` clássico e `body.candy-active` oculta no modo doce.
 - overlay de nível/game over/vitória: `#overlay`;
 - HUD, toast e meta-informações;
+- HUD clássico inclui **← Menu**, que pausa a partida e abre o menu; **Jogar → Clássico** retoma o estado.
 - chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero;
 - tela de fim de jogo: `#deathModal` com estatísticas, login Google, perfil e acesso ao ranking;
 - ranking: `#rankModal` com seletor Geral/Fácil/Normal/Difícil/Hardcore, abas de streak/níveis e top 10.
