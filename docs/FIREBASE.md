@@ -38,16 +38,17 @@ administrativo ou `.env` no repositório.
    automática (`Lucas 2`, `Lucas 3`, ...). O jogador pode trocar depois.
 7. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
    **Ver ranking** na tela de fim de jogo.
-8. O ranking tem um seletor **Geral / Fácil / Normal / Difícil / Hardcore / Doce** e
-   abas **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos** (Pontos aparece no modo Doce),
-   mostrando o top 10 do modo selecionado.
+8. O ranking tem dois menus principais: **Clássico 🧱** e **Doce 🍪**.
+   - **Clássico 🧱**: **Geral / Fácil / Normal / Difícil / Hardcore**, com
+     **🔥 Streak** e **🏆 Níveis**.
+   - **Doce 🍪**: **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**.
 9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+,
    cumpra a meta antes do tempo e avance. As vidas são substituídas por tempo.
    Bombas aparecem no tabuleiro e explodem a área 3×3 quando trocadas com um doce.
 10. A cada 10 fases o modo Doce aumenta a dificuldade (mais tipos, meta maior e
     menos tempo), até a fase 100.
-11. O título acompanha a seleção: “Ranking geral”, “Ranking modo fácil”,
-    “Ranking modo doce”, etc.
+11. O título acompanha a seleção: “Ranking clássico — Fácil”,
+    “Ranking doce”, etc.
 
 ## 3. Modelo de dados
 
@@ -266,8 +267,9 @@ Também foi validado:
     `.bestLevel`; o modo **Geral** consulta `bestStreak`/`bestLevel`.
   - O cache é por modo (`rankData[modo]`), com requisições concorrentes
     descartadas por `rankRequest`.
-  - O seletor de modo é gerado a partir de `DIFFICULTIES`; o título vira
-    “Ranking modo fácil”, “Ranking modo normal”, etc.
+  - O seletor tem famílias **Clássico 🧱** e **Doce 🍪**; no clássico as
+    dificuldades são Geral/Fácil/Normal/Difícil/Hardcore e o título vira
+    “Ranking clássico — Fácil”.
 - Modo Doce (match-3):
   - tabuleiro 8×8; troca de doces adjacentes, detecção de 3+ e cascatas;
   - 100 fases; cada fase tem meta de pontos e tempo próprio (sem vidas);

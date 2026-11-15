@@ -157,6 +157,10 @@
       "nicknameNormalization": "lowercase, diacritics removed, non-alphanumerics collapsed to hyphen",
       "photo": "optional 160x160 JPEG data URL, max 90000 chars, no Firebase Storage",
       "rankScopes": ["geral", "easy", "normal", "hard", "hardcore", "doce"],
+      "rankFamilies": {
+        "classic": ["geral", "easy", "normal", "hard", "hardcore"],
+        "candy": ["doce"]
+      },
       "candyMode": {
         "grid": "8x8",
         "levels": 100,
@@ -197,6 +201,7 @@
     "tutorial can be opened from settings and returns to settings when closed",
     "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",
     "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
+    "ranking menu has classic and candy families; classic lists difficulties, candy lists streak/level/score",
     "candy mode is a 8x8 match-3 with 100 levels, timer instead of lives and its own candy ranking",
     "candy bombs explode a 3x3 area on swap and can chain; the candy screen shares the classic ambient background",
     "candy ranking has streak, level and score categories and does not affect classic scores",

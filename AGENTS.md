@@ -6,7 +6,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 
 - **Produto:** site de jogos casuais **ted-io**, com Modo Clássico (JezzBall) e Modo Doce (match-3).
 - **Arquivo de runtime:** `index.html` (HTML + CSS + JavaScript em um único arquivo).
-- **Tamanho atual:** ~198 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
+- **Tamanho atual:** ~202 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `ted-io`.
 - **URL:** https://ted-io.pages.dev
 - **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
@@ -48,6 +48,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - **Firebase:** projeto compartilhado `botanicstudio`; Auth Google habilitado; Firestore `(default)`; coleções `balljumpProfiles` e `balljumpNicknames`; domínio `ted-io.pages.dev` autorizado.
 - **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `candy`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
 - **Ranking por dificuldade:** `scores.easy/normal/hard/hardcore` guardam `{ bestStreak, bestLevel }` por modo; o ranking consulta `scores.<modo>.bestStreak` e `.bestLevel`; o ranking geral usa `bestStreak`/`bestLevel`.
+- **Famílias de ranking:** **Clássico 🧱** (Geral/Fácil/Normal/Difícil/Hardcore, com Streak e Níveis) e **Doce 🍪** (Streak, Níveis e Pontos).
 - **Modo Doce:** match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio em `candy` (`bestStreak`, `bestLevel`, `bestScore`); categorias Streak, Níveis e Pontos. Bombas explodem a área 3×3 ao serem trocadas com um doce; o fundo é o mesmo do clássico.
 - **Perfil editável:** nick de 1 a 30 caracteres na UI e foto opcional em data URL (160×160 JPEG, até 90.000 caracteres); sem Firebase Storage; fallback para a inicial do nick.
 - **Nicks únicos:** reserva em `balljumpNicknames/{key}` com chave normalizada (minúscula, sem acentos, separadores colapsados); transação reserva/libera o nick; nomes do Google ocupados recebem sufixo automático.
@@ -77,7 +78,8 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 19. Manter as configurações acessíveis no modo doce pela engrenagem, pausando o timer e ocultando a dificuldade.
 20. Manter o menu principal com fundo ambiente do tema (ondas/fita) e a marca **ted-io** no título e no cartão.
 21. Manter o botão **← Menu** no HUD clássico, pausando a partida e preservando o estado para retomar.
-22. Atualizar a documentação de contexto junto com mudanças de comportamento.
+22. Manter o ranking em famílias **Clássico 🧱** e **Doce 🍪**, com Pontos apenas no Doce e dificuldades no Clássico.
+23. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 

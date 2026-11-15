@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~198 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~202 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://ted-io.pages.dev
 - **Projeto Cloudflare:** `ted-io`
 - **Repositório:** privado, branch `main`
@@ -28,7 +28,7 @@
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente a cada 10 fases.
-- Ranking por dificuldade: **Geral / Fácil / Normal / Difícil / Hardcore / Doce**, com streak e níveis separados; no Doce também pontos.
+- Ranking em famílias **Clássico 🧱** e **Doce 🍪**: clássico com Geral/Fácil/Normal/Difícil/Hardcore e abas Streak/Níveis; doce com Streak/Níveis/Pontos.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 - Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
 
@@ -64,6 +64,7 @@
 - Site renomeado para **ted-io** no título da aba e no cartão do menu.
 - Botão **← Menu** adicionado ao HUD clássico; ele pausa a partida e preserva nível/vidas/área para retomar.
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
+- Ranking reorganizado em famílias **Clássico 🧱** (dificuldades + Streak/Níveis) e **Doce 🍪** (Streak/Níveis/Pontos).
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.

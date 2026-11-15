@@ -184,6 +184,9 @@ check(index.includes('function nicknameKeyFor') && index.includes('function clai
 check(index.includes('nickname-taken'), 'erro de nick duplicado presente');
 check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade presente');
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
+check(index.includes('id="rankFamilies"') && index.includes('function setRankFamily'), 'famílias de ranking presentes');
+check(index.includes('Clássico 🧱') && index.includes('Doce 🍪'), 'rótulos Clássico e Doce presentes');
+check(index.includes('rankScoreTab.hidden = !isCandy'), 'aba Pontos restrita ao Doce');
 check(index.includes('CANDY_MAX_LEVEL = 100') && index.includes('function startCandyMode'), 'modo doce presente');
 check(index.includes('CANDY_BOMB') && index.includes('function candyExplodeBombs'), 'bombas e explosões presentes');
 check(index.includes('id="candySettings"') && index.includes("ui.candySettings.addEventListener('click', openSettings)"), 'configurações no modo doce presentes');

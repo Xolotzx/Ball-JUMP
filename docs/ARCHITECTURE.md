@@ -150,7 +150,7 @@ Componentes de UI:
 - HUD clássico inclui **← Menu**, que pausa a partida e abre o menu; **Jogar → Clássico** retoma o estado.
 - chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero;
 - tela de fim de jogo: `#deathModal` com estatísticas, login Google, perfil e acesso ao ranking;
-- ranking: `#rankModal` com seletor Geral/Fácil/Normal/Difícil/Hardcore, abas de streak/níveis e top 10.
+- ranking: `#rankModal` com famílias Clássico/Doce, dificuldades no clássico e abas de streak/níveis/pontos; top 10.
 - configurações incluem volume (0–100%) e botão **Como jogar**.
 
 Controle de sobreposição:
@@ -228,9 +228,12 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Avatares (perfil e linhas do ranking) usam `background-image` com data URL
   validada; sem foto, mostram a inicial do nick.
 - Ranking:
-  - seletor **Geral / Fácil / Normal / Difícil / Hardcore / Doce** gerado a partir
-    de `DIFFICULTIES`; título dinâmico (“Ranking modo fácil”, …);
-  - abas **Streak**, **Níveis** e **Pontos** (Pontos no modo Doce), top 10;
+  - famílias principais **Clássico 🧱** e **Doce 🍪**;
+  - **Clássico 🧱**: abas **Geral / Fácil / Normal / Difícil / Hardcore**, com
+    **Streak** e **Níveis**;
+  - **Doce 🍪**: abas **Streak**, **Níveis** e **Pontos** (a aba Pontos só aparece
+    nessa família);
+  - título dinâmico: “Ranking clássico — Fácil”, “Ranking doce”, etc.;
   - consultas por modo: `orderBy('scores.<modo>.bestStreak'|'bestLevel')`;
   - modo **Geral**: `orderBy('bestStreak'|'bestLevel')`;
   - modo **Doce**: `orderBy('candy.bestStreak'|'bestLevel'|'bestScore')`;

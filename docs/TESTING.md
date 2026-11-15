@@ -113,15 +113,19 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] O botão **Entrar com Google** fica habilitado após o SDK carregar.
 - [ ] Login com conta Google real cria `balljumpProfiles/{uid}` e mostra o perfil.
 - [ ] O perfil exibe nick, melhor streak e melhor nível, com foto quando houver.
-- [ ] O botão **Ver ranking** abre as abas **Streak** e **Níveis**.
+- [ ] O botão **Ver ranking** abre o ranking na família correta.
 - [ ] O top 10 é ordenado corretamente; a linha do próprio jogador é destacada.
-- [ ] Trocar de aba não quebra a lista.
+- [ ] Trocar de família/aba não quebra a lista.
 - [ ] **Sair** volta ao estado de login.
+- [ ] O menu **Ranking** mostra as famílias **Clássico 🧱** e **Doce 🍪**.
 - [ ] O menu **Ranking** abre o ranking mesmo antes de morrer.
-- [ ] O seletor **Geral / Fácil / Normal / Difícil / Hardcore** aparece e mostra o título “Ranking modo fácil” etc.
+- [ ] Em **Clássico 🧱**, aparecem as abas **Geral / Fácil / Normal / Difícil / Hardcore** e **Streak / Níveis**.
+- [ ] O título do clássico acompanha a dificuldade: “Ranking clássico — Fácil”, etc.
 - [ ] O ranking de cada dificuldade lista apenas jogadores que jogaram aquele modo.
-- [ ] As abas **Streak** e **Níveis** usam os valores do modo selecionado.
 - [ ] O ranking **Geral** continua mostrando o melhor histórico.
+- [ ] Em **Doce 🍪**, a linha de dificuldades some e aparecem **Streak / Níveis / Pontos**.
+- [ ] A aba **Pontos** só aparece na família Doce.
+- [ ] Trocar entre Clássico e Doce atualiza título, abas e lista sem misturar dados.
 - [ ] Jogar uma corrida no modo Fácil atualiza o ranking Fácil e não altera os outros modos.
 - [ ] Trocar de modo rapidamente não deixa linhas de outro modo na lista.
 - [ ] Perfil antigo sem `scores` aparece no Geral e passa a aparecer no modo após jogar.

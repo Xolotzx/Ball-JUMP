@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~198 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~202 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -286,3 +286,16 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - `settingsTitle`, `settingsSubtitle` e a dica mudam conforme o modo;
   - o título da aba e o cartão do menu exibem **ted-io**;
   - o projeto/repositório continuam com os nomes internos existentes.
+
+## ADR-023 — Ranking em famílias Clássico e Doce
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** o ranking misturava dificuldades clássicas e o modo doce em uma única fileira de botões, dificultando a leitura.
+- **Decisão:** dividir o ranking em duas famílias principais: **Clássico 🧱** e **Doce 🍪**. No clássico, as abas de dificuldade vão de Geral/Fácil a Hardcore, com Streak e Níveis. No doce, a fileira de dificuldades some e aparecem Streak, Níveis e Pontos. O título acompanha a família/dificuldade.
+- **Consequências:**
+  - a família Doce sempre abre na aba Pontos; a Clássico abre em Streak;
+  - a aba Pontos fica oculta fora da família Doce;
+  - `rankFamily`, `rankClassicScope` e `rankDifficulty` separam a navegação e o cache;
+  - abrir o ranking pela tela de morte usa a família correta;
+  - o layout foi validado em 320/390 px com as novas linhas.

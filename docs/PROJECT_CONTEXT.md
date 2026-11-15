@@ -111,8 +111,10 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Configurações incluem tema, dificuldade, som, volume (0–100%) e atalho **Como jogar**.
 - O tutorial aberto pelas configurações volta para elas ao fechar; **Voltar ao jogo** fecha ambos e retoma a partida.
 - Tela de fim de jogo com estatísticas da corrida, **Entrar com Google**, perfil e acesso ao ranking.
-- Ranking com seletor **Geral / Fácil / Normal / Difícil / Hardcore** e abas **🔥 Streak** e **🏆 Níveis**, top 10 por modo.
-- O título do ranking acompanha o modo: “Ranking geral” ou “Ranking modo fácil”.
+- Ranking com dois menus principais: **Clássico 🧱** e **Doce 🍪**.
+- Dentro de **Clássico 🧱**: **Geral / Fácil / Normal / Difícil / Hardcore**, com abas **🔥 Streak** e **🏆 Níveis**, top 10.
+- Dentro de **Doce 🍪**: abas **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**, top 10.
+- O título do ranking acompanha a seleção: “Ranking clássico — Fácil”, “Ranking doce”, etc.
 - Perfil personalizável: nick (até 30 caracteres na UI) e foto opcional.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).
 
