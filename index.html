@@ -3804,7 +3804,11 @@ function bindEvents() {
     if (returnToGame) {
       closeSettings();
       if (menuOpen) startGame();
-      else setTimeout(() => { try { canvas.focus({ preventScroll: true }); } catch (_) {} }, 60);
+      setTimeout(() => {
+        if (!menuOpen && !modalOpen && !tutorialOpen) {
+          try { canvas.focus({ preventScroll: true }); } catch (_) {}
+        }
+      }, 120);
       return;
     }
     startGame();
