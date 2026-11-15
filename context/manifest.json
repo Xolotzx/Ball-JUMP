@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Balljump-game",
+    "type": "browser-game",
+    "runtime": "single-file",
+    "entrypoint": "index.html",
+    "language": "pt-BR",
+    "repositoryVisibility": "private",
+    "license": "not specified"
+  },
+  "lastReviewed": "2026-11-15",
+  "contextLoadOrder": [
+    "AGENTS.md",
+    "context/manifest.json",
+    "docs/PROJECT_CONTEXT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/SECURITY.md",
+    "docs/DECISIONS.md",
+    "docs/TESTING.md",
+    "context/current-state.md"
+  ],
+  "documents": [
+    {
+      "path": "AGENTS.md",
+      "purpose": "Regras de trabalho, invariantes e segurança para agentes.",
+      "sensitivity": "internal",
+      "loadWhen": "sempre"
+    },
+    {
+      "path": "docs/PROJECT_CONTEXT.md",
+      "purpose": "Produto, regras atuais, estado e limitações.",
+      "sensitivity": "internal",
+      "loadWhen": "mudanças de comportamento ou requisitos"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "purpose": "Arquitetura técnica, loop, estado, renderização e deploy.",
+      "sensitivity": "internal",
+      "loadWhen": "mudanças de código"
+    },
+    {
+      "path": "docs/CONTEXT_ENGINEERING.md",
+      "purpose": "Como carregar, atualizar e proteger contexto.",
+      "sensitivity": "internal",
+      "loadWhen": "onboarding, handoff e manutenção de docs"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "purpose": "Modelo de ameaças, controles e resposta a incidentes.",
+      "sensitivity": "internal",
+      "loadWhen": "HTML, headers, deploy, dependências ou credenciais"
+    },
+    {
+      "path": "docs/DECISIONS.md",
+      "purpose": "ADRs e trade-offs.",
+      "sensitivity": "internal",
+      "loadWhen": "questionamentos de arquitetura/produto"
+    },
+    {
+      "path": "docs/TESTING.md",
+      "purpose": "Plano de testes e checklist de entrega.",
+      "sensitivity": "internal",
+      "loadWhen": "validação e release"
+    },
+    {
+      "path": "context/current-state.md",
+      "purpose": "Snapshot de estado, deploy e pendências.",
+      "sensitivity": "internal",
+      "loadWhen": "retomada de tarefa e handoff"
+    },
+    {
+      "path": "SECURITY.md",
+      "purpose": "Política pública de relato de vulnerabilidades.",
+      "sensitivity": "public",
+      "loadWhen": "relato de segurança"
+    },
+    {
+      "path": "README.md",
+      "purpose": "Apresentação e links.",
+      "sensitivity": "public",
+      "loadWhen": "visão inicial"
+    }
+  ],
+  "runtimeFacts": {
+    "arena": "600x400",
+    "tile": 20,
+    "grid": "30x20",
+    "interiorCells": 504,
+    "goalPercent": 95,
+    "goalCells": 479,
+    "maxLevel": 100,
+    "startingBalls": 2,
+    "ballAddedEveryLevels": 2,
+    "lifeGainPerLevel": 1,
+    "baseSpeed": 1.2,
+    "wallGrowthMsPerTile": "difficulty.divisor * 23",
+    "storageKey": "kbounce.settings.v1"
+  },
+  "difficulty": {
+    "easy": { "lives": 5, "divisor": 2 },
+    "normal": { "lives": 3, "divisor": 3 },
+    "hard": { "lives": 2, "divisor": 4 },
+    "hardcore": { "lives": 1, "divisor": 6 }
+  },
+  "commands": {
+    "serve": "python -m http.server 8765 --directory .",
+    "check": "node scripts/check-context.mjs",
+    "prepareDeploy": "node scripts/prepare-deploy.mjs",
+    "deploy": "npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true"
+  },
+  "deployment": {
+    "provider": "cloudflare-pages",
+    "project": "balljump-game",
+    "url": "https://balljump-game.pages.dev",
+    "mode": "manual-direct-upload",
+    "path": "dist",
+    "allowlistedFiles": ["index.html", "404.html", "_headers"],
+    "gitIntegration": false,
+    "headersFile": "_headers"
+  },
+  "security": {
+    "runtimeNetwork": "none",
+    "runtimeDependencies": "none",
+    "csp": "default-src 'none' with inline script/style; see _headers",
+    "secretsPolicy": "never commit or include secrets in context",
+    "sensitivityLevels": ["public", "internal", "restricted"]
+  },
+  "invariants": [
+    "index.html works offline via file://",
+    "no external runtime resources or network calls",
+    "goal is 95 percent",
+    "player gains one life per completed level",
+    "share button remains removed",
+    "menu, tutorial and settings remain available",
+    "security headers must stay compatible with the game",
+    "context docs must be updated with behavior changes"
+  ],
+  "excludeFromContext": [
+    ".git/**",
+    ".wrangler/**",
+    "node_modules/**",
+    ".env",
+    ".env.*",
+    "*.pem",
+    "*.key",
+    "*.p12",
+    "credentials/**",
+    "tokens/**"
+  ]
+}

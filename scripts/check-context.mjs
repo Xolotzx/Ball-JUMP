@@ -1,0 +1,249 @@
+#!/usr/bin/env node
+/**
+ * Verificação local de contexto e segurança do Balljump-game.
+ * Sem dependências. Requer Node.js 18+ e Git no PATH.
+ *
+ * Uso: node scripts/check-context.mjs
+ */
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+process.chdir(root);
+
+const failures = [];
+let checks = 0;
+
+function pass(name) {
+  checks++;
+  console.log(`  OK   ${name}`);
+}
+
+function fail(name, detail = '') {
+  checks++;
+  failures.push({ name, detail });
+  console.log(`  FAIL ${name}${detail ? ` — ${detail}` : ''}`);
+}
+
+function check(condition, name, detail = '') {
+  if (condition) pass(name);
+  else fail(name, detail);
+}
+
+function exists(rel) {
+  try {
+    return fs.statSync(path.join(root, rel)).isFile();
+  } catch {
+    return false;
+  }
+}
+
+function read(rel) {
+  return fs.readFileSync(path.join(root, rel), 'utf8');
+}
+
+console.log('Balljump-game — verificação de contexto e segurança\n');
+
+// 1. Arquivos obrigatórios
+console.log('Contexto e documentação:');
+const required = [
+  'index.html',
+  '404.html',
+  '_headers',
+  'README.md',
+  'AGENTS.md',
+  'SECURITY.md',
+  'docs/PROJECT_CONTEXT.md',
+  'docs/ARCHITECTURE.md',
+  'docs/CONTEXT_ENGINEERING.md',
+  'docs/SECURITY.md',
+  'docs/DECISIONS.md',
+  'docs/TESTING.md',
+  'context/manifest.json',
+  'context/current-state.md',
+  '.github/pull_request_template.md',
+  'scripts/check-context.mjs',
+  'scripts/prepare-deploy.mjs'
+];
+
+for (const file of required) {
+  if (!exists(file)) {
+    fail(`arquivo obrigatório: ${file}`);
+    continue;
+  }
+  const size = fs.statSync(path.join(root, file)).size;
+  check(size > 40, `conteúdo mínimo: ${file}`, 'arquivo vazio ou muito pequeno');
+}
+
+let manifest = null;
+try {
+  manifest = JSON.parse(read('context/manifest.json'));
+  pass('manifest.json é JSON válido');
+} catch (error) {
+  fail('manifest.json é JSON válido', error.message);
+}
+
+check(manifest?.runtimeFacts?.goalPercent === 95, 'manifesto declara meta de 95%');
+check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
+check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
+
+const projectContext = exists('docs/PROJECT_CONTEXT.md') ? read('docs/PROJECT_CONTEXT.md') : '';
+check(projectContext.includes('95%'), 'contexto do projeto menciona 95%');
+check(projectContext.includes('+1 vida'), 'contexto do projeto menciona +1 vida por fase');
+
+const agents = exists('AGENTS.md') ? read('AGENTS.md') : '';
+check(agents.includes('Segurança') || agents.includes('segurança'), 'AGENTS.md contém regras de segurança');
+check(agents.includes('Nunca'), 'AGENTS.md contém proibições explícitas');
+
+// 2. Invariantes do jogo
+console.log('\nInvariantes do jogo:');
+const index = exists('index.html') ? read('index.html') : '';
+check(index.includes('<title>Balljump-game'), 'título Balljump-game presente');
+check(index.includes('const GOAL_PCT = 95'), 'GOAL_PCT definido como 95');
+check(index.includes('state.lives++'), 'incremento de vida por fase presente');
+check(!/id=["']shareBtn["']/.test(index), 'botão de compartilhar removido');
+check(!/navigator\.share|navigator\.clipboard/.test(index), 'sem Web Share/clipboard no runtime');
+check(index.length < 200_000, 'index.html abaixo de 200 KB', `${index.length} bytes`);
+check((index.match(/<script\b/gi) || []).length === 1, 'exatamente um bloco de script inline');
+
+// 3. Superfície de rede/execução
+console.log('\nSuperfície de rede e execução:');
+const externalPatterns = [
+  { name: 'sem src/href externo', re: /<(?:script|link|img|iframe|audio|video|source)[^>]+(?:src|href)\s*=\s*["']https?:/i },
+  { name: 'sem @import externo', re: /@import\s+(?:url\()?["']?https?:/i },
+  { name: 'sem fetch/XHR/WebSocket', re: /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/i },
+  { name: 'sem sendBeacon', re: /navigator\.sendBeacon/i }
+];
+for (const item of externalPatterns) {
+  check(!item.re.test(index), item.name);
+}
+check(!/<[a-z][^>]*\son[a-z]+\s*=/i.test(index), 'sem handlers inline (on...)');
+check(!/\beval\s*\(/.test(index), 'sem eval()');
+check(!/new\s+Function\s*\(/.test(index), 'sem new Function()');
+
+// 4. Headers de segurança
+console.log('\nHeaders HTTP:');
+const headers = exists('_headers') ? read('_headers') : '';
+const headerChecks = [
+  ["Content-Security-Policy presente", headers.includes('Content-Security-Policy:')],
+  ["CSP default-src 'none'", headers.includes("default-src 'none'")],
+  ["CSP script-src inline", headers.includes("script-src 'unsafe-inline'")],
+  ["CSP style-src inline", headers.includes("style-src 'unsafe-inline'")],
+  ["CSP frame-ancestors 'none'", headers.includes("frame-ancestors 'none'")],
+  ['nosniff presente', headers.includes('X-Content-Type-Options: nosniff')],
+  ['no-referrer presente', headers.includes('Referrer-Policy: no-referrer')],
+  ['X-Frame-Options presente', headers.includes('X-Frame-Options: DENY')],
+  ['Permissions-Policy presente', headers.includes('Permissions-Policy:')],
+  ['COOP presente', headers.includes('Cross-Origin-Opener-Policy: same-origin')],
+  ['HSTS presente', headers.includes('Strict-Transport-Security:')]
+];
+for (const [name, condition] of headerChecks) check(condition, name);
+
+// 5. Repositório e segredos
+console.log('\nRepositório e segredos:');
+const gitignore = exists('.gitignore') ? read('.gitignore') : '';
+for (const entry of ['.wrangler/', '.env', '*.pem', '*.key', 'dist/']) {
+  check(gitignore.includes(entry), `.gitignore cobre ${entry}`);
+}
+
+const distDir = path.join(root, 'dist');
+if (fs.existsSync(distDir)) {
+  const distFiles = fs.readdirSync(distDir).sort();
+  const allowed = new Set(['index.html', '404.html', '_headers']);
+  check(
+    distFiles.every((file) => allowed.has(file)),
+    'dist contém somente runtime, 404 e headers',
+    distFiles.join(', ')
+  );
+}
+
+let files = [];
+try {
+  const out = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], {
+    cwd: root,
+    encoding: 'utf8'
+  });
+  files = [...new Set(out.split('\0').filter(Boolean))];
+  check(files.length > 0, 'lista de arquivos Git obtida');
+} catch (error) {
+  fail('lista de arquivos Git', 'execute dentro do repositório e com Git no PATH');
+}
+
+const forbiddenFiles = files.filter((file) =>
+  /(^|\/)\.env(?:\.|$)|\.pem$|\.key$|\.p12$|^\.wrangler\/|(^|\/)credentials\//i.test(file)
+);
+check(forbiddenFiles.length === 0, 'nenhum arquivo sensível rastreado', forbiddenFiles.join(', '));
+
+const secretPatterns = [
+  { name: 'token GitHub', re: /gh[pousr]_[A-Za-z0-9_]{20,}/g },
+  { name: 'token GitHub fine-grained', re: /github_pat_[A-Za-z0-9_]{30,}/g },
+  { name: 'chave AWS', re: /AKIA[0-9A-Z]{16}/g },
+  { name: 'chave privada PEM', re: /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/g },
+  { name: 'token Cloudflare atribuído', re: /CLOUDFLARE_API_TOKEN\s*[:=]\s*["']?[A-Za-z0-9_-]{20,}/g },
+  { name: 'token Cloudflare alternativo', re: /CF_API_TOKEN\s*[:=]\s*["']?[A-Za-z0-9_-]{20,}/g },
+  { name: 'segredo AWS atribuído', re: /AWS_SECRET_ACCESS_KEY\s*[:=]\s*["']?[A-Za-z0-9/+=]{20,}/g },
+  { name: 'token Slack', re: /xox[baprs]-[A-Za-z0-9-]{10,}/g },
+  { name: 'bearer token', re: /authorization\s*:\s*bearer\s+[A-Za-z0-9._-]{20,}/gi }
+];
+
+const textFile = (file) =>
+  file === '_headers' ||
+  file === '.gitignore' ||
+  /\.(html|md|json|mjs|js|css|txt|yml|yaml|toml|ps1|sh)$/i.test(file);
+
+const secretFindings = [];
+for (const file of files) {
+  if (file === 'scripts/check-context.mjs' || !textFile(file)) continue;
+  let content = '';
+  try {
+    const info = fs.statSync(path.join(root, file));
+    if (info.size > 2_000_000) continue;
+    content = fs.readFileSync(path.join(root, file), 'utf8');
+  } catch {
+    continue;
+  }
+  for (const pattern of secretPatterns) {
+    pattern.re.lastIndex = 0;
+    if (pattern.re.test(content)) {
+      // Nunca imprimir o valor encontrado.
+      secretFindings.push(`${file}: ${pattern.name}`);
+    }
+  }
+}
+check(secretFindings.length === 0, 'nenhum padrão de segredo encontrado', secretFindings.join('; '));
+
+const privateDataPatterns = [
+  { name: 'caminho absoluto de usuário Windows', re: /[A-Z]:\\Users\\[^\\\s]+/i },
+  { name: 'caminho absoluto de usuário Unix', re: /\/Users\/[^/\s]+\//i },
+  { name: 'e-mail pessoal', re: /[A-Za-z0-9._%+-]+@(?!users\.noreply\.github\.com)[A-Za-z0-9.-]+\.[A-Za-z]{2,}/i }
+];
+const piiFindings = [];
+for (const file of files) {
+  if (file === 'scripts/check-context.mjs' || !textFile(file)) continue;
+  let content = '';
+  try {
+    if (fs.statSync(path.join(root, file)).size > 2_000_000) continue;
+    content = fs.readFileSync(path.join(root, file), 'utf8');
+  } catch {
+    continue;
+  }
+  for (const pattern of privateDataPatterns) {
+    if (pattern.re.test(content)) piiFindings.push(`${file}: ${pattern.name}`);
+  }
+}
+check(piiFindings.length === 0, 'nenhum dado pessoal/caminho local nos arquivos', piiFindings.join('; '));
+
+// 6. Resumo
+console.log('');
+if (failures.length > 0) {
+  console.error(`FALHOU: ${failures.length} problema(s) em ${checks} verificações.`);
+  for (const failure of failures) {
+    console.error(` - ${failure.name}${failure.detail ? `: ${failure.detail}` : ''}`);
+  }
+  process.exitCode = 1;
+} else {
+  console.log(`OK: ${checks} verificações concluídas sem problemas.`);
+}
