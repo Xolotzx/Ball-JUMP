@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~156 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~183 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -230,3 +230,18 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - o tutorial compartilha o mesmo modal, reduzindo duplicação;
   - `inert` é aplicado às configurações enquanto o tutorial está por cima;
   - **Voltar ao jogo** fecha tutorial e configurações e retoma a partida.
+
+## ADR-019 — Modo Doce (match-3) com tempo e ranking próprio
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** adicionar um modo inspirado em Candy Crush, com fases, streak, tempo e ranking próprios.
+- **Decisão:** criar um match-3 8×8 em DOM (`#candyBoard`), aberto pelo menu, com 100 fases. Em vez de vidas, cada fase tem meta de pontos e tempo. A cada 10 fases aumentam os tipos de doce, a meta e a redução de tempo. O resultado é salvo em `candy` (`bestStreak`, `bestLevel`, `bestScore`) e o ranking Doce tem as categorias Streak, Níveis e Pontos. A tela de fim reutiliza o modal existente, mostrando a pontuação apenas no modo doce.
+- **Consequências:**
+  - o modo clássico permanece intacto e com seus rankings por dificuldade;
+  - o tempo pausa quando a aba fica oculta ou um overlay abre;
+  - o streak é definido por trocas válidas consecutivas (cascatas dão combo, não streak adicional);
+  - o ranking Doce consulta `candy.*` e não se mistura com `scores.*`;
+  - o balanceamento de metas/tempos precisa de teste manual nas faixas de 10 fases;
+  - o tabuleiro usa DOM e animações CSS, sem dependências externas;
+  - as regras do Firestore validam o mapa `candy`.

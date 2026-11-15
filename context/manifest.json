@@ -146,7 +146,7 @@
     "authorizedDomain": "balljump-game.pages.dev",
     "sdkVersion": "10.14.1",
     "rulesLocation": "../Botanica Studio/botanicstudio/firebase/firestore.rules",
-    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "scores", "updatedAt"],
+    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "scores", "candy", "updatedAt"],
     "profileCustomization": {
       "editable": ["name", "photo"],
       "nameMaxLengthUI": 30,
@@ -154,7 +154,14 @@
       "nicknameUnique": true,
       "nicknameNormalization": "lowercase, diacritics removed, non-alphanumerics collapsed to hyphen",
       "photo": "optional 160x160 JPEG data URL, max 90000 chars, no Firebase Storage",
-      "rankScopes": ["geral", "easy", "normal", "hard", "hardcore"],
+      "rankScopes": ["geral", "easy", "normal", "hard", "hardcore", "doce"],
+      "candyMode": {
+        "grid": "8x8",
+        "levels": 100,
+        "timer": true,
+        "difficultyRampEvery": 10,
+        "rankingCategories": ["streak", "level", "score"]
+      },
       "avatarFallback": "first letter of the nick"
     },
     "readPolicy": "authenticated users only",
@@ -181,6 +188,8 @@
     "tutorial can be opened from settings and returns to settings when closed",
     "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",
     "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
+    "candy mode is a 8x8 match-3 with 100 levels, timer instead of lives and its own candy ranking",
+    "candy ranking has streak, level and score categories and does not affect classic scores",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
     "nicknames are unique via balljumpNicknames reservation; rename releases the old key in the same transaction",
     "ranking reads require authentication and writes require owner UID with monotonic scores",

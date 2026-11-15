@@ -37,10 +37,15 @@ administrativo ou `.env` no repositório.
    automática (`Lucas 2`, `Lucas 3`, ...). O jogador pode trocar depois.
 7. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
    **Ver ranking** na tela de fim de jogo.
-8. O ranking tem um seletor **Geral / Fácil / Normal / Difícil / Hardcore** e
-   abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10 do modo selecionado.
-9. O título acompanha a seleção: “Ranking geral” ou “Ranking modo fácil”, por
-   exemplo.
+8. O ranking tem um seletor **Geral / Fácil / Normal / Difícil / Hardcore / Doce** e
+   abas **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos** (Pontos aparece no modo Doce),
+   mostrando o top 10 do modo selecionado.
+9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+,
+   cumpra a meta antes do tempo e avance. As vidas são substituídas por tempo.
+10. A cada 10 fases o modo Doce aumenta a dificuldade (mais tipos, meta maior e
+    menos tempo), até a fase 100.
+11. O título acompanha a seleção: “Ranking geral”, “Ranking modo fácil”,
+    “Ranking modo doce”, etc.
 
 ## 3. Modelo de dados
 
@@ -51,6 +56,7 @@ balljumpProfiles/{uid} {
   bestStreak: int       // 0..1.000.000, melhor histórico geral
   bestLevel: int        // 1..100, maior nível histórico geral
   scores: map           // opcional: melhores por dificuldade
+  candy: map            // opcional: melhores do modo doce
   updatedAt: timestamp  // serverTimestamp()
 }
 
@@ -60,7 +66,17 @@ scores = {
   hard:     { bestStreak: int, bestLevel: int },
   hardcore: { bestStreak: int, bestLevel: int }
 }
+
+candy = {
+  bestStreak: int,      // 0..1.000.000
+  bestLevel: int,       // 1..100
+  bestScore: int        // 0..100.000.000
+}
 ```
+
+- `candy` só existe depois que o jogador conclui uma corrida no modo doce.
+- O ranking Doce consulta `candy.bestStreak`, `candy.bestLevel` e `candy.bestScore`.
+- Uma corrida do modo doce não altera os campos globais do modo clássico.
 
 - Cada chave de `scores` só existe depois que o jogador conclui uma corrida naquela
   dificuldade. Perfis antigos sem `scores` continuam válidos e aparecem no ranking
@@ -129,14 +145,23 @@ function isBalljumpScores(scores) {
     && (!scores.keys().hasAny(['hardcore']) || isBalljumpModeScore(scores.hardcore));
 }
 
+function isBalljumpCandy(candy) {
+  return candy is map
+    && candy.keys().hasOnly(['bestStreak', 'bestLevel', 'bestScore'])
+    && candy.bestStreak is int && candy.bestStreak >= 0 && candy.bestStreak <= 1000000
+    && candy.bestLevel is int && candy.bestLevel >= 1 && candy.bestLevel <= 100
+    && candy.bestScore is int && candy.bestScore >= 0 && candy.bestScore <= 100000000;
+}
+
 function isBalljumpProfile(p) {
-  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'scores', 'updatedAt'])
+  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'scores', 'candy', 'updatedAt'])
     && p.name is string && p.name.size() >= 1 && p.name.size() <= 40
     && p.photo is string && p.photo.size() <= 90000
     && (p.photo.size() == 0 || p.photo.matches('^data:image/(jpeg|png|webp);base64,.*'))
     && p.bestStreak is int && p.bestStreak >= 0 && p.bestStreak <= 1000000
     && p.bestLevel is int && p.bestLevel >= 1 && p.bestLevel <= 100
     && (!p.keys().hasAny(['scores']) || isBalljumpScores(p.scores))
+    && (!p.keys().hasAny(['candy']) || isBalljumpCandy(p.candy))
     && p.updatedAt == request.time;
 }
 
@@ -241,6 +266,15 @@ Também foi validado:
     descartadas por `rankRequest`.
   - O seletor de modo é gerado a partir de `DIFFICULTIES`; o título vira
     “Ranking modo fácil”, “Ranking modo normal”, etc.
+- Modo Doce (match-3):
+  - tabuleiro 8×8; troca de doces adjacentes, detecção de 3+ e cascatas;
+  - 100 fases; cada fase tem meta de pontos e tempo próprio (sem vidas);
+  - a cada 10 fases entram mais tipos de doce, a meta sobe e o tempo cai;
+  - o resultado pendente usa `mode:'candy'` com `bestStreak`, `bestLevel` e
+    `bestScore`;
+  - `syncProfile` grava/atualiza apenas `candy`, sem mexer nos scores clássicos;
+  - o ranking Doce consulta `candy.bestStreak`, `candy.bestLevel` e
+    `candy.bestScore`.
 
 ## 7. CSP e rede
 
@@ -274,11 +308,17 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
     - **Ranking modo fácil/normal/difícil/hardcore** lista apenas quem jogou o modo;
     - as abas **Streak** e **Níveis** mostram os valores daquele modo;
     - o **Ranking geral** continua com o melhor histórico.
-11. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
-12. Confira no console do Firebase → Firestore → `balljumpProfiles` e
+11. No menu, abra **Modo Doce**:
+    - troque doces, faça 3+ e confira pontos, sequência e progresso;
+    - deixe o tempo acabar e confira a tela **FIM DO TEMPO** com pontos;
+    - entre com Google e confira **Ranking → Doce** nas abas Streak, Níveis e Pontos;
+    - avance de fase e confira a meta/tempo; na fase 11 a dificuldade deve aumentar;
+    - complete a fase 100 para validar a vitória.
+12. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
+13. Confira no console do Firebase → Firestore → `balljumpProfiles` e
     `balljumpNicknames`.
-13. Teste o botão **Sair** e o login novamente.
-14. Teste com popups bloqueados para validar o fallback de redirecionamento.
+14. Teste o botão **Sair** e o login novamente.
+15. Teste com popups bloqueados para validar o fallback de redirecionamento.
 
 ## 9. Troubleshooting
 
@@ -297,6 +337,8 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 | `permission-denied` ao salvar nick | regras de `balljumpNicknames` não publicadas | publicar as regras mescladas |
 | Ranking de um modo vazio | ninguém jogou aquele modo ou falta `scores.<modo>` | jogar uma corrida no modo; conferir o campo `scores` |
 | Ranking por modo não carrega | consulta `orderBy('scores.<modo>...')` inválida | conferir o nome do modo (`easy/normal/hard/hardcore`) e as regras |
+| Ranking Doce vazio | ninguém terminou uma corrida no modo doce | jogar até o tempo acabar e entrar com Google |
+| Pontuação do Doce não salva | campo `candy` fora das regras | conferir `candy.bestScore` e publicar as regras |
 | Ranking vazio | nenhum perfil criado ainda | entrar com Google para criar o primeiro |
 
 Não registre tokens, cookies ou credenciais nos logs de suporte.

@@ -17,7 +17,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 ## 2. Smoke test de interface
 
 - [ ] Menu inicial aparece ao entrar.
-- [ ] Existem os botões **Jogar**, **Ranking** e **Configurações**; não há **Como jogar** no menu.
+- [ ] Existem os botões **Jogar**, **Modo Doce**, **Ranking** e **Configurações**; não há **Como jogar** no menu.
 - [ ] “Jogar” fecha o menu e inicia a partida.
 - [ ] **Como jogar** dentro das configurações abre o tutorial; “Voltar” retorna às configurações.
 - [ ] “Voltar ao jogo” no tutorial aberto pelas configurações retoma a partida.
@@ -122,6 +122,25 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Perfil antigo sem `scores` aparece no Geral e passa a aparecer no modo após jogar.
 - [ ] O nome do jogador é exibido como texto (testar um nome com `<b>`; não deve virar HTML).
 
+### Modo Doce (match-3)
+
+- [ ] O menu mostra **Modo Doce** e ele abre a tela de doces.
+- [ ] O tabuleiro tem 8×8 doces, sem matches iniciais e com pelo menos uma jogada possível.
+- [ ] Trocar doces adjacentes que formam 3+ limpa as peças, pontua e preenche a coluna.
+- [ ] Uma troca inválida desfaz o movimento e zera a sequência.
+- [ ] Cascatas mostram combo e somam pontos.
+- [ ] O tempo começa em 75 s na fase 1 e diminui a cada 10 fases; não há vidas.
+- [ ] A meta de pontos sobe por fase e a barra de progresso acompanha.
+- [ ] Ao atingir a meta, a próxima fase começa com tabuleiro novo.
+- [ ] Na fase 11 entram mais tipos e a mensagem de dificuldade aumentada aparece.
+- [ ] Na fase 31 o sétimo tipo é adicionado.
+- [ ] Ao esgotar o tempo, abre **FIM DO TEMPO** com streak, fase e pontos.
+- [ ] A tela final mostra o botão **Menu** e **Jogar novamente** reinicia o modo doce.
+- [ ] O ranking **Doce** tem abas Streak, Níveis e Pontos, separado dos rankings clássicos.
+- [ ] O resultado do modo doce não altera os scores do modo clássico.
+- [ ] A fase 100 termina em vitória.
+- [ ] O tabuleiro e o HUD cabem em 320–390 px sem overflow.
+
 ### Edição de perfil
 
 - [ ] **Editar perfil** (tela de morte) e **Editar** (ranking) abrem o mesmo modal.
@@ -158,6 +177,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Escrita com UID diferente é negada.
 - [ ] `bestStreak`/`bestLevel` não podem diminuir.
 - [ ] `scores` com modo inválido, tipo errado ou valor fora do limite é negado.
+- [ ] `candy` com campo inválido, nível fora de 1–100 ou score negativo é negado.
 - [ ] Schema inválido, nome vazio/longo ou timestamp incorreto é negado.
 - [ ] `photo` ausente, fora do prefixo permitido ou acima de 90.000 caracteres é negado.
 - [ ] `balljumpNicknames` exige autenticação para leitura e só permite escrita ao UID dono.

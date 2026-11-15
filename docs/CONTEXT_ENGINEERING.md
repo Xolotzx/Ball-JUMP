@@ -24,7 +24,7 @@
 | L6 — Testes | `docs/TESTING.md` | Antes de validar/entregar | Médio |
 | L7 — Estado | `context/current-state.md` | Em handoffs e retomadas | Baixo |
 
-O `index.html` completo tem cerca de 156 KB. Ele **não** deve ser carregado inteiro por padrão. Use busca por símbolos.
+O `index.html` completo tem cerca de 183 KB. Ele **não** deve ser carregado inteiro por padrão. Use busca por símbolos.
 
 ## 3. Sequência de inicialização do agente
 

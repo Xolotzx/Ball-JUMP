@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~156 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~183 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://balljump-game.pages.dev
 - **Projeto Cloudflare:** `balljump-game`
 - **Repositório:** privado, branch `main`
@@ -25,7 +25,8 @@
 - Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
-- Ranking por dificuldade: **Geral / Fácil / Normal / Difícil / Hardcore**, com streak e níveis separados; título dinâmico “Ranking modo fácil”.
+- **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente a cada 10 fases.
+- Ranking por dificuldade: **Geral / Fácil / Normal / Difícil / Hardcore / Doce**, com streak e níveis separados; no Doce também pontos.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 - Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
 
@@ -35,7 +36,7 @@
 - Deploy por allowlist em `dist/` (`index.html`, `404.html`, `_headers`); documentação interna não é publicada.
 - Caminhos internos como `/AGENTS.md` retornam 404 com página própria.
 - Núcleo offline; Firebase SDK/APIs carregados apenas para login/ranking.
-- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; `scores` validado por modo; `balljumpNicknames` legível por autenticados e gravável só pelo dono; regras preservam o Botanica.
+- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; `scores` validado por modo; `candy` validado para o modo doce; `balljumpNicknames` legível por autenticados e gravável só pelo dono; regras preservam o Botanica.
 - Domínio `balljump-game.pages.dev` autorizado; provedor Google habilitado.
 - Repositório privado; sem segredos no Git (apiKey Firebase é pública por design).
 
@@ -52,6 +53,9 @@
 - Regras do Firestore atualizadas para validar `scores` e publicadas.
 - Slider de volume 0–100% adicionado às configurações, persistido e aplicado ao ganho mestre.
 - Botão **Como jogar** adicionado às configurações, abrindo o tutorial por cima do modal.
+- Modo Doce (match-3) adicionado: 100 fases, tempo em vez de vidas, streak/pontos, ranking próprio e rampa a cada 10 fases.
+- Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
+- Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.
 - Ranking com abas de streak/níveis e top 10.
@@ -73,6 +77,8 @@
 
 - Validar manualmente o login Google real (popup e fallback de redirect) em desktop e mobile.
 - Validar manualmente a edição de perfil (nick, foto JPG/PNG/WebP, remoção e persistência) com conta real.
+- Validar o modo doce em navegador real: trocas, cascatas, tempo, fases 10/11, 30/31, 90/100 e ranking Doce.
+- Ajustar metas/tempos do modo doce após playtest em celular e desktop.
 - Revalidar headers/CSP no ambiente de produção a cada deploy (validado em 2026-11-15).
 - Conectar Cloudflare Pages ao GitHub para deploy automático (requer autorização do GitHub App).
 - Adicionar testes de navegador automatizados.

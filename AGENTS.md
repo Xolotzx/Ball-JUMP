@@ -6,7 +6,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 
 - **Produto:** jogo web de estratégia inspirado no clássico JezzBall.
 - **Arquivo de runtime:** `index.html` (HTML + CSS + JavaScript em um único arquivo).
-- **Tamanho atual:** ~156 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
+- **Tamanho atual:** ~183 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `balljump-game`.
 - **URL:** https://balljump-game.pages.dev
 - **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
@@ -46,8 +46,9 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - Persistência: apenas `localStorage` (`kbounce.settings.v1`) para tema, dificuldade, som e volume (0–100).
 - Deploy atual: **upload direto** no Cloudflare Pages; `git push` **não** publica automaticamente.
 - **Firebase:** projeto compartilhado `botanicstudio`; Auth Google habilitado; Firestore `(default)`; coleções `balljumpProfiles` e `balljumpNicknames`; domínio `balljump-game.pages.dev` autorizado.
-- **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
+- **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `candy`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
 - **Ranking por dificuldade:** `scores.easy/normal/hard/hardcore` guardam `{ bestStreak, bestLevel }` por modo; o ranking consulta `scores.<modo>.bestStreak` e `.bestLevel`; o ranking geral usa `bestStreak`/`bestLevel`.
+- **Modo Doce:** match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio em `candy` (`bestStreak`, `bestLevel`, `bestScore`); categorias Streak, Níveis e Pontos.
 - **Perfil editável:** nick de 1 a 30 caracteres na UI e foto opcional em data URL (160×160 JPEG, até 90.000 caracteres); sem Firebase Storage; fallback para a inicial do nick.
 - **Nicks únicos:** reserva em `balljumpNicknames/{key}` com chave normalizada (minúscula, sem acentos, separadores colapsados); transação reserva/libera o nick; nomes do Google ocupados recebem sufixo automático.
 - **SDK Firebase:** modular 10.14.1, importado dinamicamente do gstatic somente ao abrir a tela de morte/ranking ou fazer login. O jogo principal continua offline.
@@ -71,7 +72,8 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 14. Manter nicks únicos por reserva transacional em `balljumpNicknames`; não remover a normalização de caixa/acentos nem a liberação do nick antigo ao renomear.
 15. Manter o ranking por dificuldade (`scores.<modo>`) e o ranking geral; o modo da corrida deve ser salvo junto ao resultado pendente.
 16. Manter o volume dos efeitos (0–100, persistido) e o botão **Como jogar** dentro das configurações.
-17. Atualizar a documentação de contexto junto com mudanças de comportamento.
+17. Manter o modo doce com 100 fases, tempo em vez de vidas, ranking `candy` e aumento de dificuldade a cada 10 fases.
+18. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 

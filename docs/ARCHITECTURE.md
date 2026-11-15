@@ -152,7 +152,7 @@ Componentes de UI:
 
 Controle de sobreposição:
 
-- `menuOpen`, `tutorialOpen`, `modalOpen`;
+- `menuOpen`, `tutorialOpen`, `modalOpen`, `deathOpen`, `rankOpen`, `profileOpen`, `candyOpen`;
 - `syncOverlayLock()` aplica `inert` no conteúdo de fundo, bloqueia scroll do body e libera ao fechar;
 - foco é enviado para o overlay ativo;
 - o tutorial aberto pelas configurações fica por cima delas; ao fechar, as configurações continuam abertas (exceto em **Voltar ao jogo**);
@@ -225,18 +225,42 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Avatares (perfil e linhas do ranking) usam `background-image` com data URL
   validada; sem foto, mostram a inicial do nick.
 - Ranking:
-  - seletor **Geral / Fácil / Normal / Difícil / Hardcore** gerado a partir de
-    `DIFFICULTIES`; título dinâmico (“Ranking modo fácil”, …);
-  - abas **Streak** e **Níveis**, top 10;
+  - seletor **Geral / Fácil / Normal / Difícil / Hardcore / Doce** gerado a partir
+    de `DIFFICULTIES`; título dinâmico (“Ranking modo fácil”, …);
+  - abas **Streak**, **Níveis** e **Pontos** (Pontos no modo Doce), top 10;
   - consultas por modo: `orderBy('scores.<modo>.bestStreak'|'bestLevel')`;
   - modo **Geral**: `orderBy('bestStreak'|'bestLevel')`;
+  - modo **Doce**: `orderBy('candy.bestStreak'|'bestLevel'|'bestScore')`;
   - cache por modo em `rankData[modo]`, com `rankRequest` para descartar respostas
     antigas ao trocar de modo rapidamente.
 - Leitura exige autenticação; escrita apenas pelo UID do usuário. Regras publicadas no projeto compartilhado.
 - CSP permite somente gstatic/Firebase/Google Auth e `img-src data:`; COOP `same-origin-allow-popups` para o popup OAuth.
 - O jogo principal não depende de Firebase. Falha de rede não bloqueia o reinício.
 
-## 15. Extensibilidade
+## 15. Modo Doce (match-3)
+
+- Tela própria `#candyScreen`, aberta pelo botão **Modo Doce** do menu.
+- Tabuleiro DOM 8×8 (`#candyBoard`) com 7 tipos de doce; o tipo é aplicado por
+  `data-type` e o glifo vem de `CANDY_TYPES`.
+- Geração inicial sem matches e com pelo menos uma jogada possível.
+- Troca de células adjacentes por clique/toque; se não formar 3+, a troca é
+  desfeita e a sequência zera.
+- `candyFindMatches` detecta runs horizontais/verticais; `candyCollapseAndRefill`
+  remove, colapsa e preenche; cascatas geram combos e multiplicam pontos.
+- Pontuação: `doces × 50 × combo`; a sequência sobe +1 por troca válida.
+- 100 fases; cada fase tem meta (`candyTargetScore`) e tempo (`candyTimeLimit`)
+  próprios, sem vidas. O tempo é controlado por `setInterval` de 250 ms e pausa
+  quando a aba fica oculta ou o overlay abre.
+- A cada 10 fases (`candyTier`) entram mais tipos (5 → 6 → 7), a meta cresce e o
+  tempo cai de 75 s até 39 s.
+- Fase concluída → próxima fase; fase 100 → vitória. Tempo esgotado → fim da run.
+- O resultado usa `mode:'candy'` e grava `candy.bestStreak`, `candy.bestLevel` e
+  `candy.bestScore`; o ranking Doce tem abas Streak/Níveis/Pontos.
+- O modal de fim de jogo reutiliza `#deathModal`, mostrando a estatística de
+  pontos apenas no modo doce; **Menu** sai para o menu e **Jogar novamente**
+  reinicia o modo doce.
+
+## 16. Extensibilidade
 
 Se o projeto crescer além de um arquivo:
 

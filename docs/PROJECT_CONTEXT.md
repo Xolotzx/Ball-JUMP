@@ -91,7 +91,10 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 
 ### Interface
 
-- Tela de menu ao entrar, com **Jogar**, **Ranking** e **Configurações**.
+- Tela de menu ao entrar, com **Jogar**, **Modo Doce**, **Ranking** e **Configurações**.
+- **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente a cada 10 fases.
+- No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
+- O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.
 - Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.
 - HUD: sequência, nível, vidas, área, direção, configurações.
 - Botão de compartilhar removido por decisão de produto.
@@ -113,6 +116,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Login via Firebase Authentication com Google.
 - Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores` e `updatedAt`.
 - `scores` guarda `{ bestStreak, bestLevel }` por dificuldade (`easy`, `normal`, `hard`, `hardcore`); os campos globais preservam o melhor histórico geral.
+- `candy` guarda `{ bestStreak, bestLevel, bestScore }` do modo doce, separado do ranking clássico.
+- O ranking Doce tem três categorias: **Streak**, **Níveis** e **Pontos**.
 - O modo da corrida é salvo junto ao resultado pendente e aplicado apenas ao ranking daquela dificuldade.
 - O perfil é criado no primeiro login e entra no ranking geral.
 - O nick começa como o nome do Google, mas pode ser alterado; sincronizações preservam o nick/foto salvos.

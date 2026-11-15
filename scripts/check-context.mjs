@@ -93,14 +93,17 @@ check(manifest?.firebase?.collection === 'balljumpProfiles', 'manifesto declara 
 check(manifest?.firebase?.nicknameCollection === 'balljumpNicknames', 'manifesto declara coleção de nicks');
 check(manifest?.firebase?.profileFields?.includes('photo'), 'manifesto declara foto no perfil');
 check(manifest?.firebase?.profileFields?.includes('scores'), 'manifesto declara scores por modo');
+check(manifest?.firebase?.profileFields?.includes('candy'), 'manifesto declara dados do modo doce');
 check(String(manifest?.firebase?.profileCustomization?.photo || '').includes('90000'), 'manifesto declara limite da foto');
 check(manifest?.firebase?.profileCustomization?.nicknameUnique === true, 'manifesto declara nick único');
 check(
   Array.isArray(manifest?.firebase?.profileCustomization?.rankScopes)
     && manifest.firebase.profileCustomization.rankScopes.includes('geral')
-    && manifest.firebase.profileCustomization.rankScopes.includes('easy'),
+    && manifest.firebase.profileCustomization.rankScopes.includes('easy')
+    && manifest.firebase.profileCustomization.rankScopes.includes('doce'),
   'manifesto declara escopos de ranking'
 );
+check(manifest?.firebase?.profileCustomization?.candyMode?.levels === 100, 'manifesto declara 100 fases do modo doce');
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
@@ -113,6 +116,7 @@ check(firebaseDocs.includes('photo'), 'docs/FIREBASE.md documenta a foto');
 check(firebaseDocs.includes('90000'), 'docs/FIREBASE.md documenta o limite da foto');
 check(firebaseDocs.includes('balljumpNicknames'), 'docs/FIREBASE.md documenta nicks únicos');
 check(firebaseDocs.includes('scores'), 'docs/FIREBASE.md documenta scores por modo');
+check(firebaseDocs.includes('candy'), 'docs/FIREBASE.md documenta o modo doce');
 
 const securityDocs = exists('docs/SECURITY.md') ? read('docs/SECURITY.md') : '';
 check(/data URL|data:image/.test(securityDocs), 'docs/SECURITY.md cobre a foto de perfil');
@@ -179,6 +183,9 @@ check(index.includes('function nicknameKeyFor') && index.includes('function clai
 check(index.includes('nickname-taken'), 'erro de nick duplicado presente');
 check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade presente');
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
+check(index.includes('CANDY_MAX_LEVEL = 100') && index.includes('function startCandyMode'), 'modo doce presente');
+check(index.includes('candy.bestScore'), 'ranking doce presente');
+check(index.includes('id="menuCandyBtn"') && index.includes('id="candyBoard"'), 'entrada e tabuleiro do modo doce presentes');
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');
 check(index.includes('id="settingsHowBtn"') && index.includes('openTutorial(true)'), 'como jogar nas configurações presente');

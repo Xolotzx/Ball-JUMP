@@ -284,6 +284,86 @@
   .menu-chev{font-size:22px;line-height:1;color:var(--muted);font-weight:600;padding-right:2px}
   .menu-btn.primary .menu-chev{color:color-mix(in srgb,var(--accent-text) 55%,transparent)}
   .menu-foot{margin:0;color:var(--muted);font-size:10px;line-height:1.5}
+  .menu-btn.candy-entry .menu-icon{background:linear-gradient(145deg,#ff9ebd,#db2777);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+
+  /* ===== modo doce (match-3) ===== */
+  .candy-screen{
+    position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;
+    padding:14px;overflow:auto;overscroll-behavior:contain;
+    background:
+      radial-gradient(circle at 18% 0%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 55%),
+      radial-gradient(circle at 86% 92%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 55%),
+      var(--page);
+  }
+  .candy-shell{width:min(100%,560px);display:flex;flex-direction:column;gap:11px}
+  .candy-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .candy-back{
+    min-height:36px;padding:0 11px;border-radius:10px;border:1px solid var(--glass-border);cursor:pointer;
+    background:var(--surface);color:var(--muted);font-size:10px;font-weight:800;
+  }
+  .candy-back:hover{color:var(--text);border-color:color-mix(in srgb,var(--accent) 40%,var(--glass-border))}
+  .candy-title{text-align:center;min-width:0}
+  .candy-title .overlay-kicker{display:block;margin-bottom:2px;font-size:8px}
+  .candy-title h2{margin:0;font-size:clamp(24px,6vw,34px);line-height:1;letter-spacing:-.04em}
+  .candy-tier{
+    flex:0 0 auto;padding:6px 9px;border-radius:99px;border:1px solid color-mix(in srgb,var(--accent) 32%,var(--glass-border));
+    background:color-mix(in srgb,var(--accent) 9%,var(--surface));color:var(--accent);
+    font-family:var(--mono);font-size:8px;font-weight:900;letter-spacing:.05em;white-space:nowrap;
+  }
+  .candy-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .candy-stat{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    min-height:56px;padding:7px 5px;border-radius:13px;
+    background:linear-gradient(145deg,var(--glass-top),var(--glass-bottom));
+    border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-highlight);
+  }
+  .candy-stat small{font-size:7.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:900;text-align:center}
+  .candy-stat b{font-family:var(--mono);font-size:19px;line-height:1.1;color:var(--text)}
+  .candy-stat.is-low b{color:#ff6b52}
+  [data-theme="light"] .candy-stat.is-low b{color:#b91c1c}
+  .candy-goal{padding:8px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+  .candy-goal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px;font-size:9.5px;color:var(--muted)}
+  .candy-goal-head b{color:var(--accent)}
+  .candy-progress{height:7px;border-radius:99px;background:color-mix(in srgb,var(--text) 12%,transparent);overflow:hidden}
+  .candy-progress > div{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--accent-2),var(--accent));transition:width .22s ease}
+  .candy-board{
+    display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:8px;border-radius:18px;
+    background:color-mix(in srgb,var(--surface-solid) 80%,transparent);
+    border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-highlight),0 24px 60px -34px var(--shadow);
+    touch-action:manipulation;user-select:none;-webkit-user-select:none;
+  }
+  .candy-cell{
+    position:relative;aspect-ratio:1;padding:0;border:0;border-radius:12px;display:grid;place-items:center;
+    font-size:clamp(15px,4.3vw,28px);line-height:1;cursor:pointer;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -7px 12px rgba(0,0,0,.16),0 4px 10px -8px rgba(0,0,0,.5);
+    transition:transform .12s,filter .12s,box-shadow .12s,opacity .15s;
+  }
+  .candy-cell:hover{transform:translateY(-1px) scale(1.02);filter:brightness(1.07)}
+  .candy-cell.is-selected{
+    outline:2px solid #fff;outline-offset:2px;transform:scale(1.05);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 42%,transparent),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .candy-cell.is-hint{animation:candy-hint 1s ease-in-out infinite}
+  .candy-cell.is-clearing{animation:candy-pop .24s ease forwards;pointer-events:none}
+  .candy-cell[data-type="0"]{background:linear-gradient(150deg,#ff9ebd,#e11d48)}
+  .candy-cell[data-type="1"]{background:linear-gradient(150deg,#ffc27a,#f59e0b)}
+  .candy-cell[data-type="2"]{background:linear-gradient(150deg,#8ee6a8,#109e5a)}
+  .candy-cell[data-type="3"]{background:linear-gradient(150deg,#8fc8ff,#2563eb)}
+  .candy-cell[data-type="4"]{background:linear-gradient(150deg,#d3a5ff,#7c3aed)}
+  .candy-cell[data-type="5"]{background:linear-gradient(150deg,#ff9b57,#c2410c)}
+  .candy-cell[data-type="6"]{background:linear-gradient(150deg,#7ee7e7,#0f9fa8)}
+  .candy-message{margin:0;text-align:center;font-size:10.5px;line-height:1.45;color:var(--muted);min-height:16px}
+  .candy-message.is-good{color:var(--accent);font-weight:800}
+  .candy-hint{margin:0;text-align:center;font-size:8.5px;line-height:1.45;color:var(--muted);opacity:.8}
+  @keyframes candy-pop{
+    0%{transform:scale(1);opacity:1}
+    55%{transform:scale(1.18) rotate(4deg);opacity:.95}
+    100%{transform:scale(.15) rotate(-12deg);opacity:0}
+  }
+  @keyframes candy-hint{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.08)}
+  }
 
   /* ===== tutorial ===== */
   .modal-backdrop.tutorial-backdrop{z-index:60}
@@ -367,6 +447,8 @@
   .death-modal[data-kind="victory"] .overlay-kicker{color:#ffb347}
   .death-modal .modal-body,.rank-modal .modal-body{gap:13px}
   .death-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .death-stats.has-score{grid-template-columns:repeat(3,1fr)}
+  .death-score{font-size:20px;line-height:1}
   .death-stat{
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     min-height:88px;padding:10px;border-radius:15px;
@@ -428,11 +510,12 @@
   .profile-actions .secondary-btn{width:auto;flex:1;min-width:0;padding-left:10px;padding-right:10px}
   .profile-links{display:flex;align-items:center;gap:0;flex:0 0 auto}
   .death-note{margin:0;text-align:center;font-size:9.5px;line-height:1.45;color:var(--muted)}
-  .death-foot{justify-content:stretch}
+  .death-foot{justify-content:stretch;gap:8px}
   .death-foot .primary-btn{width:100%}
+  .death-foot .secondary-btn,.death-foot .primary-btn{flex:1;min-width:0;width:auto}
   .rank-body{gap:13px}
   .rank-filters{display:flex;flex-direction:column;gap:7px}
-  .rank-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:6px}
+  .rank-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:6px}
   .rank-mode{
     min-height:32px;border-radius:9px;border:1px solid var(--glass-border);cursor:pointer;
     background:var(--surface);color:var(--muted);
@@ -445,7 +528,7 @@
     border-color:color-mix(in srgb,var(--accent) 55%,var(--glass-border));
     color:var(--accent);box-shadow:inset 0 1px 0 var(--glass-highlight);
   }
-  .rank-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .rank-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
   .rank-tab{
     min-height:38px;border-radius:11px;border:1px solid var(--glass-border);cursor:pointer;
     background:linear-gradient(145deg,var(--glass-top),var(--glass-bottom));
@@ -749,6 +832,11 @@
         <span class="menu-label">Jogar</span>
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
+      <button id="menuCandyBtn" class="menu-btn candy-entry" type="button">
+        <span class="menu-icon" aria-hidden="true">🍬</span>
+        <span class="menu-label">Modo Doce</span>
+        <span class="menu-chev" aria-hidden="true">›</span>
+      </button>
       <button id="menuRankingBtn" class="menu-btn" type="button">
         <span class="menu-icon" aria-hidden="true">🏆</span>
         <span class="menu-label">Ranking</span>
@@ -761,6 +849,54 @@
       </button>
     </div>
     <p class="menu-foot">Você pode ajustar dificuldade, aparência, som e ver o tutorial nas configurações.</p>
+  </div>
+</div>
+
+<!-- ===== modo doce (match-3) ===== -->
+<div class="candy-screen" id="candyScreen" hidden>
+  <div class="candy-shell">
+    <header class="candy-head">
+      <button id="candyExit" class="candy-back" type="button" aria-label="Sair do modo doce">← Menu</button>
+      <div class="candy-title">
+        <span class="overlay-kicker">MODO DOCE</span>
+        <h2>Fase <span id="candyLevel">1</span></h2>
+      </div>
+      <span class="candy-tier" id="candyTier">Doçura 1</span>
+    </header>
+
+    <div class="candy-hud">
+      <div class="candy-stat" id="candyTimeBox">
+        <small>Tempo</small>
+        <b id="candyTime">75</b>
+      </div>
+      <div class="candy-stat">
+        <small>Pontos</small>
+        <b id="candyScore">0</b>
+      </div>
+      <div class="candy-stat">
+        <small>Sequência</small>
+        <b id="candyStreak">0</b>
+      </div>
+      <div class="candy-stat">
+        <small>Meta</small>
+        <b id="candyTarget">500</b>
+      </div>
+    </div>
+
+    <div class="candy-goal">
+      <div class="candy-goal-head">
+        <span>Progresso da fase</span>
+        <span id="candyProgressLabel">0 / 500</span>
+      </div>
+      <div class="candy-progress" aria-hidden="true">
+        <div id="candyProgressBar"></div>
+      </div>
+    </div>
+
+    <div class="candy-board" id="candyBoard" role="grid" aria-label="Tabuleiro de doces"></div>
+
+    <p class="candy-message" id="candyMessage" role="status">Troque doces adjacentes para juntar 3 ou mais.</p>
+    <p class="candy-hint">Cada troca válida aumenta a sequência. Troca inválida zera. Cumpra a meta antes do tempo acabar.</p>
   </div>
 </div>
 
@@ -888,7 +1024,7 @@
       </div>
     </header>
     <div class="modal-body death-body">
-      <div class="death-stats">
+      <div class="death-stats" id="deathStats">
         <div class="death-stat">
           <span class="death-flame" aria-hidden="true">🔥</span>
           <b id="deathStreakVal">0</b>
@@ -897,7 +1033,12 @@
         <div class="death-stat">
           <span class="death-flag" aria-hidden="true">🏁</span>
           <b id="deathLevelVal">1</b>
-          <small>nível alcançado</small>
+          <small id="deathLevelLabel">nível alcançado</small>
+        </div>
+        <div class="death-stat" id="deathScoreStat" hidden>
+          <span class="death-score" aria-hidden="true">⭐</span>
+          <b id="deathScoreVal">0</b>
+          <small>pontos</small>
         </div>
       </div>
 
@@ -934,6 +1075,7 @@
       <p class="death-note" id="deathNote">O resultado é salvo ao entrar com Google.</p>
     </div>
     <footer class="tutorial-foot death-foot">
+      <button id="deathMenuBtn" class="secondary-btn" type="button" hidden>Menu</button>
       <button id="deathRestart" class="primary-btn" type="button">Jogar novamente</button>
     </footer>
   </section>
@@ -955,6 +1097,7 @@
         <div class="rank-tabs" role="tablist" aria-label="Tipo de ranking">
           <button id="rankStreakTab" class="rank-tab is-active" type="button" role="tab" aria-selected="true">🔥 Streak</button>
           <button id="rankLevelTab" class="rank-tab" type="button" role="tab" aria-selected="false">🏆 Níveis</button>
+          <button id="rankScoreTab" class="rank-tab" type="button" role="tab" aria-selected="false" hidden>⭐ Pontos</button>
         </div>
       </div>
 
@@ -1076,6 +1219,27 @@ const DIFFICULTIES = {
   }
 };
 
+const CANDY_TYPES = ['🍬', '🍭', '🍫', '🍩', '🍪', '🧁', '🍯'];
+const CANDY_SIZE = 8;
+const CANDY_MAX_LEVEL = 100;
+const CANDY_TIER_NAMES = ['Doçura 1', 'Doçura 2', 'Doçura 3', 'Doçura 4', 'Doçura 5', 'Doçura 6', 'Doçura 7', 'Doçura 8', 'Doçura 9', 'Doçura 10'];
+
+function candyTier(level) {
+  return Math.min(9, Math.floor((level - 1) / 10));
+}
+
+function candyTypeCount(level) {
+  return Math.min(CANDY_TYPES.length, 5 + (level >= 11 ? 1 : 0) + (level >= 31 ? 1 : 0));
+}
+
+function candyTimeLimit(level) {
+  return Math.max(35, 75 - candyTier(level) * 4);
+}
+
+function candyTargetScore(level) {
+  return 500 + (level - 1) * 35 + candyTier(level) * 80;
+}
+
 /* =========================================================
    MODOS DE APARÊNCIA
    ========================================================= */
@@ -1177,11 +1341,18 @@ const ui = {
   settingsHow: $('settingsHowBtn'),
   themeColor: $('themeColor'),
   startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'),
-  menuRanking: $('menuRankingBtn'),
+  menuRanking: $('menuRankingBtn'), menuCandy: $('menuCandyBtn'),
+  candyScreen: $('candyScreen'), candyExit: $('candyExit'), candyLevel: $('candyLevel'),
+  candyTier: $('candyTier'), candyTime: $('candyTime'), candyTimeBox: $('candyTimeBox'),
+  candyScore: $('candyScore'), candyStreak: $('candyStreak'), candyTarget: $('candyTarget'),
+  candyProgressLabel: $('candyProgressLabel'), candyProgressBar: $('candyProgressBar'),
+  candyBoard: $('candyBoard'), candyMessage: $('candyMessage'),
   tutorial: $('tutorialModal'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
   tutorialPlay: $('tutorialPlayBtn'),
   deathModal: $('deathModal'), deathKicker: $('deathKicker'), deathTitle: $('deathTitle'),
   deathSubtitle: $('deathSubtitle'), deathStreakVal: $('deathStreakVal'), deathLevelVal: $('deathLevelVal'),
+  deathLevelLabel: $('deathLevelLabel'), deathStats: $('deathStats'), deathScoreStat: $('deathScoreStat'),
+  deathScoreVal: $('deathScoreVal'), deathMenu: $('deathMenuBtn'),
   deathAuth: $('deathAuth'), deathAuthHint: $('deathAuthHint'), deathLoginBtn: $('deathLoginBtn'),
   deathAuthError: $('deathAuthError'), deathProfile: $('deathProfile'), deathAvatar: $('deathAvatar'),
   deathName: $('deathName'), deathProfileSub: $('deathProfileSub'), deathBest: $('deathBest'), deathSignOut: $('deathSignOut'),
@@ -1194,7 +1365,7 @@ const ui = {
   rankName: $('rankName'), rankBest: $('rankBest'), rankSignOut: $('rankSignOut'),
   rankEditProfile: $('rankEditProfile'),
   rankList: $('rankList'), rankEmpty: $('rankEmpty'), rankStatus: $('rankStatus'),
-  rankStreakTab: $('rankStreakTab'), rankLevelTab: $('rankLevelTab'),
+  rankStreakTab: $('rankStreakTab'), rankLevelTab: $('rankLevelTab'), rankScoreTab: $('rankScoreTab'),
   profileModal: $('profileModal'), closeProfile: $('closeProfile'), editAvatar: $('editAvatar'),
   pickPhoto: $('pickPhoto'), photoInput: $('photoInput'), removePhoto: $('removePhoto'),
   profileNameInput: $('profileNameInput'), profileError: $('profileError'),
@@ -1623,6 +1794,29 @@ let tutorialFromSettings = false;
 let deathOpen = false;
 let rankOpen = false;
 let profileOpen = false;
+let candyOpen = false;
+let deathMode = 'classic';
+
+const candyState = {
+  active: false,
+  paused: false,
+  ended: false,
+  busy: false,
+  level: 1,
+  runScore: 0,
+  levelScore: 0,
+  target: 500,
+  timeLeft: 75,
+  timeLimit: 75,
+  streak: 0,
+  bestStreak: 0,
+  types: 5,
+  grid: [],
+  selected: -1,
+  timer: 0,
+  lastTick: 0,
+  cells: []
+};
 let pendingPhoto = '';
 let lastFrame = performance.now();
 let accumulator = 0;
@@ -2677,10 +2871,11 @@ let profileHideTimer = 0;
 let lastFocused = null;
 
 function syncOverlayLock() {
-  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen;
+  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen;
   if (appRoot && 'inert' in appRoot) appRoot.inert = locked;
-  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen;
+  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen;
   if (ui.modal && 'inert' in ui.modal) ui.modal.inert = tutorialOpen;
+  if (ui.candyScreen && 'inert' in ui.candyScreen) ui.candyScreen.inert = deathOpen || rankOpen || profileOpen || modalOpen || tutorialOpen;
   if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen || profileOpen;
   if (ui.rankModal && 'inert' in ui.rankModal) ui.rankModal.inert = profileOpen;
   document.body.style.overflow = locked ? 'hidden' : '';
@@ -2795,18 +2990,37 @@ function sanitizeScores(value) {
   return scores;
 }
 
+function sanitizeCandy(value) {
+  if (!value || typeof value !== 'object') return null;
+  return {
+    bestStreak: clampInt(value.bestStreak, 0, 1000000),
+    bestLevel: clampInt(value.bestLevel, 1, 100),
+    bestScore: clampInt(value.bestScore, 0, 100000000)
+  };
+}
+
 function profileScoreFor(profile, scope) {
-  if (!profile) return { bestStreak: 0, bestLevel: 1 };
+  if (!profile) return { bestStreak: 0, bestLevel: 1, bestScore: 0 };
   if (scope === 'geral') {
     return {
       bestStreak: clampInt(profile.bestStreak, 0, 1000000),
-      bestLevel: clampInt(profile.bestLevel, 1, 100)
+      bestLevel: clampInt(profile.bestLevel, 1, 100),
+      bestScore: 0
+    };
+  }
+  if (scope === 'doce') {
+    const candy = profile.candy || {};
+    return {
+      bestStreak: clampInt(candy.bestStreak, 0, 1000000),
+      bestLevel: clampInt(candy.bestLevel, 1, 100),
+      bestScore: clampInt(candy.bestScore, 0, 100000000)
     };
   }
   const entry = profile.scores && profile.scores[scope];
   return {
     bestStreak: clampInt(entry && entry.bestStreak, 0, 1000000),
-    bestLevel: clampInt(entry && entry.bestLevel, 1, 100)
+    bestLevel: clampInt(entry && entry.bestLevel, 1, 100),
+    bestScore: 0
   };
 }
 
@@ -2820,14 +3034,26 @@ function mergePendingScore(scores, pending) {
   return scores;
 }
 
+function mergePendingCandy(candy, pending) {
+  const previous = sanitizeCandy(candy) || { bestStreak: 0, bestLevel: 1, bestScore: 0 };
+  if (!pending || pending.mode !== 'candy') return previous;
+  return {
+    bestStreak: clampInt(Math.max(previous.bestStreak, pending.bestStreak), 0, 1000000),
+    bestLevel: clampInt(Math.max(previous.bestLevel, pending.bestLevel), 1, 100),
+    bestScore: clampInt(Math.max(previous.bestScore, pending.bestScore), 0, 100000000)
+  };
+}
+
 function readPendingRun() {
   try {
     const raw = sessionStorage.getItem(PENDING_RUN_KEY);
     if (raw) {
       const data = JSON.parse(raw);
       return {
+        mode: data.mode === 'candy' ? 'candy' : 'classic',
         bestStreak: clampInt(data.bestStreak, 0, 1000000),
         bestLevel: clampInt(data.bestLevel, 1, 100),
+        bestScore: clampInt(data.bestScore, 0, 100000000),
         difficulty: typeof data.difficulty === 'string' && DIFFICULTIES[data.difficulty] ? data.difficulty : ''
       };
     }
@@ -2835,19 +3061,27 @@ function readPendingRun() {
   const fallback = firebaseRuntime.pendingRun;
   if (!fallback) return null;
   return {
+    mode: fallback.mode === 'candy' ? 'candy' : 'classic',
     bestStreak: clampInt(fallback.bestStreak, 0, 1000000),
     bestLevel: clampInt(fallback.bestLevel, 1, 100),
+    bestScore: clampInt(fallback.bestScore, 0, 100000000),
     difficulty: typeof fallback.difficulty === 'string' && DIFFICULTIES[fallback.difficulty] ? fallback.difficulty : ''
   };
 }
 
 function savePendingRun(run) {
-  const difficulty = run && DIFFICULTIES[run.difficulty] ? run.difficulty : '';
+  const mode = run && run.mode === 'candy' ? 'candy' : 'classic';
   const data = {
+    mode,
     bestStreak: clampInt(run && run.bestStreak, 0, 1000000),
     bestLevel: clampInt(run && run.bestLevel, 1, 100)
   };
-  if (difficulty) data.difficulty = difficulty;
+  if (mode === 'candy') {
+    data.bestScore = clampInt(run && run.bestScore, 0, 100000000);
+  } else {
+    const difficulty = run && DIFFICULTIES[run.difficulty] ? run.difficulty : '';
+    if (difficulty) data.difficulty = difficulty;
+  }
   firebaseRuntime.pendingRun = data;
   try { sessionStorage.setItem(PENDING_RUN_KEY, JSON.stringify(data)); } catch (_) {}
 }
@@ -2895,13 +3129,14 @@ function updateAuthUI() {
   ui.deathProfile.hidden = !signed;
   if (signed) {
     const fallbackName = displayNameOf(fb.user);
-    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {} };
+    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {}, candy: null };
     const name = profile.name || fallbackName;
     const mode = DIFFICULTIES[state.difficulty] ? state.difficulty : 'normal';
-    const best = profileScoreFor(profile, mode);
+    const isCandyDeath = deathMode === 'candy';
+    const best = profileScoreFor(profile, isCandyDeath ? 'doce' : mode);
     ui.deathName.textContent = name;
     setAvatar(ui.deathAvatar, name, profile.photo);
-    ui.deathProfileSub.textContent = 'Perfil conectado · ' + DIFFICULTIES[mode].name;
+    ui.deathProfileSub.textContent = isCandyDeath ? 'Perfil conectado · Doce' : 'Perfil conectado · ' + DIFFICULTIES[mode].name;
     ui.deathBest.textContent = `🔥 ${best.bestStreak} · nível ${best.bestLevel}`;
     if (fb.error) ui.deathNote.textContent = fb.error;
     else if (fb.syncing) ui.deathNote.textContent = 'Salvando resultado…';
@@ -2921,9 +3156,9 @@ function updateAuthUI() {
   ui.rankProfile.hidden = !signed;
   if (signed) {
     const fallbackName = displayNameOf(fb.user);
-    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {} };
+    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {}, candy: null };
     const name = profile.name || fallbackName;
-    const scope = fb.rankDifficulty === 'geral' || DIFFICULTIES[fb.rankDifficulty] ? fb.rankDifficulty : 'geral';
+    const scope = fb.rankDifficulty === 'geral' || fb.rankDifficulty === 'doce' || DIFFICULTIES[fb.rankDifficulty] ? fb.rankDifficulty : 'geral';
     const best = profileScoreFor(profile, scope);
     setAvatar(ui.rankAvatar, name, profile.photo);
     ui.rankName.textContent = name;
@@ -3028,24 +3263,30 @@ async function syncProfile() {
         name: claimed.name,
         updatedAt: fs.serverTimestamp()
       });
-      const scores = mergePendingScore(sanitizeScores(old.scores), pending);
+      const scores = mergePendingScore(sanitizeScores(old.scores), pending && pending.mode !== 'candy' ? pending : null);
       const modeScores = Object.values(scores);
+      const classicPending = pending && pending.mode !== 'candy' ? pending : null;
+      const existingCandy = sanitizeCandy(old.candy);
+      const candy = pending && pending.mode === 'candy'
+        ? mergePendingCandy(existingCandy, pending)
+        : existingCandy;
       values = {
         name: claimed.name,
         photo: preservedPhoto,
         bestStreak: clampInt(Math.max(
           Number(old.bestStreak) || 0,
-          pending ? pending.bestStreak : 0,
+          classicPending ? classicPending.bestStreak : 0,
           ...modeScores.map(score => score.bestStreak)
         ), 0, 1000000),
         bestLevel: clampInt(Math.max(
           Number(old.bestLevel) || 1,
-          pending ? pending.bestLevel : 1,
+          classicPending ? classicPending.bestLevel : 1,
           ...modeScores.map(score => score.bestLevel)
         ), 1, 100),
         scores,
         updatedAt: fs.serverTimestamp()
       };
+      if (candy) values.candy = candy;
       tx.set(ref, values);
     });
     fb.profile = {
@@ -3053,7 +3294,8 @@ async function syncProfile() {
       photo: values.photo,
       bestStreak: values.bestStreak,
       bestLevel: values.bestLevel,
-      scores: values.scores
+      scores: values.scores,
+      candy: values.candy || null
     };
     fb.profileUid = fb.user.uid;
     clearPendingRun();
@@ -3174,27 +3416,42 @@ function maybeBootstrapFirebase() {
 /* =========================================================
    TELA DE FIM DE JOGO
    ========================================================= */
-function openEndModal(victory = false) {
+function openEndModal(victory = false, mode = 'classic') {
   hideOverlay();
+  deathMode = mode === 'candy' ? 'candy' : 'classic';
   deathOpen = true;
   state.paused = true;
   Sound.stopBuild();
 
-  const run = {
-    bestStreak: state.runBestStreak,
-    bestLevel: state.level,
-    difficulty: state.difficulty
-  };
+  const isCandy = deathMode === 'candy';
+  const run = isCandy
+    ? { mode: 'candy', bestStreak: candyState.bestStreak, bestLevel: candyState.level, bestScore: candyState.runScore }
+    : { mode: 'classic', bestStreak: state.runBestStreak, bestLevel: state.level, difficulty: state.difficulty };
   savePendingRun(run);
 
   ui.deathModal.dataset.kind = victory ? 'victory' : 'gameover';
-  ui.deathKicker.textContent = victory ? '100 NÍVEIS' : 'FIM DE JOGO';
-  ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'GAME OVER';
-  ui.deathSubtitle.textContent = victory
-    ? 'Você completou os 100 níveis!'
-    : 'Você chegou ao nível ' + state.level + '.';
+  ui.deathModal.dataset.mode = deathMode;
+  if (isCandy) {
+    ui.deathKicker.textContent = victory ? '100 FASES' : 'TEMPO ESGOTADO';
+    ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'FIM DO TEMPO';
+    ui.deathSubtitle.textContent = victory
+      ? 'Você completou as 100 fases do modo doce!'
+      : 'Você chegou à fase ' + run.bestLevel + ' com ' + run.bestScore.toLocaleString('pt-BR') + ' pontos.';
+    ui.deathLevelLabel.textContent = 'fase alcançada';
+  } else {
+    ui.deathKicker.textContent = victory ? '100 NÍVEIS' : 'FIM DE JOGO';
+    ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'GAME OVER';
+    ui.deathSubtitle.textContent = victory
+      ? 'Você completou os 100 níveis!'
+      : 'Você chegou ao nível ' + run.bestLevel + '.';
+    ui.deathLevelLabel.textContent = 'nível alcançado';
+  }
   ui.deathStreakVal.textContent = run.bestStreak;
   ui.deathLevelVal.textContent = run.bestLevel;
+  ui.deathScoreStat.hidden = !isCandy;
+  ui.deathStats.classList.toggle('has-score', isCandy);
+  ui.deathScoreVal.textContent = isCandy ? run.bestScore.toLocaleString('pt-BR') : '0';
+  ui.deathMenu.hidden = !isCandy;
 
   firebaseRuntime.error = '';
   updateAuthUI();
@@ -3233,6 +3490,10 @@ function restartFromDeath() {
   Sound.click();
   clearPendingRun();
   closeEndModal();
+  if (deathMode === 'candy') {
+    startCandyMode();
+    return;
+  }
   restartGame();
   state.paused = false;
   accumulator = 0;
@@ -3242,12 +3503,393 @@ function restartFromDeath() {
 }
 
 /* =========================================================
-   RANKING
+   MODO DOCE (MATCH-3)
    ========================================================= */
+function candyDelay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function candyFindMatches(grid) {
+  const matched = new Set();
+  for (let r = 0; r < CANDY_SIZE; r++) {
+    let run = 1;
+    for (let c = 1; c <= CANDY_SIZE; c++) {
+      const curr = c < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
+      const prev = grid[r * CANDY_SIZE + c - 1];
+      if (c < CANDY_SIZE && curr !== null && prev !== null && curr === prev) {
+        run += 1;
+      } else {
+        if (run >= 3) {
+          for (let k = c - run; k < c; k++) matched.add(r * CANDY_SIZE + k);
+        }
+        run = 1;
+      }
+    }
+  }
+  for (let c = 0; c < CANDY_SIZE; c++) {
+    let run = 1;
+    for (let r = 1; r <= CANDY_SIZE; r++) {
+      const curr = r < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
+      const prev = grid[(r - 1) * CANDY_SIZE + c];
+      if (r < CANDY_SIZE && curr !== null && prev !== null && curr === prev) {
+        run += 1;
+      } else {
+        if (run >= 3) {
+          for (let k = r - run; k < r; k++) matched.add(k * CANDY_SIZE + c);
+        }
+        run = 1;
+      }
+    }
+  }
+  return matched;
+}
+
+function candyHasMove(grid) {
+  const trySwap = (a, b) => {
+    const temp = grid[a];
+    grid[a] = grid[b];
+    grid[b] = temp;
+    const ok = candyFindMatches(grid).size > 0;
+    grid[b] = grid[a];
+    grid[a] = temp;
+    return ok;
+  };
+  for (let r = 0; r < CANDY_SIZE; r++) {
+    for (let c = 0; c < CANDY_SIZE; c++) {
+      const i = r * CANDY_SIZE + c;
+      if (c + 1 < CANDY_SIZE && trySwap(i, i + 1)) return true;
+      if (r + 1 < CANDY_SIZE && trySwap(i, i + CANDY_SIZE)) return true;
+    }
+  }
+  return false;
+}
+
+function candyGenerateGrid(types) {
+  for (let attempt = 0; attempt < 120; attempt++) {
+    const grid = new Array(CANDY_SIZE * CANDY_SIZE).fill(0);
+    for (let r = 0; r < CANDY_SIZE; r++) {
+      for (let c = 0; c < CANDY_SIZE; c++) {
+        const i = r * CANDY_SIZE + c;
+        const banned = new Set();
+        if (c >= 2 && grid[i - 1] === grid[i - 2]) banned.add(grid[i - 1]);
+        if (r >= 2 && grid[i - CANDY_SIZE] === grid[i - CANDY_SIZE * 2]) banned.add(grid[i - CANDY_SIZE]);
+        let type = Math.floor(Math.random() * types);
+        while (banned.has(type)) type = Math.floor(Math.random() * types);
+        grid[i] = type;
+      }
+    }
+    if (candyFindMatches(grid).size === 0 && candyHasMove(grid)) return grid;
+  }
+  return new Array(CANDY_SIZE * CANDY_SIZE).fill(0).map((_, i) => i % types);
+}
+
+function candyCollapseAndRefill() {
+  const grid = candyState.grid;
+  for (let c = 0; c < CANDY_SIZE; c++) {
+    const values = [];
+    for (let r = CANDY_SIZE - 1; r >= 0; r--) {
+      const value = grid[r * CANDY_SIZE + c];
+      if (value !== null && value !== undefined) values.push(value);
+    }
+    for (let r = CANDY_SIZE - 1; r >= 0; r--) {
+      const value = values[CANDY_SIZE - 1 - r];
+      grid[r * CANDY_SIZE + c] = value === undefined ? Math.floor(Math.random() * candyState.types) : value;
+    }
+  }
+}
+
+function candyBuildBoard() {
+  if (!ui.candyBoard || candyState.cells.length) return;
+  ui.candyBoard.replaceChildren();
+  for (let i = 0; i < CANDY_SIZE * CANDY_SIZE; i++) {
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = 'candy-cell';
+    cell.dataset.index = String(i);
+    cell.setAttribute('role', 'gridcell');
+    cell.setAttribute('aria-label', 'Doce');
+    ui.candyBoard.appendChild(cell);
+    candyState.cells.push(cell);
+  }
+  ui.candyBoard.addEventListener('click', onCandyBoardClick);
+}
+
+function candyRender() {
+  if (!candyState.cells.length) return;
+  for (let i = 0; i < candyState.cells.length; i++) {
+    const cell = candyState.cells[i];
+    const type = candyState.grid[i];
+    cell.classList.remove('is-clearing', 'is-selected');
+    if (type === null || type === undefined) {
+      cell.dataset.type = '';
+      cell.textContent = '';
+      cell.setAttribute('aria-label', 'Espaço vazio');
+    } else {
+      cell.dataset.type = String(type);
+      cell.textContent = CANDY_TYPES[type] || '🍬';
+      cell.classList.toggle('is-selected', i === candyState.selected);
+      const r = Math.floor(i / CANDY_SIZE) + 1;
+      const c = (i % CANDY_SIZE) + 1;
+      cell.setAttribute('aria-label', 'Doce, linha ' + r + ', coluna ' + c);
+    }
+  }
+}
+
+function candyUpdateHUD() {
+  ui.candyLevel.textContent = String(candyState.level);
+  ui.candyTier.textContent = CANDY_TIER_NAMES[candyTier(candyState.level)];
+  ui.candyTime.textContent = String(Math.ceil(candyState.timeLeft));
+  ui.candyTimeBox.classList.toggle('is-low', candyState.timeLeft <= 10);
+  ui.candyScore.textContent = candyState.runScore.toLocaleString('pt-BR');
+  ui.candyStreak.textContent = String(candyState.streak);
+  ui.candyTarget.textContent = candyState.target.toLocaleString('pt-BR');
+  const pct = Math.max(0, Math.min(100, (candyState.levelScore / candyState.target) * 100));
+  ui.candyProgressBar.style.width = pct.toFixed(1) + '%';
+  ui.candyProgressLabel.textContent = Math.floor(candyState.levelScore).toLocaleString('pt-BR') + ' / ' + candyState.target.toLocaleString('pt-BR');
+}
+
+function candySetMessage(text, good = false) {
+  ui.candyMessage.textContent = text;
+  ui.candyMessage.classList.toggle('is-good', !!good);
+}
+
+function candyStopTimer() {
+  if (candyState.timer) clearInterval(candyState.timer);
+  candyState.timer = 0;
+}
+
+function candyStartTimer() {
+  candyStopTimer();
+  candyState.lastTick = performance.now();
+  candyState.timer = setInterval(candyTick, 250);
+}
+
+function candyTick() {
+  if (!candyOpen || !candyState.active || candyState.ended || candyState.paused) {
+    candyState.lastTick = performance.now();
+    return;
+  }
+  const now = performance.now();
+  const delta = Math.min(1.2, Math.max(0, (now - candyState.lastTick) / 1000));
+  candyState.lastTick = now;
+  candyState.timeLeft = Math.max(0, candyState.timeLeft - delta);
+  candyUpdateHUD();
+  if (candyState.timeLeft <= 0) endCandyRun(false);
+}
+
+function beginCandyLevel(level) {
+  const tier = candyTier(level);
+  candyState.level = level;
+  candyState.levelScore = 0;
+  candyState.target = candyTargetScore(level);
+  candyState.timeLimit = candyTimeLimit(level);
+  candyState.timeLeft = candyState.timeLimit;
+  candyState.types = candyTypeCount(level);
+  candyState.selected = -1;
+  candyState.busy = false;
+  candyState.paused = false;
+  candyState.ended = false;
+  candyState.grid = candyGenerateGrid(candyState.types);
+  candyState.lastTick = performance.now();
+  candyRender();
+  candyUpdateHUD();
+  if (level === 1) {
+    candySetMessage('Junte ' + candyState.target.toLocaleString('pt-BR') + ' pontos antes do tempo acabar.');
+  } else if ((level - 1) % 10 === 0) {
+    candySetMessage(CANDY_TIER_NAMES[tier] + ' — mais difícil! Tipos: ' + candyState.types + ' · Meta ' + candyState.target.toLocaleString('pt-BR') + '.', true);
+    Sound.fire(tier + 1);
+  } else {
+    candySetMessage('Fase ' + level + ' · Meta ' + candyState.target.toLocaleString('pt-BR') + ' pontos.');
+  }
+}
+
+function startCandyMode() {
+  Sound.click();
+  Sound.stopBuild();
+  clearPendingRun();
+  menuOpen = false;
+  ui.startMenu.hidden = true;
+  ui.startMenu.classList.remove('is-leaving');
+  candyOpen = true;
+  candyState.active = true;
+  candyState.ended = false;
+  candyState.paused = false;
+  candyState.busy = false;
+  candyState.runScore = 0;
+  candyState.levelScore = 0;
+  candyState.streak = 0;
+  candyState.bestStreak = 0;
+  candyState.selected = -1;
+  ui.candyScreen.hidden = false;
+  state.paused = true;
+  beginCandyLevel(1);
+  candyStartTimer();
+  syncOverlayLock();
+}
+
+function exitCandyMode() {
+  candyStopTimer();
+  candyState.active = false;
+  candyState.ended = true;
+  candyState.busy = false;
+  candyState.paused = true;
+  candyState.selected = -1;
+  ui.candyScreen.hidden = true;
+  candyOpen = false;
+  openStartMenu();
+}
+
+function endCandyRun(victory) {
+  if (candyState.ended) return;
+  candyState.active = false;
+  candyState.ended = true;
+  candyState.busy = false;
+  candyState.paused = true;
+  candyState.selected = -1;
+  candyStopTimer();
+  candyRender();
+  if (victory) Sound.victory();
+  else Sound.gameOver();
+  openEndModal(victory, 'candy');
+}
+
+function candyLevelComplete() {
+  if (!candyState.active || candyState.ended) return;
+  candyState.busy = true;
+  candyState.paused = true;
+  Sound.fanfare();
+  if (candyState.level >= CANDY_MAX_LEVEL) {
+    candySetMessage('100 fases concluídas!', true);
+    setTimeout(() => {
+      if (candyState.active) endCandyRun(true);
+    }, 700);
+    return;
+  }
+  const next = candyState.level + 1;
+  candySetMessage('Fase ' + candyState.level + ' concluída! Preparando a fase ' + next + '…', true);
+  setTimeout(() => {
+    if (!candyState.active || candyState.ended) return;
+    beginCandyLevel(next);
+  }, 900);
+}
+
+function candyAdjacent(a, b) {
+  const ar = Math.floor(a / CANDY_SIZE);
+  const ac = a % CANDY_SIZE;
+  const br = Math.floor(b / CANDY_SIZE);
+  const bc = b % CANDY_SIZE;
+  return Math.abs(ar - br) + Math.abs(ac - bc) === 1;
+}
+
+async function candyResolveMatches(initialMatches, cascade) {
+  let matches = initialMatches;
+  let combo = cascade;
+  while (matches.size > 0 && candyState.active && !candyState.ended) {
+    const points = matches.size * 50 * combo;
+    candyState.levelScore += points;
+    candyState.runScore += points;
+    candyUpdateHUD();
+    for (const index of matches) {
+      if (candyState.cells[index]) candyState.cells[index].classList.add('is-clearing');
+    }
+    if (combo === 1) Sound.success();
+    else Sound.fire(combo);
+    await candyDelay(230);
+    if (!candyState.active || candyState.ended) return;
+    for (const index of matches) candyState.grid[index] = null;
+    candyRender();
+    candyCollapseAndRefill();
+    candyRender();
+    await candyDelay(150);
+    if (!candyState.active || candyState.ended) return;
+    combo += 1;
+    matches = candyFindMatches(candyState.grid);
+    if (matches.size) candySetMessage('Combo x' + combo + '!', true);
+  }
+
+  if (!candyState.active || candyState.ended) return;
+  if (candyState.levelScore >= candyState.target) {
+    candyLevelComplete();
+    return;
+  }
+  if (!candyHasMove(candyState.grid)) {
+    candySetMessage('Sem jogadas — embaralhando…');
+    await candyDelay(380);
+    if (!candyState.active || candyState.ended) return;
+    candyState.grid = candyGenerateGrid(candyState.types);
+    candyRender();
+  }
+  candyState.busy = false;
+  candyUpdateHUD();
+}
+
+async function candyTrySwap(a, b) {
+  if (!candyState.active || candyState.busy || candyState.paused || candyState.ended) return;
+  candyState.busy = true;
+  const grid = candyState.grid;
+  const temp = grid[a];
+  grid[a] = grid[b];
+  grid[b] = temp;
+  candyRender();
+  Sound.click();
+  await candyDelay(170);
+  if (!candyState.active || candyState.ended) return;
+  const matches = candyFindMatches(grid);
+  if (matches.size === 0) {
+    grid[b] = grid[a];
+    grid[a] = temp;
+    candyState.streak = 0;
+    candyUpdateHUD();
+    candyRender();
+    candySetMessage('Troca inválida — sequência zerada.');
+    Sound.deny();
+    candyState.busy = false;
+    return;
+  }
+  candyState.streak += 1;
+  candyState.bestStreak = Math.max(candyState.bestStreak, candyState.streak);
+  candyUpdateHUD();
+  await candyResolveMatches(matches, 1);
+}
+
+function candyCellClick(index) {
+  if (!candyState.active || candyState.busy || candyState.paused || candyState.ended) return;
+  if (candyState.selected < 0) {
+    candyState.selected = index;
+    Sound.click();
+    candyRender();
+    return;
+  }
+  if (candyState.selected === index) {
+    candyState.selected = -1;
+    candyRender();
+    return;
+  }
+  if (!candyAdjacent(candyState.selected, index)) {
+    candyState.selected = index;
+    Sound.click();
+    candyRender();
+    return;
+  }
+  const from = candyState.selected;
+  candyState.selected = -1;
+  candyRender();
+  candyTrySwap(from, index);
+}
+
+function onCandyBoardClick(event) {
+  const cell = event.target.closest('.candy-cell');
+  if (!cell || !ui.candyBoard.contains(cell)) return;
+  const index = Number(cell.dataset.index);
+  if (Number.isInteger(index)) candyCellClick(index);
+}
+
+
 function buildRankModeButtons() {
   if (!ui.rankModes) return;
   const scopes = [{ key: 'geral', label: 'Geral' }]
-    .concat(Object.values(DIFFICULTIES).map(d => ({ key: d.key, label: d.name })));
+    .concat(Object.values(DIFFICULTIES).map(d => ({ key: d.key, label: d.name })))
+    .concat([{ key: 'doce', label: 'Doce' }]);
   ui.rankModes.replaceChildren();
   for (const scope of scopes) {
     const button = document.createElement('button');
@@ -3264,12 +3906,13 @@ function buildRankModeButtons() {
 
 function rankScopeLabel(scope) {
   if (scope === 'geral') return 'Geral';
+  if (scope === 'doce') return 'Doce';
   return DIFFICULTIES[scope] ? DIFFICULTIES[scope].name : 'Geral';
 }
 
 function setRankDifficulty(scope, options = {}) {
   const fb = firebaseRuntime;
-  fb.rankDifficulty = scope === 'geral' || DIFFICULTIES[scope] ? scope : 'geral';
+  fb.rankDifficulty = scope === 'geral' || scope === 'doce' || DIFFICULTIES[scope] ? scope : 'geral';
   const active = fb.rankDifficulty;
   if (ui.rankModes) {
     for (const button of ui.rankModes.querySelectorAll('.rank-mode')) {
@@ -3278,20 +3921,28 @@ function setRankDifficulty(scope, options = {}) {
       button.setAttribute('aria-selected', String(selected));
     }
   }
+  const isCandy = active === 'doce';
+  ui.rankScoreTab.hidden = !isCandy;
+  if (!isCandy && fb.rankMode === 'score') setRankMode('streak', { load: false });
   const label = rankScopeLabel(active);
   ui.rankTitle.textContent = active === 'geral' ? 'Ranking geral' : 'Ranking modo ' + label.toLowerCase();
   ui.rankSubtitle.textContent = active === 'geral'
     ? 'Maiores sequências e níveis em todos os modos.'
-    : 'Top 10 no modo ' + label + '.';
+    : isCandy
+      ? 'Top 10 de streak, níveis e pontos no modo doce.'
+      : 'Top 10 no modo ' + label + '.';
   ui.rankEmpty.textContent = active === 'geral'
     ? 'Nenhum jogador no ranking geral ainda.'
-    : 'Nenhum jogador no ranking do modo ' + label + ' ainda.';
+    : isCandy
+      ? 'Nenhum jogador no ranking do modo doce ainda.'
+      : 'Nenhum jogador no ranking do modo ' + label + ' ainda.';
   updateAuthUI();
   if (options.load !== false && fb.user) loadRanks();
 }
 
-function openRankModal() {
+function openRankModal(scope) {
   if (rankOpen) return;
+  if (scope === 'geral' || scope === 'doce' || DIFFICULTIES[scope]) firebaseRuntime.rankDifficulty = scope;
   rankOpen = true;
   firebaseRuntime.rankFocus = document.activeElement;
   state.paused = true;
@@ -3344,12 +3995,18 @@ function closeRankModal() {
 
 function setRankMode(mode, options = {}) {
   const fb = firebaseRuntime;
-  fb.rankMode = mode === 'level' ? 'level' : 'streak';
+  let next = mode === 'level' || mode === 'score' ? mode : 'streak';
+  if (next === 'score' && fb.rankDifficulty !== 'doce') next = 'streak';
+  fb.rankMode = next;
   const streakActive = fb.rankMode === 'streak';
+  const levelActive = fb.rankMode === 'level';
+  const scoreActive = fb.rankMode === 'score';
   ui.rankStreakTab.classList.toggle('is-active', streakActive);
-  ui.rankLevelTab.classList.toggle('is-active', !streakActive);
+  ui.rankLevelTab.classList.toggle('is-active', levelActive);
+  ui.rankScoreTab.classList.toggle('is-active', scoreActive);
   ui.rankStreakTab.setAttribute('aria-selected', String(streakActive));
-  ui.rankLevelTab.setAttribute('aria-selected', String(!streakActive));
+  ui.rankLevelTab.setAttribute('aria-selected', String(levelActive));
+  ui.rankScoreTab.setAttribute('aria-selected', String(scoreActive));
   if (fb.user && options.load !== false) {
     if (fb.rankLoaded[fb.rankDifficulty]) renderRank();
     else loadRanks();
@@ -3358,13 +4015,18 @@ function setRankMode(mode, options = {}) {
 
 function rankEntryFromDoc(snapshot, scope) {
   const data = snapshot.data() || {};
-  const mode = scope === 'geral' ? data : (data.scores && data.scores[scope]) || {};
+  const mode = scope === 'doce'
+    ? (data.candy || {})
+    : scope === 'geral'
+      ? data
+      : (data.scores && data.scores[scope]) || {};
   return {
     uid: snapshot.id,
     name: String(data.name || 'Jogador').trim().slice(0, 40) || 'Jogador',
     photo: isPhotoDataURL(data.photo) ? data.photo : '',
     bestStreak: clampInt(mode.bestStreak, 0, 1000000),
-    bestLevel: clampInt(mode.bestLevel, 1, 100)
+    bestLevel: clampInt(mode.bestLevel, 1, 100),
+    bestScore: clampInt(mode.bestScore, 0, 100000000)
   };
 }
 
@@ -3387,16 +4049,22 @@ async function loadRanks(force = false) {
   try {
     const fs = fb.mods.firestoreModule;
     const base = fs.collection(fb.db, RANK_COLLECTION);
-    const streakField = scope === 'geral' ? 'bestStreak' : `scores.${scope}.bestStreak`;
-    const levelField = scope === 'geral' ? 'bestLevel' : `scores.${scope}.bestLevel`;
-    const [streakSnap, levelSnap] = await Promise.all([
+    const isCandy = scope === 'doce';
+    const streakField = scope === 'geral' ? 'bestStreak' : isCandy ? 'candy.bestStreak' : `scores.${scope}.bestStreak`;
+    const levelField = scope === 'geral' ? 'bestLevel' : isCandy ? 'candy.bestLevel' : `scores.${scope}.bestLevel`;
+    const requests = [
       fs.getDocs(fs.query(base, fs.orderBy(streakField, 'desc'), fs.limit(RANK_FETCH_LIMIT))),
       fs.getDocs(fs.query(base, fs.orderBy(levelField, 'desc'), fs.limit(RANK_FETCH_LIMIT)))
-    ]);
+    ];
+    if (isCandy) {
+      requests.push(fs.getDocs(fs.query(base, fs.orderBy('candy.bestScore', 'desc'), fs.limit(RANK_FETCH_LIMIT))));
+    }
+    const snaps = await Promise.all(requests);
     if (requestId !== fb.rankRequest) return;
     fb.rankData[scope] = {
-      streak: streakSnap.docs.map(doc => rankEntryFromDoc(doc, scope)),
-      level: levelSnap.docs.map(doc => rankEntryFromDoc(doc, scope))
+      streak: snaps[0].docs.map(doc => rankEntryFromDoc(doc, scope)),
+      level: snaps[1].docs.map(doc => rankEntryFromDoc(doc, scope)),
+      score: isCandy ? snaps[2].docs.map(doc => rankEntryFromDoc(doc, scope)) : []
     };
     fb.rankLoaded[scope] = true;
     ui.rankStatus.textContent = '';
@@ -3414,12 +4082,18 @@ function renderRank() {
   if (!fb.user) return;
   const scope = fb.rankDifficulty;
   const mode = fb.rankMode;
-  const cache = fb.rankData[scope] || { streak: [], level: [] };
+  const cache = fb.rankData[scope] || { streak: [], level: [], score: [] };
   let rows = [...(cache[mode] || [])];
   rows.sort((a, b) => {
     if (mode === 'streak') {
       return (b.bestStreak - a.bestStreak)
         || (b.bestLevel - a.bestLevel)
+        || a.name.localeCompare(b.name, 'pt-BR');
+    }
+    if (mode === 'score') {
+      return (b.bestScore - a.bestScore)
+        || (b.bestLevel - a.bestLevel)
+        || (b.bestStreak - a.bestStreak)
         || a.name.localeCompare(b.name, 'pt-BR');
     }
     return (b.bestLevel - a.bestLevel)
@@ -3446,7 +4120,11 @@ function renderRank() {
     name.textContent = entry.name;
     const value = document.createElement('span');
     value.className = 'rank-value';
-    value.textContent = mode === 'streak' ? String(entry.bestStreak) : String(entry.bestLevel);
+    value.textContent = mode === 'streak'
+      ? String(entry.bestStreak)
+      : mode === 'score'
+        ? entry.bestScore.toLocaleString('pt-BR')
+        : String(entry.bestLevel);
     item.append(position, avatar, name, value);
     ui.rankList.appendChild(item);
   });
@@ -3625,6 +4303,8 @@ async function saveProfileEdits() {
         scores: sanitizeScores(old.scores),
         updatedAt: fs.serverTimestamp()
       };
+      const candy = sanitizeCandy(old.candy);
+      if (candy) values.candy = candy;
       tx.set(ref, values);
     });
     fb.profile = {
@@ -3632,7 +4312,8 @@ async function saveProfileEdits() {
       photo: values.photo,
       bestStreak: values.bestStreak,
       bestLevel: values.bestLevel,
-      scores: values.scores
+      scores: values.scores,
+      candy: values.candy || null
     };
     fb.profileUid = fb.user.uid;
     closeProfileEditor();
@@ -3787,8 +4468,10 @@ function bindEvents() {
   ui.settingsHow.addEventListener('click', () => openTutorial(true));
 
   ui.playBtn.addEventListener('click', startGame);
-  ui.menuRanking.addEventListener('click', openRankModal);
+  ui.menuCandy.addEventListener('click', startCandyMode);
+  ui.menuRanking.addEventListener('click', () => openRankModal());
   ui.menuSettings.addEventListener('click', openSettings);
+  ui.candyExit.addEventListener('click', exitCandyMode);
   ui.closeTutorial.addEventListener('click', closeTutorial);
   ui.closeTutorialBtn.addEventListener('click', closeTutorial);
   ui.tutorialPlay.addEventListener('click', () => {
@@ -3811,13 +4494,21 @@ function bindEvents() {
   ui.rankLoginBtn.addEventListener('click', handleGoogleLogin);
   ui.deathSignOut.addEventListener('click', signOutGoogle);
   ui.rankSignOut.addEventListener('click', signOutGoogle);
-  ui.deathRankBtn.addEventListener('click', openRankModal);
+  ui.deathRankBtn.addEventListener('click', () => openRankModal(deathMode === 'candy' ? 'doce' : undefined));
   ui.deathEditProfile.addEventListener('click', openProfileEditor);
   ui.rankEditProfile.addEventListener('click', openProfileEditor);
   ui.deathRestart.addEventListener('click', restartFromDeath);
+  ui.deathMenu.addEventListener('click', () => {
+    Sound.click();
+    clearPendingRun();
+    closeEndModal();
+    if (deathMode === 'candy') exitCandyMode();
+    else openStartMenu();
+  });
   ui.closeRank.addEventListener('click', closeRankModal);
   ui.rankStreakTab.addEventListener('click', () => setRankMode('streak'));
   ui.rankLevelTab.addEventListener('click', () => setRankMode('level'));
+  ui.rankScoreTab.addEventListener('click', () => setRankMode('score'));
   ui.rankModal.addEventListener('click', (e) => {
     if (e.target === ui.rankModal) closeRankModal();
   });
@@ -3868,13 +4559,23 @@ function bindEvents() {
       closeSettings();
       return;
     }
-    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen) return;
+    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen || candyOpen) return;
     if (e.code === 'Space') {
       const tag = (e.target && e.target.tagName) || '';
       if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
       e.preventDefault();
       Sound.unlock();
       toggleDirection();
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!candyOpen || !candyState.active) return;
+    if (document.hidden) {
+      candyState.paused = true;
+    } else {
+      candyState.paused = false;
+      candyState.lastTick = performance.now();
     }
   });
 
@@ -3933,6 +4634,7 @@ function init() {
   setDirection('h', true);
   beginLevel(1);
   buildRankModeButtons();
+  candyBuildBoard();
   setRankDifficulty(firebaseRuntime.rankDifficulty, { load: false });
   bindEvents();
   openStartMenu();

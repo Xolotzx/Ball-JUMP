@@ -49,6 +49,7 @@
 | Alteração de `localStorage` | Preferências inválidas | Média | Validação de tema/dificuldade/som com fallback. |
 | CSP mal configurada | Quebra do jogo/login ou proteção fraca | Média | Testar headers e OAuth em produção; revisar `_headers`. |
 | Escrita indevida no ranking | Fraude no leaderboard | Baixa | Regras exigem UID do dono, schema válido, scores monotônicos e server timestamp. |
+| Fraude no ranking Doce | Pontuação/níveis falsos | Baixa | `candy` validado com limites, UID do dono e server timestamp. |
 | XSS via nome do jogador | Execução de script | Baixa | Nome validado nas regras; renderização com `textContent`. |
 | XSS/abuso via foto de perfil | Execução de script ou documento gigante | Baixa | Apenas data URL JPEG/PNG/WebP validada, limite de 90.000 chars e uso via `background-image`; sem `innerHTML`. |
 | Nick duplicado ou squatting | Confusão no ranking | Média | Reserva transacional em `balljumpNicknames/{key}`; escrita só pelo dono; normalização de caixa/acentos; sufixo automático para nomes ocupados. |
@@ -96,6 +97,7 @@
 - Firestore em modo produção; regras exigem autenticação para leitura.
 - Escrita somente pelo próprio UID; schema, tipos, limites, timestamps e monotonicidade validados.
 - `scores` é validado por modo (`easy`, `normal`, `hard`, `hardcore`), com `bestStreak`/`bestLevel` inteiros e dentro dos limites.
+- `candy` é validado com `bestStreak`, `bestLevel` e `bestScore` inteiros e dentro dos limites; o ranking Doce lê apenas esses campos.
 - Nicks únicos: reserva em `balljumpNicknames/{key}` com chave normalizada; leitura autenticada; create/update/delete só pelo UID dono; conflito resolvido por transação no cliente.
 - Perfil mínimo: nick público, foto opcional em data URL, scores por modo, melhor streak, melhor nível e `updatedAt`; sem e-mail ou telefone.
 - A foto é validada no cliente e nas regras (`data:image/(jpeg|png|webp);base64,`, até 90.000 caracteres) e aplicada apenas via `background-image`; valores inválidos caem para a inicial.
@@ -202,5 +204,6 @@ Conferir:
 - Fotos em data URL aumentam o custo de leitura do ranking; o limite de 90.000 caracteres reduz, mas não elimina, esse custo.
 - A unicidade de nick é transacional no cliente; um cliente malicioso pode criar reservas de nomes sem usá-los, mas não consegue confirmar o mesmo nick pela UI.
 - Nicks antigos duplicados permanecem visíveis até cada conta fazer login e receber a reserva/sufixo.
+- O modo Doce depende de tempo/animacões no cliente; a dificuldade das metas/tempos precisa de validação manual em cada faixa de 10 fases.
 - App Check não está habilitado; a API key pública pode ser abusada dentro de quotas.
 - O login Google, a edição de perfil e o fallback de redirect exigem validação manual com conta real.
