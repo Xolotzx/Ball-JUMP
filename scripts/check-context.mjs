@@ -185,7 +185,10 @@ check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade pre
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
 check(index.includes('CANDY_MAX_LEVEL = 100') && index.includes('function startCandyMode'), 'modo doce presente');
 check(index.includes('candy.bestScore'), 'ranking doce presente');
-check(index.includes('id="menuCandyBtn"') && index.includes('id="candyBoard"'), 'entrada e tabuleiro do modo doce presentes');
+check(index.includes('id="modeModal"') && index.includes('id="modeClassicBtn"') && index.includes('id="modeCandyBtn"'), 'seletor de modo presente');
+check(index.includes('function openModeChooser') && index.includes('function chooseMode'), 'lógica do seletor de modo presente');
+check(!index.includes('menuCandyBtn'), 'sem botão duplicado de modo doce no menu');
+check(index.includes('id="candyBoard"'), 'tabuleiro do modo doce presente');
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');
 check(index.includes('id="settingsHowBtn"') && index.includes('openTutorial(true)'), 'como jogar nas configurações presente');

@@ -184,6 +184,7 @@
     "player gains one life per completed level",
     "share button remains removed",
     "menu, tutorial, settings, death screen, profile editor and ranking remain available",
+    "Jogar opens a mode chooser with classic and candy; no duplicate mode button in the menu",
     "settings include a 0-100 volume slider persisted in localStorage",
     "tutorial can be opened from settings and returns to settings when closed",
     "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",

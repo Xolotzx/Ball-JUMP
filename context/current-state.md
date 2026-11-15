@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~183 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~187 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://balljump-game.pages.dev
 - **Projeto Cloudflare:** `balljump-game`
 - **Repositório:** privado, branch `main`
@@ -20,7 +20,7 @@
 - **+1 vida** por fase concluída.
 - 100 níveis; +1 bolinha a cada 2 níveis.
 - 4 dificuldades.
-- Menus: Jogar, Ranking, Configurações; tutorial acessível pelas configurações.
+- Menus: Jogar, Ranking, Configurações; **Jogar** abre a escolha entre Clássico e Doce; tutorial acessível pelas configurações.
 - Modos escuro/claro; sem botão de compartilhamento.
 - Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
@@ -54,6 +54,7 @@
 - Slider de volume 0–100% adicionado às configurações, persistido e aplicado ao ganho mestre.
 - Botão **Como jogar** adicionado às configurações, abrindo o tutorial por cima do modal.
 - Modo Doce (match-3) adicionado: 100 fases, tempo em vez de vidas, streak/pontos, ranking próprio e rampa a cada 10 fases.
+- Botão **Jogar** agora abre um seletor com **Modo Clássico** e **Modo Doce**; o menu não tem mais botão duplicado.
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.

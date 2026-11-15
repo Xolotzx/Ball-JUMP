@@ -21,6 +21,7 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - Sequência 🔥: cada parede concluída aumenta o contador; levar dano zera. Inclui animação e som de fogo sutil.
 - Login com Google no fim da partida, perfil e ranking de **streak** e **níveis**.
 - Rankings separados por dificuldade (**Fácil**, **Normal**, **Difícil**, **Hardcore**) e um ranking **Geral**.
+- O botão **Jogar** abre a escolha entre **Modo Clássico** e **Modo Doce**.
 - **Modo Doce**: match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio (streak, níveis e pontos).
 - Dificuldade do modo doce aumenta a cada 10 fases: mais tipos, meta maior e menos tempo.
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.

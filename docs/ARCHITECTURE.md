@@ -141,6 +141,7 @@ Intervalo de crescimento: `difficulty.divisor * 23` ms por bloco; no modo Fácil
 Componentes de UI:
 
 - menu inicial: `#startMenu`;
+- seletor de modo: `#modeModal` (Clássico ou Doce);
 - tutorial: `#tutorialModal`;
 - configurações: `#settingsModal`;
 - overlay de nível/game over/vitória: `#overlay`;
@@ -152,7 +153,7 @@ Componentes de UI:
 
 Controle de sobreposição:
 
-- `menuOpen`, `tutorialOpen`, `modalOpen`, `deathOpen`, `rankOpen`, `profileOpen`, `candyOpen`;
+- `menuOpen`, `tutorialOpen`, `modalOpen`, `deathOpen`, `rankOpen`, `profileOpen`, `candyOpen`, `modeOpen`;
 - `syncOverlayLock()` aplica `inert` no conteúdo de fundo, bloqueia scroll do body e libera ao fechar;
 - foco é enviado para o overlay ativo;
 - o tutorial aberto pelas configurações fica por cima delas; ao fechar, as configurações continuam abertas (exceto em **Voltar ao jogo**);
@@ -239,7 +240,7 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 
 ## 15. Modo Doce (match-3)
 
-- Tela própria `#candyScreen`, aberta pelo botão **Modo Doce** do menu.
+- Tela própria `#candyScreen`, aberta pela opção **Modo Doce** do seletor de modo.
 - Tabuleiro DOM 8×8 (`#candyBoard`) com 7 tipos de doce; o tipo é aplicado por
   `data-type` e o glifo vem de `CANDY_TYPES`.
 - Geração inicial sem matches e com pelo menos uma jogada possível.

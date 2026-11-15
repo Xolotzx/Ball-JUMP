@@ -91,7 +91,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 
 ### Interface
 
-- Tela de menu ao entrar, com **Jogar**, **Modo Doce**, **Ranking** e **Configurações**.
+- Tela de menu ao entrar, com **Jogar**, **Ranking** e **Configurações**.
+- **Jogar** abre um seletor com **Modo Clássico** e **Modo Doce**.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente a cada 10 fases.
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
 - O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.

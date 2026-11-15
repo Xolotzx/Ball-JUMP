@@ -17,8 +17,11 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 ## 2. Smoke test de interface
 
 - [ ] Menu inicial aparece ao entrar.
-- [ ] Existem os botões **Jogar**, **Modo Doce**, **Ranking** e **Configurações**; não há **Como jogar** no menu.
-- [ ] “Jogar” fecha o menu e inicia a partida.
+- [ ] Existem os botões **Jogar**, **Ranking** e **Configurações**; não há **Como jogar** nem **Modo Doce** duplicado no menu.
+- [ ] **Jogar** abre o seletor com **Modo Clássico** e **Modo Doce**.
+- [ ] Escolher **Modo Clássico** fecha o menu e inicia a partida clássica.
+- [ ] Escolher **Modo Doce** fecha o menu e abre o tabuleiro de doces.
+- [ ] Fechar o seletor (X, clique fora ou Esc) retorna ao menu sem iniciar partida.
 - [ ] **Como jogar** dentro das configurações abre o tutorial; “Voltar” retorna às configurações.
 - [ ] “Voltar ao jogo” no tutorial aberto pelas configurações retoma a partida.
 - [ ] “Configurações” abre o modal, pausa o jogo e, ao fechar, retorna ao menu ou ao jogo.
@@ -124,7 +127,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 
 ### Modo Doce (match-3)
 
-- [ ] O menu mostra **Modo Doce** e ele abre a tela de doces.
+- [ ] Em **Jogar → Modo Doce**, o tabuleiro de doces abre corretamente.
 - [ ] O tabuleiro tem 8×8 doces, sem matches iniciais e com pelo menos uma jogada possível.
 - [ ] Trocar doces adjacentes que formam 3+ limpa as peças, pontua e preenche a coluna.
 - [ ] Uma troca inválida desfaz o movimento e zera a sequência.

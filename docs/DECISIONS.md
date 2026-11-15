@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~183 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~187 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -236,7 +236,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Data:** 2026-11-15
 - **Status:** aceita
 - **Contexto:** adicionar um modo inspirado em Candy Crush, com fases, streak, tempo e ranking próprios.
-- **Decisão:** criar um match-3 8×8 em DOM (`#candyBoard`), aberto pelo menu, com 100 fases. Em vez de vidas, cada fase tem meta de pontos e tempo. A cada 10 fases aumentam os tipos de doce, a meta e a redução de tempo. O resultado é salvo em `candy` (`bestStreak`, `bestLevel`, `bestScore`) e o ranking Doce tem as categorias Streak, Níveis e Pontos. A tela de fim reutiliza o modal existente, mostrando a pontuação apenas no modo doce.
+- **Decisão:** criar um match-3 8×8 em DOM (`#candyBoard`), aberto pelo seletor de modo do botão **Jogar**, com 100 fases. Em vez de vidas, cada fase tem meta de pontos e tempo. A cada 10 fases aumentam os tipos de doce, a meta e a redução de tempo. O resultado é salvo em `candy` (`bestStreak`, `bestLevel`, `bestScore`) e o ranking Doce tem as categorias Streak, Níveis e Pontos. A tela de fim reutiliza o modal existente, mostrando a pontuação apenas no modo doce.
 - **Consequências:**
   - o modo clássico permanece intacto e com seus rankings por dificuldade;
   - o tempo pausa quando a aba fica oculta ou um overlay abre;
@@ -245,3 +245,16 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - o balanceamento de metas/tempos precisa de teste manual nas faixas de 10 fases;
   - o tabuleiro usa DOM e animações CSS, sem dependências externas;
   - as regras do Firestore validam o mapa `candy`.
+
+## ADR-020 — Botão Jogar abre o seletor de modo
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** com dois modos, o menu tinha um botão direto para o modo doce e outro para o clássico, o que duplicava a entrada e não deixava a escolha explícita.
+- **Decisão:** o botão **Jogar** abre o modal `#modeModal` com **Modo Clássico** e **Modo Doce**. A escolha inicia o modo correspondente; X, clique fora ou Esc retornam ao menu.
+- **Consequências:**
+  - o menu fica com **Jogar**, **Ranking** e **Configurações**;
+  - o modo doce não tem mais um botão duplicado no menu;
+  - `modeOpen` entra no controle de overlays/`inert`;
+  - o foco inicial do seletor vai para **Modo Clássico**;
+  - ao escolher o modo doce, o foco vai para **← Menu**.

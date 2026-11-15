@@ -284,7 +284,31 @@
   .menu-chev{font-size:22px;line-height:1;color:var(--muted);font-weight:600;padding-right:2px}
   .menu-btn.primary .menu-chev{color:color-mix(in srgb,var(--accent-text) 55%,transparent)}
   .menu-foot{margin:0;color:var(--muted);font-size:10px;line-height:1.5}
-  .menu-btn.candy-entry .menu-icon{background:linear-gradient(145deg,#ff9ebd,#db2777);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+
+  /* ===== escolha de modo ===== */
+  .modal-backdrop.mode-backdrop{z-index:52}
+  .modal.mode-modal{width:min(100%,480px)}
+  .mode-body{gap:9px}
+  .mode-card{
+    display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:12px;
+    width:100%;padding:13px;border-radius:16px;cursor:pointer;text-align:left;
+    border:1px solid var(--glass-border);
+    background:linear-gradient(145deg,var(--glass-top),var(--glass-bottom));
+    box-shadow:inset 0 1px 0 var(--glass-highlight);
+    transition:transform .12s,border-color .2s,background .2s;
+  }
+  .mode-card:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--glass-border));transform:translateY(-1px)}
+  .mode-card:active{transform:scale(.99)}
+  .mode-icon{
+    width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 62%,#fff),var(--accent));
+    font-size:23px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+  }
+  .mode-card.candy .mode-icon{background:linear-gradient(145deg,#ff9ebd,#db2777);color:#fff}
+  .mode-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .mode-copy strong{font-size:13px;line-height:1.2}
+  .mode-copy small{font-size:10px;line-height:1.4;color:var(--muted)}
+  .mode-chev{font-size:22px;line-height:1;color:var(--muted);font-weight:600}
 
   /* ===== modo doce (match-3) ===== */
   .candy-screen{
@@ -832,11 +856,6 @@
         <span class="menu-label">Jogar</span>
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
-      <button id="menuCandyBtn" class="menu-btn candy-entry" type="button">
-        <span class="menu-icon" aria-hidden="true">🍬</span>
-        <span class="menu-label">Modo Doce</span>
-        <span class="menu-chev" aria-hidden="true">›</span>
-      </button>
       <button id="menuRankingBtn" class="menu-btn" type="button">
         <span class="menu-icon" aria-hidden="true">🏆</span>
         <span class="menu-label">Ranking</span>
@@ -848,8 +867,40 @@
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
     </div>
-    <p class="menu-foot">Você pode ajustar dificuldade, aparência, som e ver o tutorial nas configurações.</p>
+    <p class="menu-foot">Jogar abre os modos Clássico e Doce. Dificuldade, aparência, som e tutorial ficam nas configurações.</p>
   </div>
+</div>
+
+<!-- ===== escolha de modo ===== -->
+<div class="modal-backdrop mode-backdrop" id="modeModal" hidden>
+  <section class="modal mode-modal" role="dialog" aria-modal="true" aria-labelledby="modeTitle">
+    <header class="modal-head">
+      <div>
+        <span class="overlay-kicker">NOVO JOGO</span>
+        <h2 id="modeTitle">Escolha o modo</h2>
+        <p>Cada modo tem regras e ranking próprios.</p>
+      </div>
+      <button id="closeMode" class="close-btn" type="button" aria-label="Fechar escolha de modo">✕</button>
+    </header>
+    <div class="modal-body mode-body">
+      <button id="modeClassicBtn" class="mode-card" type="button">
+        <span class="mode-icon" aria-hidden="true">🧱</span>
+        <span class="mode-copy">
+          <strong>Modo Clássico</strong>
+          <small>Preencha 75% da arena, avance 100 níveis e cuide das vidas.</small>
+        </span>
+        <span class="mode-chev" aria-hidden="true">›</span>
+      </button>
+      <button id="modeCandyBtn" class="mode-card candy" type="button">
+        <span class="mode-icon" aria-hidden="true">🍬</span>
+        <span class="mode-copy">
+          <strong>Modo Doce</strong>
+          <small>Junte doces, cumpra metas e vença o tempo em 100 fases.</small>
+        </span>
+        <span class="mode-chev" aria-hidden="true">›</span>
+      </button>
+    </div>
+  </section>
 </div>
 
 <!-- ===== modo doce (match-3) ===== -->
@@ -1341,7 +1392,8 @@ const ui = {
   settingsHow: $('settingsHowBtn'),
   themeColor: $('themeColor'),
   startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'),
-  menuRanking: $('menuRankingBtn'), menuCandy: $('menuCandyBtn'),
+  menuRanking: $('menuRankingBtn'),
+  modeModal: $('modeModal'), closeMode: $('closeMode'), modeClassic: $('modeClassicBtn'), modeCandy: $('modeCandyBtn'),
   candyScreen: $('candyScreen'), candyExit: $('candyExit'), candyLevel: $('candyLevel'),
   candyTier: $('candyTier'), candyTime: $('candyTime'), candyTimeBox: $('candyTimeBox'),
   candyScore: $('candyScore'), candyStreak: $('candyStreak'), candyTarget: $('candyTarget'),
@@ -1795,6 +1847,7 @@ let deathOpen = false;
 let rankOpen = false;
 let profileOpen = false;
 let candyOpen = false;
+let modeOpen = false;
 let deathMode = 'classic';
 
 const candyState = {
@@ -2865,16 +2918,18 @@ function onCanvasMove(e) {
 let modalHideTimer = 0;
 let tutorialHideTimer = 0;
 let menuHideTimer = 0;
+let modeHideTimer = 0;
 let deathHideTimer = 0;
 let rankHideTimer = 0;
 let profileHideTimer = 0;
 let lastFocused = null;
 
 function syncOverlayLock() {
-  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen;
+  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen || modeOpen;
   if (appRoot && 'inert' in appRoot) appRoot.inert = locked;
-  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen;
+  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen || modeOpen;
   if (ui.modal && 'inert' in ui.modal) ui.modal.inert = tutorialOpen;
+  if (ui.modeModal && 'inert' in ui.modeModal) ui.modeModal.inert = deathOpen || rankOpen || profileOpen || modalOpen || tutorialOpen;
   if (ui.candyScreen && 'inert' in ui.candyScreen) ui.candyScreen.inert = deathOpen || rankOpen || profileOpen || modalOpen || tutorialOpen;
   if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen || profileOpen;
   if (ui.rankModal && 'inert' in ui.rankModal) ui.rankModal.inert = profileOpen;
@@ -3725,6 +3780,7 @@ function startCandyMode() {
   beginCandyLevel(1);
   candyStartTimer();
   syncOverlayLock();
+  setTimeout(() => { if (candyOpen) { try { ui.candyExit.focus(); } catch (_) {} } }, 80);
 }
 
 function exitCandyMode() {
@@ -4338,6 +4394,43 @@ function openStartMenu() {
   syncOverlayLock();
 }
 
+function openModeChooser() {
+  if (modeOpen || !menuOpen) return;
+  modeOpen = true;
+  lastFocused = ui.playBtn;
+  clearTimeout(modeHideTimer);
+  ui.modeModal.hidden = false;
+  requestAnimationFrame(() => {
+    if (modeOpen) ui.modeModal.classList.add('is-open');
+  });
+  syncOverlayLock();
+  Sound.click();
+  setTimeout(() => { try { ui.modeClassic.focus(); } catch (_) {} }, 60);
+}
+
+function closeModeChooser(restoreFocus = true) {
+  if (!modeOpen) return;
+  modeOpen = false;
+  ui.modeModal.classList.remove('is-open');
+  clearTimeout(modeHideTimer);
+  modeHideTimer = setTimeout(() => { if (!modeOpen) ui.modeModal.hidden = true; }, 220);
+  syncOverlayLock();
+  if (restoreFocus) {
+    setTimeout(() => {
+      try {
+        if (lastFocused && lastFocused.focus && !lastFocused.hidden) lastFocused.focus();
+      } catch (_) {}
+    }, 40);
+  }
+}
+
+function chooseMode(mode) {
+  lastFocused = null;
+  closeModeChooser(false);
+  if (mode === 'candy') startCandyMode();
+  else startGame();
+}
+
 function startGame() {
   if (!menuOpen && !tutorialOpen) return;
   Sound.unlock();
@@ -4467,10 +4560,15 @@ function bindEvents() {
   });
   ui.settingsHow.addEventListener('click', () => openTutorial(true));
 
-  ui.playBtn.addEventListener('click', startGame);
-  ui.menuCandy.addEventListener('click', startCandyMode);
+  ui.playBtn.addEventListener('click', openModeChooser);
   ui.menuRanking.addEventListener('click', () => openRankModal());
   ui.menuSettings.addEventListener('click', openSettings);
+  ui.closeMode.addEventListener('click', () => closeModeChooser());
+  ui.modeClassic.addEventListener('click', () => chooseMode('classic'));
+  ui.modeCandy.addEventListener('click', () => chooseMode('candy'));
+  ui.modeModal.addEventListener('click', (e) => {
+    if (e.target === ui.modeModal) closeModeChooser();
+  });
   ui.candyExit.addEventListener('click', exitCandyMode);
   ui.closeTutorial.addEventListener('click', closeTutorial);
   ui.closeTutorialBtn.addEventListener('click', closeTutorial);
@@ -4539,6 +4637,11 @@ function bindEvents() {
   });
 
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modeOpen) {
+      e.preventDefault();
+      closeModeChooser();
+      return;
+    }
     if (e.key === 'Escape' && profileOpen) {
       e.preventDefault();
       closeProfileEditor();
@@ -4559,7 +4662,7 @@ function bindEvents() {
       closeSettings();
       return;
     }
-    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen || candyOpen) return;
+    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen || candyOpen || modeOpen) return;
     if (e.code === 'Space') {
       const tag = (e.target && e.target.tagName) || '';
       if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;

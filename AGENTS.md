@@ -6,7 +6,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 
 - **Produto:** jogo web de estratégia inspirado no clássico JezzBall.
 - **Arquivo de runtime:** `index.html` (HTML + CSS + JavaScript em um único arquivo).
-- **Tamanho atual:** ~183 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
+- **Tamanho atual:** ~187 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `balljump-game`.
 - **URL:** https://balljump-game.pages.dev
 - **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
@@ -73,7 +73,8 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 15. Manter o ranking por dificuldade (`scores.<modo>`) e o ranking geral; o modo da corrida deve ser salvo junto ao resultado pendente.
 16. Manter o volume dos efeitos (0–100, persistido) e o botão **Como jogar** dentro das configurações.
 17. Manter o modo doce com 100 fases, tempo em vez de vidas, ranking `candy` e aumento de dificuldade a cada 10 fases.
-18. Atualizar a documentação de contexto junto com mudanças de comportamento.
+18. O botão **Jogar** deve abrir a escolha entre **Clássico** e **Doce**; não adicionar atalhos duplicados no menu.
+19. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 
