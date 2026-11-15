@@ -94,12 +94,12 @@
     "ballAddedEveryLevels": 2,
     "lifeGainPerLevel": 1,
     "baseSpeed": 1.2,
-    "wallGrowthMsPerTile": "difficulty.divisor * 23",
+    "wallGrowthMsPerTile": "difficulty.divisor * 23; easy = 1 ms with up to 32 steps per update",
     "storageKey": "kbounce.settings.v1",
     "streak": "increments per completed wall, resets on damage or new game, persists across levels"
   },
   "difficulty": {
-    "easy": { "lives": 5, "divisor": 2 },
+    "easy": { "lives": 5, "divisor": 2, "growthMs": 1, "maxSteps": 32 },
     "normal": { "lives": 3, "divisor": 3 },
     "hard": { "lives": 2, "divisor": 4 },
     "hardcore": { "lives": 1, "divisor": 6 }

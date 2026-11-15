@@ -34,11 +34,11 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - Níveis: **1 a 100**; começa com **2 bolinhas** e ganha **+1 bolinha a cada 2 níveis**.
 - Ao concluir **cada fase**, o jogador ganha **+1 vida**.
 - Dificuldades:
-  - Fácil: 5 vidas, divisor 2.
+  - Fácil: 5 vidas, divisor 2, parede quase instantânea (1 ms por bloco, até 32 passos por atualização).
   - Normal: 3 vidas, divisor 3.
   - Difícil: 2 vidas, divisor 4.
   - Hardcore: 1 vida, divisor 6.
-- Intervalo de crescimento da parede: `divisor * 23 ms`.
+- Intervalo de crescimento da parede: `divisor * 23 ms`; exceção: Fácil usa 1 ms e até 32 passos por atualização (quase instantâneo).
 - Bolinhas: velocidade base `1.2`, ângulo diagonal com pequena variação.
 - Interface: menu inicial, tutorial, HUD, configurações, modos escuro/claro, overlay de nível e game over.
 - Áudio: Web Audio API sintetizada; sem arquivos de mídia.

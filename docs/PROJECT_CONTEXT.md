@@ -62,7 +62,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Vidas zeradas: **Game Over** e reinício no nível 1.
 - Nível 100 concluído: tela de vitória.
 - Dificuldades:
-  - Fácil: 5 vidas, parede rápida (`divisor = 2`).
+  - Fácil: 5 vidas, parede quase instantânea (`divisor = 2`, 1 ms por bloco, até 32 passos por atualização).
   - Normal: 3 vidas, velocidade média (`divisor = 3`).
   - Difícil: 2 vidas, parede lenta (`divisor = 4`).
   - Hardcore: 1 vida, parede bem lenta (`divisor = 6`).

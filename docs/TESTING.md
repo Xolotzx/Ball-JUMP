@@ -50,7 +50,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 
 ## 4. Dificuldades e persistência
 
-- [ ] Fácil: 5 vidas; parede mais rápida.
+- [ ] Fácil: 5 vidas; parede quase instantânea (conclusão em 1–2 frames).
 - [ ] Normal: 3 vidas.
 - [ ] Difícil: 2 vidas.
 - [ ] Hardcore: 1 vida; parede mais lenta.

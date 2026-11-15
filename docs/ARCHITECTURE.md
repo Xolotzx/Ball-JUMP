@@ -105,7 +105,7 @@ Funções principais:
 - `failBuild(ball)`: limpa blocos em construção, perde vida, **zera a sequência** e efeitos/áudio.
 - `completeBuild()`: converte `BUILD` em `WALL`, incrementa a sequência, atualiza o HUD, toca o som de fogo e dispara flood fill/progresso.
 
-Intervalo de crescimento: `difficulty.divisor * 23` ms por bloco.
+Intervalo de crescimento: `difficulty.divisor * 23` ms por bloco; no modo Fácil, `1 ms` com até 32 passos por atualização (quase instantâneo).
 
 ## 7. Flood fill e progresso
 

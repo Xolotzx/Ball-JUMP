@@ -717,7 +717,7 @@ const STORAGE_KEY = 'kbounce.settings.v1';
 const DIFFICULTIES = {
   easy: {
     key: 'easy', name: 'Fácil', lives: 5, divisor: 2,
-    desc: '5 vidas · parede rápida · +1 vida por nível', short: '5 vidas · rápida'
+    desc: '5 vidas · parede quase instantânea · +1 vida por nível', short: '5 vidas · instantânea'
   },
   normal: {
     key: 'normal', name: 'Normal', lives: 3, divisor: 3,
@@ -1673,13 +1673,15 @@ function tryBuild(px, py) {
     });
   }
 
+  const isEasy = state.difficulty === 'easy';
   state.grid[cy][cx] = BUILD;
   state.build = {
     cells: [{ x: cx, y: cy }],
     sides,
     ux, uy,
     timer: 0,
-    interval: difficulty().divisor * 23,
+    interval: isEasy ? 1 : difficulty().divisor * 23,
+    maxSteps: isEasy ? 32 : 4,
     hit: false
   };
   state.hover = null;
@@ -1692,7 +1694,7 @@ function updateGrowth(dt) {
   if (!build) return;
   build.timer += dt;
   let guard = 0;
-  while (state.build && build.timer >= build.interval && guard < 4) {
+  while (state.build && build.timer >= build.interval && guard < (build.maxSteps || 4)) {
     build.timer -= build.interval;
     guard++;
     growStep(build);
