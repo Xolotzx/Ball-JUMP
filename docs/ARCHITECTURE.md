@@ -246,28 +246,39 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 ## 15. Modo Doce (match-3)
 
 - Tela própria `#candyScreen`, aberta pela opção **Modo Doce** do seletor de modo.
-- Tabuleiro DOM 8×8 (`#candyBoard`) com 7 tipos de doce; o tipo é aplicado por
+- Tabuleiro DOM 8×8 (`#candyBoard`) com até 6 tipos de doce; o tipo é aplicado por
   `data-type` e o glifo vem de `CANDY_TYPES`.
 - Geração inicial sem matches e com pelo menos uma jogada possível.
-- Troca de células adjacentes por clique/toque; se não formar 3+, a troca é
-  desfeita e a sequência zera.
-- Bombas (`CANDY_BOMB`, tipo especial fora dos 7 doces) aparecem no tabuleiro
-  (seed por fase + chance no refill), não entram em matches e explodem quando
-  trocadas com qualquer doce:
+- Troca de células adjacentes por clique/toque; combinações válidas são 3+ em
+  linha/coluna **ou um quadrado 2×2**. Troca sem combinação é desfeita e zera a
+  sequência.
+- Bombas (`CANDY_BOMB`) aparecem no tabuleiro (seed por fase + chance no refill),
+  não entram em matches e explodem quando trocadas com qualquer doce:
   - a explosão limpa a área 3×3 ao redor;
   - bombas dentro da área entram em cadeia;
   - o dano soma pontos, faíscas, texto flutuante, tremida e `Sound.explosion()`;
   - depois do refill, cascatas normais continuam com `Sound.candyPop()`.
+- Relâmpago (`CANDY_LIGHTNING`, ⚡) aparece por seed/chance. Trocado com um doce,
+  elimina **todos** os doces daquele tipo; duas ⚡ juntas causam uma sobrecarga
+  que atinge o tabuleiro inteiro. Usa `Sound.lightning()`, flash e células
+  `is-zapped`.
+- Cadeados: a partir da fase 21, `candyState.locks` marca doces com 2 cargas.
+  Eles não podem ser trocados e não caem; matches, bombas e ⚡ reduzem a carga.
+  Com 2 detonações o doce some. `candyCollapseAndRefill` divide cada coluna em
+  segmentos entre cadeados, então os doces acima/abaixo não passam por eles.
 - O fundo do modo doce é transparente sobre o mesmo fundo ambiente do clássico
   (body + `.wave-bg`/`.ribbon-bg`); o `.app` fica oculto enquanto `body.candy-active`.
-- `candyFindMatches` detecta runs horizontais/verticais; `candyCollapseAndRefill`
-  remove, colapsa e preenche; cascatas geram combos e multiplicam pontos.
+- `candyFindMatches` detecta runs horizontais/verticais e quadrados 2×2;
+  `candyCollapseAndRefill` remove, colapsa e preenche; cascatas geram combos e
+  multiplicam pontos. `candyHasMove` ignora trocas com cadeados e considera
+  bombas/relâmpagos como jogadas válidas.
 - Pontuação: `doces × 50 × combo`; a sequência sobe +1 por troca válida.
 - 100 fases; cada fase tem meta (`candyTargetScore`) e tempo (`candyTimeLimit`)
-  próprios, sem vidas. O tempo é controlado por `setInterval` de 250 ms e pausa
-  quando a aba fica oculta ou o overlay abre.
-- A cada 10 fases (`candyTier`) entram mais tipos (5 → 6 → 7), a meta cresce e o
-  tempo cai de 75 s até 39 s.
+  próprios, sem vidas. O tempo base é 60 s e cai 3 s a cada 10 fases (33 s na
+  fase 100). É controlado por `setInterval` de 250 ms e pausa quando a aba fica
+  oculta ou o overlay abre.
+- A cada 10 fases a meta cresce; os tipos vão de 5 para 6 na fase 11 e, a partir
+  da fase 21, o desafio extra são os cadeados (sem sétimo tipo).
 - Fase concluída → próxima fase; fase 100 → vitória. Tempo esgotado → fim da run.
 - O resultado usa `mode:'candy'` e grava `candy.bestStreak`, `candy.bestLevel` e
   `candy.bestScore`; o ranking Doce tem abas Streak/Níveis/Pontos.

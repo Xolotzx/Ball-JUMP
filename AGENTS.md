@@ -49,7 +49,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `candy`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
 - **Ranking por dificuldade:** `scores.easy/normal/hard/hardcore` guardam `{ bestStreak, bestLevel }` por modo; o ranking consulta `scores.<modo>.bestStreak` e `.bestLevel`; o ranking geral usa `bestStreak`/`bestLevel`.
 - **Famílias de ranking:** **Clássico 🧱** (Geral/Fácil/Normal/Difícil/Hardcore, com Streak e Níveis) e **Doce 🍪** (Streak, Níveis e Pontos).
-- **Modo Doce:** match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio em `candy` (`bestStreak`, `bestLevel`, `bestScore`); categorias Streak, Níveis e Pontos. Bombas explodem a área 3×3 ao serem trocadas com um doce; o fundo é o mesmo do clássico.
+- **Modo Doce:** match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio em `candy` (`bestStreak`, `bestLevel`, `bestScore`); categorias Streak, Níveis e Pontos. Combina 3+ ou 2×2; bombas explodem 3×3; ⚡ elimina um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s.
 - **Perfil editável:** nick de 1 a 30 caracteres na UI e foto opcional em data URL (160×160 JPEG, até 90.000 caracteres); sem Firebase Storage; fallback para a inicial do nick.
 - **Nicks únicos:** reserva em `balljumpNicknames/{key}` com chave normalizada (minúscula, sem acentos, separadores colapsados); transação reserva/libera o nick; nomes do Google ocupados recebem sufixo automático.
 - **SDK Firebase:** modular 10.14.1, importado dinamicamente do gstatic somente ao abrir a tela de morte/ranking ou fazer login. O jogo principal continua offline.
@@ -73,7 +73,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 14. Manter nicks únicos por reserva transacional em `balljumpNicknames`; não remover a normalização de caixa/acentos nem a liberação do nick antigo ao renomear.
 15. Manter o ranking por dificuldade (`scores.<modo>`) e o ranking geral; o modo da corrida deve ser salvo junto ao resultado pendente.
 16. Manter o volume dos efeitos (0–100, persistido) e o botão **Como jogar** dentro das configurações.
-17. Manter o modo doce com 100 fases, tempo em vez de vidas, ranking `candy`, bombas/explosões e fundo compartilhado com o clássico.
+17. Manter o modo doce com 100 fases, tempo em vez de vidas, ranking `candy`, bombas/explosões, ⚡, cadeados a partir da fase 21, match 2×2 e fundo compartilhado com o clássico.
 18. O botão **Jogar** deve abrir a escolha entre **Clássico** e **Doce**; não adicionar atalhos duplicados no menu.
 19. Manter as configurações acessíveis no modo doce pela engrenagem, pausando o timer e ocultando a dificuldade.
 20. Manter o menu principal com fundo ambiente do tema (ondas/fita) e a marca **ted-io** no título e no cartão.

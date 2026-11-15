@@ -42,11 +42,13 @@ administrativo ou `.env` no repositório.
    - **Clássico 🧱**: **Geral / Fácil / Normal / Difícil / Hardcore**, com
      **🔥 Streak** e **🏆 Níveis**.
    - **Doce 🍪**: **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**.
-9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+,
-   cumpra a meta antes do tempo e avance. As vidas são substituídas por tempo.
-   Bombas aparecem no tabuleiro e explodem a área 3×3 quando trocadas com um doce.
-10. A cada 10 fases o modo Doce aumenta a dificuldade (mais tipos, meta maior e
-    menos tempo), até a fase 100.
+9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+
+   ou um quadrado 2×2, cumpra a meta antes do tempo e avance. As vidas são
+   substituídas por tempo (60 s na fase 1, caindo até 33 s na fase 100).
+   Bombas explodem a área 3×3; o ⚡ trocado com um doce elimina todos daquele tipo.
+10. A cada 10 fases a meta aumenta e o tempo cai. Os tipos vão de 5 para 6 na fase
+    11; da fase 21 em diante entram doces com cadeado (2 detonações para sumir),
+    em vez de um sétimo tipo, até a fase 100.
 11. O título acompanha a seleção: “Ranking clássico — Fácil”,
     “Ranking doce”, etc.
 
@@ -273,7 +275,8 @@ Também foi validado:
 - Modo Doce (match-3):
   - tabuleiro 8×8; troca de doces adjacentes, detecção de 3+ e cascatas;
   - 100 fases; cada fase tem meta de pontos e tempo próprio (sem vidas);
-  - a cada 10 fases entram mais tipos de doce, a meta sobe e o tempo cai;
+  - 5 tipos até a fase 10; 6 tipos a partir da fase 11; da fase 21 em diante
+    entram cadeados em vez de um sétimo tipo, com meta maior e tempo menor;
   - o resultado pendente usa `mode:'candy'` com `bestStreak`, `bestLevel` e
     `bestScore`;
   - `syncProfile` grava/atualiza apenas `candy`, sem mexer nos scores clássicos;

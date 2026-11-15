@@ -398,6 +398,29 @@
     content:"";position:absolute;inset:16%;border-radius:50%;
     border:1px dashed rgba(255,235,190,.55);pointer-events:none;
   }
+  .candy-cell[data-type="lightning"]{
+    background:radial-gradient(circle at 35% 28%,#fffbe0 0%,#fde047 30%,#38bdf8 66%,#2563eb 100%);
+    color:#0b1b3a;font-size:clamp(17px,4.8vw,31px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(255,245,150,.6),0 0 24px rgba(56,189,248,.55);
+    animation:candy-lightning-pulse 1.05s ease-in-out infinite;
+    text-shadow:0 1px 2px rgba(255,255,255,.5);
+  }
+  .candy-cell.is-locked{
+    filter:saturate(.55) brightness(.82);
+    box-shadow:inset 0 0 0 2px rgba(255,232,170,.42),inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .candy-cell.is-locked::after{
+    content:"🔒";position:absolute;right:2px;bottom:1px;font-size:44%;line-height:1;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.65));pointer-events:none;
+  }
+  .candy-cell.is-locked[data-lock="1"]::after{content:"🔓"}
+  .candy-cell.is-lock-hit{animation:candy-lock-hit .32s ease-out}
+  .candy-cell.is-zapped{animation:candy-zap .36s ease-out forwards;z-index:4}
+  .candy-lightning-flash{
+    position:absolute;inset:0;z-index:7;pointer-events:none;
+    background:radial-gradient(circle at 50% 42%,#fff 0%,rgba(255,250,170,.75) 22%,rgba(56,189,248,.35) 52%,transparent 76%);
+    mix-blend-mode:screen;animation:candy-lightning-flash .5s ease-out forwards;
+  }
   .candy-cell.is-exploding{
     animation:candy-explode .34s ease-out forwards;z-index:4;
   }
@@ -417,6 +440,28 @@
   @keyframes candy-bomb-pulse{
     0%,100%{filter:brightness(1);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 1px rgba(255,190,100,.35),0 0 14px rgba(255,90,0,.28)}
     50%{filter:brightness(1.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 0 2px rgba(255,210,130,.5),0 0 26px rgba(255,90,0,.55)}
+  }
+  @keyframes candy-lightning-pulse{
+    0%,100%{filter:brightness(1);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(255,245,150,.55),0 0 18px rgba(56,189,248,.4)}
+    50%{filter:brightness(1.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 0 0 2px rgba(255,250,180,.7),0 0 28px rgba(56,189,248,.7)}
+  }
+  @keyframes candy-lock-hit{
+    0%,100%{transform:translate(0,0);filter:brightness(1)}
+    25%{transform:translate(-2px,1px);filter:brightness(1.5)}
+    50%{transform:translate(2px,-1px);filter:brightness(1.8)}
+    75%{transform:translate(-1px,1px);filter:brightness(1.2)}
+  }
+  @keyframes candy-zap{
+    0%{transform:scale(1);opacity:1;filter:brightness(1)}
+    35%{transform:scale(1.22);opacity:1;filter:brightness(2.7)}
+    100%{transform:scale(.08) rotate(-12deg);opacity:0;filter:brightness(3)}
+  }
+  @keyframes candy-lightning-flash{
+    0%{opacity:0}
+    18%{opacity:1}
+    48%{opacity:.35}
+    70%{opacity:.8}
+    100%{opacity:0}
   }
   @keyframes candy-explode{
     0%{transform:scale(1);opacity:1;filter:brightness(1)}
@@ -1027,7 +1072,7 @@
     <div class="candy-board" id="candyBoard" role="grid" aria-label="Tabuleiro de doces"></div>
 
     <p class="candy-message" id="candyMessage" role="status">Troque doces adjacentes para juntar 3 ou mais.</p>
-    <p class="candy-hint">Cada troca válida aumenta a sequência. Troca inválida zera. Cumpra a meta antes do tempo acabar.</p>
+    <p class="candy-hint">Junte 3+ ou um quadrado 2×2 · ⚡ + doce limpa o tipo · 🔒 precisa de 2 detonações.</p>
   </div>
 </div>
 
@@ -1353,12 +1398,17 @@ const DIFFICULTIES = {
 
 const CANDY_TYPES = ['🍬', '🍭', '🍫', '🍩', '🍪', '🧁', '🍯'];
 const CANDY_BOMB = CANDY_TYPES.length;
+const CANDY_LIGHTNING = CANDY_BOMB + 1;
 const CANDY_SIZE = 8;
 const CANDY_MAX_LEVEL = 100;
 const CANDY_TIER_NAMES = ['Doçura 1', 'Doçura 2', 'Doçura 3', 'Doçura 4', 'Doçura 5', 'Doçura 6', 'Doçura 7', 'Doçura 8', 'Doçura 9', 'Doçura 10'];
 
 function candyBombChance(level) {
-  return Math.min(0.075, 0.008 + level * 0.0006);
+  return Math.min(0.055, 0.007 + level * 0.0005);
+}
+
+function candyLightningChance(level) {
+  return Math.min(0.035, 0.005 + level * 0.0003);
 }
 
 function candyBombSeedCount(level) {
@@ -1368,16 +1418,27 @@ function candyBombSeedCount(level) {
   return 3;
 }
 
+function candyLightningSeedCount(level) {
+  if (level < 5) return 0;
+  if (level < 50) return 1;
+  return 2;
+}
+
+function candyLockCount(level) {
+  if (level < 21) return 0;
+  return Math.min(6, 2 + Math.floor((level - 21) / 20));
+}
+
 function candyTier(level) {
   return Math.min(9, Math.floor((level - 1) / 10));
 }
 
 function candyTypeCount(level) {
-  return Math.min(CANDY_TYPES.length, 5 + (level >= 11 ? 1 : 0) + (level >= 31 ? 1 : 0));
+  return level >= 11 ? 6 : 5;
 }
 
 function candyTimeLimit(level) {
-  return Math.max(35, 75 - candyTier(level) * 4);
+  return Math.max(30, 60 - candyTier(level) * 3);
 }
 
 function candyTargetScore(level) {
@@ -1831,6 +1892,22 @@ const Sound = (() => {
     }
   }
 
+  function lockHit() {
+    if (!enabled) return;
+    voice(240, 0.14, { type: 'square', vol: 0.032, slide: 118, attack: 0.002, send: 0.08, cutoff: 1400 });
+    noiseSweep({ duration: 0.12, vol: 0.011, from: 1700, to: 480, type: 'bandpass', q: 1.5, send: 0.12 });
+  }
+
+  function lightning() {
+    if (!enabled) return;
+    noiseSweep({ duration: 0.22, vol: 0.05, from: 4200, to: 700, type: 'highpass', send: 0.2 });
+    voice(1400, 0.2, { type: 'sawtooth', vol: 0.03, slide: 320, attack: 0.001, send: 0.2, cutoff: 5200 });
+    voice(70, 0.55, { type: 'sine', vol: 0.11, slide: 40, attack: 0.002, send: 0.06, cutoff: 260 });
+    [1567.98, 2093, 2637.02].forEach((freq, i) => {
+      bell(freq, 0.32, 0.03, 0.03 + i * 0.025, (i - 1) * 0.2);
+    });
+  }
+
   function gameOver() {
     const notes = [329.63, 261.63, 196, 130.81];
     notes.forEach((freq, i) => {
@@ -1924,7 +2001,7 @@ const Sound = (() => {
 
   function unlock() { ensure(); }
 
-  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, explosion, candyPop, setEnabled, setVolume, unlock };
+  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, explosion, candyPop, lockHit, lightning, setEnabled, setVolume, unlock };
 })();
 
 /* =========================================================
@@ -1982,6 +2059,7 @@ const candyState = {
   bestStreak: 0,
   types: 5,
   grid: [],
+  locks: [],
   selected: -1,
   timer: 0,
   lastTick: 0,
@@ -3683,6 +3761,10 @@ function candyDelay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function candyMatchable(type) {
+  return type !== null && type !== undefined && type !== CANDY_BOMB && type !== CANDY_LIGHTNING;
+}
+
 function candyFindMatches(grid) {
   const matched = new Set();
   for (let r = 0; r < CANDY_SIZE; r++) {
@@ -3690,8 +3772,8 @@ function candyFindMatches(grid) {
     for (let c = 1; c <= CANDY_SIZE; c++) {
       const currRaw = c < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
       const prevRaw = grid[r * CANDY_SIZE + c - 1];
-      const curr = currRaw === CANDY_BOMB ? null : currRaw;
-      const prev = prevRaw === CANDY_BOMB ? null : prevRaw;
+      const curr = candyMatchable(currRaw) ? currRaw : null;
+      const prev = candyMatchable(prevRaw) ? prevRaw : null;
       if (c < CANDY_SIZE && curr !== null && prev !== null && curr === prev) {
         run += 1;
       } else {
@@ -3707,8 +3789,8 @@ function candyFindMatches(grid) {
     for (let r = 1; r <= CANDY_SIZE; r++) {
       const currRaw = r < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
       const prevRaw = grid[(r - 1) * CANDY_SIZE + c];
-      const curr = currRaw === CANDY_BOMB ? null : currRaw;
-      const prev = prevRaw === CANDY_BOMB ? null : prevRaw;
+      const curr = candyMatchable(currRaw) ? currRaw : null;
+      const prev = candyMatchable(prevRaw) ? prevRaw : null;
       if (r < CANDY_SIZE && curr !== null && prev !== null && curr === prev) {
         run += 1;
       } else {
@@ -3719,14 +3801,35 @@ function candyFindMatches(grid) {
       }
     }
   }
+  for (let r = 0; r < CANDY_SIZE - 1; r++) {
+    for (let c = 0; c < CANDY_SIZE - 1; c++) {
+      const i = r * CANDY_SIZE + c;
+      const type = grid[i];
+      if (!candyMatchable(type)) continue;
+      if (grid[i + 1] === type && grid[i + CANDY_SIZE] === type && grid[i + CANDY_SIZE + 1] === type) {
+        matched.add(i);
+        matched.add(i + 1);
+        matched.add(i + CANDY_SIZE);
+        matched.add(i + CANDY_SIZE + 1);
+      }
+    }
+  }
   return matched;
 }
 
-function candyHasMove(grid) {
-  for (let i = 0; i < grid.length; i++) {
-    if (grid[i] === CANDY_BOMB) return true;
+function candyHasMove(grid, locks = candyState.locks) {
+  const special = (type) => type === CANDY_BOMB || type === CANDY_LIGHTNING;
+  for (let r = 0; r < CANDY_SIZE; r++) {
+    for (let c = 0; c < CANDY_SIZE; c++) {
+      const i = r * CANDY_SIZE + c;
+      if (!special(grid[i])) continue;
+      const neighbors = [c > 0 ? i - 1 : -1, c < CANDY_SIZE - 1 ? i + 1 : -1, r > 0 ? i - CANDY_SIZE : -1, r < CANDY_SIZE - 1 ? i + CANDY_SIZE : -1];
+      if (neighbors.some(n => n >= 0 && grid[n] !== null && locks[n] === 0)) return true;
+    }
   }
   const trySwap = (a, b) => {
+    if (locks[a] > 0 || locks[b] > 0) return false;
+    if (!candyMatchable(grid[a]) || !candyMatchable(grid[b])) return false;
     const temp = grid[a];
     grid[a] = grid[b];
     grid[b] = temp;
@@ -3749,7 +3852,7 @@ function candySeedBombs(grid) {
   const count = candyBombSeedCount(candyState.level);
   const available = [];
   for (let i = 0; i < grid.length; i++) {
-    if (grid[i] !== CANDY_BOMB) available.push(i);
+    if (grid[i] !== CANDY_BOMB && grid[i] !== CANDY_LIGHTNING) available.push(i);
   }
   for (let n = 0; n < count && available.length; n++) {
     const pick = Math.floor(Math.random() * available.length);
@@ -3757,8 +3860,34 @@ function candySeedBombs(grid) {
   }
 }
 
+function candySeedLightning(grid) {
+  const count = candyLightningSeedCount(candyState.level);
+  const available = [];
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i] !== CANDY_BOMB && grid[i] !== CANDY_LIGHTNING) available.push(i);
+  }
+  for (let n = 0; n < count && available.length; n++) {
+    const pick = Math.floor(Math.random() * available.length);
+    grid[available.splice(pick, 1)[0]] = CANDY_LIGHTNING;
+  }
+}
+
+function candySeedLocks(grid, locks) {
+  const count = candyLockCount(candyState.level);
+  if (!count) return;
+  const available = [];
+  for (let i = 0; i < grid.length; i++) {
+    if (candyMatchable(grid[i]) && grid[i] < candyState.types) available.push(i);
+  }
+  for (let n = 0; n < count && available.length; n++) {
+    const pick = Math.floor(Math.random() * available.length);
+    locks[available.splice(pick, 1)[0]] = 2;
+  }
+}
+
 function candyRandomType() {
   if (Math.random() < candyBombChance(candyState.level)) return CANDY_BOMB;
+  if (Math.random() < candyLightningChance(candyState.level)) return CANDY_LIGHTNING;
   return Math.floor(Math.random() * candyState.types);
 }
 
@@ -3777,25 +3906,50 @@ function candyGenerateGrid(types) {
       }
     }
     if (candyFindMatches(grid).size === 0) {
+      const locks = new Array(CANDY_SIZE * CANDY_SIZE).fill(0);
       candySeedBombs(grid);
-      if (candyHasMove(grid)) return grid;
+      candySeedLightning(grid);
+      candySeedLocks(grid, locks);
+      candyState.locks = locks;
+      if (candyHasMove(grid, locks)) return grid;
     }
   }
+  candyState.locks = new Array(CANDY_SIZE * CANDY_SIZE).fill(0);
   return new Array(CANDY_SIZE * CANDY_SIZE).fill(0).map((_, i) => i % types);
+}
+
+function candyCollapseSegment(column, top, bottom) {
+  if (bottom < top) return;
+  const grid = candyState.grid;
+  const locks = candyState.locks;
+  const values = [];
+  for (let r = bottom; r >= top; r--) {
+    const value = grid[r * CANDY_SIZE + column];
+    if (value !== null && value !== undefined) values.push(value);
+  }
+  for (let r = bottom; r >= top; r--) {
+    const index = r * CANDY_SIZE + column;
+    const value = values[bottom - r];
+    grid[index] = value === undefined ? candyRandomType() : value;
+    locks[index] = 0;
+  }
 }
 
 function candyCollapseAndRefill() {
   const grid = candyState.grid;
+  const locks = candyState.locks;
   for (let c = 0; c < CANDY_SIZE; c++) {
-    const values = [];
-    for (let r = CANDY_SIZE - 1; r >= 0; r--) {
-      const value = grid[r * CANDY_SIZE + c];
-      if (value !== null && value !== undefined) values.push(value);
+    const lockedRows = [];
+    for (let r = 0; r < CANDY_SIZE; r++) {
+      const index = r * CANDY_SIZE + c;
+      if (locks[index] > 0 && grid[index] !== null) lockedRows.push(r);
     }
-    for (let r = CANDY_SIZE - 1; r >= 0; r--) {
-      const value = values[CANDY_SIZE - 1 - r];
-      grid[r * CANDY_SIZE + c] = value === undefined ? candyRandomType() : value;
+    let top = 0;
+    for (const lockRow of lockedRows) {
+      candyCollapseSegment(c, top, lockRow - 1);
+      top = lockRow + 1;
     }
+    candyCollapseSegment(c, top, CANDY_SIZE - 1);
   }
 }
 
@@ -3820,7 +3974,9 @@ function candyRender() {
   for (let i = 0; i < candyState.cells.length; i++) {
     const cell = candyState.cells[i];
     const type = candyState.grid[i];
-    cell.classList.remove('is-clearing', 'is-selected', 'is-exploding', 'is-bomb');
+    const lock = candyState.locks[i] || 0;
+    cell.classList.remove('is-clearing', 'is-selected', 'is-exploding', 'is-bomb', 'is-lightning', 'is-locked', 'is-lock-hit', 'is-zapped');
+    cell.removeAttribute('data-lock');
     const r = Math.floor(i / CANDY_SIZE) + 1;
     const c = (i % CANDY_SIZE) + 1;
     if (type === null || type === undefined) {
@@ -3833,11 +3989,23 @@ function candyRender() {
       cell.classList.add('is-bomb');
       cell.classList.toggle('is-selected', i === candyState.selected);
       cell.setAttribute('aria-label', 'Bomba, linha ' + r + ', coluna ' + c);
+    } else if (type === CANDY_LIGHTNING) {
+      cell.dataset.type = 'lightning';
+      cell.textContent = '⚡';
+      cell.classList.add('is-lightning');
+      cell.classList.toggle('is-selected', i === candyState.selected);
+      cell.setAttribute('aria-label', 'Relâmpago, linha ' + r + ', coluna ' + c);
     } else {
       cell.dataset.type = String(type);
       cell.textContent = CANDY_TYPES[type] || '🍬';
       cell.classList.toggle('is-selected', i === candyState.selected);
-      cell.setAttribute('aria-label', 'Doce, linha ' + r + ', coluna ' + c);
+      if (lock > 0) {
+        cell.classList.add('is-locked');
+        cell.dataset.lock = String(lock);
+        cell.setAttribute('aria-label', 'Doce com cadeado (' + lock + '), linha ' + r + ', coluna ' + c);
+      } else {
+        cell.setAttribute('aria-label', 'Doce, linha ' + r + ', coluna ' + c);
+      }
     }
   }
 }
@@ -4002,9 +4170,18 @@ async function candyResolveMatches(initialMatches, cascade) {
     candyState.levelScore += points;
     candyState.runScore += points;
     candyUpdateHUD();
+    let lockHits = 0;
     for (const index of matches) {
-      if (candyState.cells[index]) candyState.cells[index].classList.add('is-clearing');
+      const cell = candyState.cells[index];
+      if (!cell) continue;
+      if (candyState.locks[index] > 0) {
+        cell.classList.add('is-lock-hit');
+        lockHits += 1;
+      } else {
+        cell.classList.add('is-clearing');
+      }
     }
+    if (lockHits) Sound.lockHit();
     if (combo === 1) Sound.candyPop(1);
     else {
       Sound.candyPop(combo);
@@ -4012,7 +4189,17 @@ async function candyResolveMatches(initialMatches, cascade) {
     }
     await candyDelay(230);
     if (!candyState.active || candyState.ended) return;
-    for (const index of matches) candyState.grid[index] = null;
+    for (const index of matches) {
+      if (candyState.locks[index] > 0) {
+        candyState.locks[index] -= 1;
+        if (candyState.locks[index] <= 0) {
+          candyState.locks[index] = 0;
+          candyState.grid[index] = null;
+        }
+      } else {
+        candyState.grid[index] = null;
+      }
+    }
     candyRender();
     candyCollapseAndRefill();
     candyRender();
@@ -4106,20 +4293,44 @@ function candyExplosionSet(bombs) {
   return blast;
 }
 
+function candyApplyDamage(indices) {
+  let cleared = 0;
+  let locksHit = 0;
+  for (const index of indices) {
+    if (candyState.grid[index] === null || candyState.grid[index] === undefined) continue;
+    if (candyState.locks[index] > 0) {
+      candyState.locks[index] -= 1;
+      locksHit += 1;
+      if (candyState.locks[index] <= 0) {
+        candyState.locks[index] = 0;
+        candyState.grid[index] = null;
+        cleared += 1;
+      }
+    } else {
+      candyState.grid[index] = null;
+      cleared += 1;
+    }
+  }
+  return { cleared, locksHit };
+}
+
 async function candyExplodeBombs(bombs) {
   if (!candyState.active || candyState.ended) return;
   const grid = candyState.grid;
   const blast = candyExplosionSet(bombs);
   let bombCount = 0;
+  let lockCount = 0;
   for (const index of blast) {
     if (grid[index] === CANDY_BOMB) bombCount += 1;
+    if (candyState.locks[index] > 0) lockCount += 1;
   }
-  const points = blast.size * 60 + bombCount * 150;
+  const points = blast.size * 60 + bombCount * 150 + lockCount * 80;
   candyState.levelScore += points;
   candyState.runScore += points;
   candyUpdateHUD();
   candySetMessage('Boom! +' + points.toLocaleString('pt-BR') + ' pontos', true);
   Sound.explosion();
+  if (lockCount) Sound.lockHit();
   if (bombCount > 1) Sound.fire(4);
   ui.candyBoard.classList.remove('is-shaking');
   void ui.candyBoard.offsetWidth;
@@ -4127,11 +4338,67 @@ async function candyExplodeBombs(bombs) {
   for (const index of bombs) candyBlastAt(index);
   candyFloatText(bombs[0], '+' + points.toLocaleString('pt-BR'));
   for (const index of blast) {
-    if (candyState.cells[index]) candyState.cells[index].classList.add('is-exploding');
+    const cell = candyState.cells[index];
+    if (!cell) continue;
+    cell.classList.add(candyState.locks[index] > 0 ? 'is-lock-hit' : 'is-exploding');
   }
   await candyDelay(320);
   if (!candyState.active || candyState.ended) return;
-  for (const index of blast) grid[index] = null;
+  candyApplyDamage(blast);
+  candyRender();
+  candyCollapseAndRefill();
+  candyRender();
+  await candyDelay(180);
+  if (!candyState.active || candyState.ended) return;
+  await candyResolveMatches(candyFindMatches(grid), 2);
+}
+
+function candyLightningFlash() {
+  if (!ui.candyBoard) return;
+  const flash = document.createElement('span');
+  flash.className = 'candy-lightning-flash';
+  ui.candyBoard.appendChild(flash);
+  setTimeout(() => flash.remove(), 560);
+}
+
+async function candyLightningStrike(targetType, double, lightningPositions) {
+  if (!candyState.active || candyState.ended) return;
+  const grid = candyState.grid;
+  const affected = new Set(lightningPositions);
+  if (double) {
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i] !== null && grid[i] !== undefined) affected.add(i);
+    }
+  } else if (targetType !== null && targetType !== undefined) {
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i] === targetType) affected.add(i);
+    }
+  }
+  let lockCount = 0;
+  for (const index of affected) {
+    if (candyState.locks[index] > 0) lockCount += 1;
+  }
+  const points = affected.size * 70 + lockCount * 100 + (double ? 400 : 0);
+  candyState.levelScore += points;
+  candyState.runScore += points;
+  candyUpdateHUD();
+  const targetGlyph = targetType !== null && targetType !== undefined ? (CANDY_TYPES[targetType] || 'doces') : 'doces';
+  candySetMessage((double ? '⚡ Sobrecarga! ' : '⚡ Todos os ' + targetGlyph + '! ') + '+' + points.toLocaleString('pt-BR') + ' pontos', true);
+  Sound.lightning();
+  if (lockCount) Sound.lockHit();
+  ui.candyBoard.classList.remove('is-shaking');
+  void ui.candyBoard.offsetWidth;
+  ui.candyBoard.classList.add('is-shaking');
+  candyLightningFlash();
+  for (const index of affected) {
+    const cell = candyState.cells[index];
+    if (!cell) continue;
+    cell.classList.add(candyState.locks[index] > 0 ? 'is-lock-hit' : 'is-zapped');
+  }
+  candyFloatText(lightningPositions[0], '+' + points.toLocaleString('pt-BR'));
+  await candyDelay(380);
+  if (!candyState.active || candyState.ended) return;
+  candyApplyDamage(affected);
   candyRender();
   candyCollapseAndRefill();
   candyRender();
@@ -4142,8 +4409,23 @@ async function candyExplodeBombs(bombs) {
 
 async function candyTrySwap(a, b) {
   if (!candyState.active || candyState.busy || candyState.paused || candyState.ended) return;
+  if (candyState.locks[a] > 0 || candyState.locks[b] > 0) {
+    candySetMessage('Doce com cadeado: detone 2 vezes para liberar.');
+    Sound.deny();
+    return;
+  }
   candyState.busy = true;
   const grid = candyState.grid;
+  const typeA = grid[a];
+  const typeB = grid[b];
+  const lightningA = typeA === CANDY_LIGHTNING;
+  const lightningB = typeB === CANDY_LIGHTNING;
+  const bombA = typeA === CANDY_BOMB;
+  const bombB = typeB === CANDY_BOMB;
+  let lightningTarget = null;
+  if (lightningA && !lightningB && !bombB) lightningTarget = typeB;
+  if (lightningB && !lightningA && !bombA) lightningTarget = typeA;
+  const lightningDouble = lightningA && lightningB;
   const temp = grid[a];
   grid[a] = grid[b];
   grid[b] = temp;
@@ -4157,6 +4439,14 @@ async function candyTrySwap(a, b) {
     candyState.bestStreak = Math.max(candyState.bestStreak, candyState.streak);
     candyUpdateHUD();
     await candyExplodeBombs(bombPositions);
+    return;
+  }
+  if (lightningDouble || lightningTarget !== null) {
+    const lightningPositions = [a, b].filter(index => grid[index] === CANDY_LIGHTNING);
+    candyState.streak += 1;
+    candyState.bestStreak = Math.max(candyState.bestStreak, candyState.streak);
+    candyUpdateHUD();
+    await candyLightningStrike(lightningTarget, lightningDouble, lightningPositions);
     return;
   }
   const matches = candyFindMatches(grid);

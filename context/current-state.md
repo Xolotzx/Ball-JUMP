@@ -27,7 +27,7 @@
 - Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
-- **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente a cada 10 fases.
+- **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente a cada 10 fases. Combina 3+ ou 2×2; ⚡ limpa um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s.
 - Ranking em famílias **Clássico 🧱** e **Doce 🍪**: clássico com Geral/Fácil/Normal/Difícil/Hardcore e abas Streak/Níveis; doce com Streak/Níveis/Pontos.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 - Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
@@ -65,6 +65,7 @@
 - Botão **← Menu** adicionado ao HUD clássico; ele pausa a partida e preserva nível/vidas/área para retomar.
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
 - Ranking reorganizado em famílias **Clássico 🧱** (dificuldades + Streak/Níveis) e **Doce 🍪** (Streak/Níveis/Pontos).
+- Modo doce ganhou match 2×2, especial ⚡, cadeados a partir da fase 21 e tempo base de 60 s; tipos limitados a 6.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.
@@ -87,7 +88,7 @@
 
 - Validar manualmente o login Google real (popup e fallback de redirect) em desktop e mobile.
 - Validar manualmente a edição de perfil (nick, foto JPG/PNG/WebP, remoção e persistência) com conta real.
-- Validar o modo doce em navegador real: trocas, cascatas, tempo, bombas/cadeias, fases 10/11, 30/31, 90/100 e ranking Doce.
+- Validar o modo doce em navegador real: trocas, cascatas, 2×2, ⚡, bombas/cadeias, cadeados, tempo de 60 s, fases 10/11, 20/21, 30/31, 90/100 e ranking Doce.
 - Ajustar metas/tempos e frequência/força das bombas após playtest em celular e desktop.
 - Revalidar headers/CSP no ambiente de produção a cada deploy (validado em 2026-11-15).
 - Conectar Cloudflare Pages ao GitHub para deploy automático (requer autorização do GitHub App).

@@ -24,7 +24,10 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - O botão **Jogar** abre a escolha entre **Modo Clássico** e **Modo Doce**.
 - O HUD clássico tem **← Menu**, que pausa a partida e permite retomá-la depois.
 - **Modo Doce**: match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio (streak, níveis e pontos).
-- Dificuldade do modo doce aumenta a cada 10 fases: mais tipos, meta maior e menos tempo.
+- Combine 3+ doces ou um quadrado 2×2.
+- O especial **⚡** trocado com um doce elimina todos os doces daquele tipo.
+- A partir da fase 21 aparecem doces com **cadeado**, que precisam de 2 detonações para sumir.
+- Dificuldade do modo doce aumenta a cada 10 fases: meta maior, menos tempo e mais obstáculos.
 - Bombas aparecem no tabuleiro doce; troque uma bomba com qualquer doce para explodir a área ao redor, com reações em cadeia.
 - Explosões com som, faíscas, texto flutuante e tremida no tabuleiro.
 - O modo doce usa o mesmo fundo ambiente (ondas/fita) do modo clássico.

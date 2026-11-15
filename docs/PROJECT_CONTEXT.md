@@ -96,6 +96,10 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - **Jogar** abre um seletor com **Modo Clássico** e **Modo Doce**.
 - **Configurações** ficam disponíveis no clássico e também no modo doce (engrenagem no cabeçalho); no doce a seção de dificuldade é ocultada e o timer pausa.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente a cada 10 fases.
+- Combinações válidas: 3+ em linha/coluna ou um quadrado 2×2 do mesmo tipo.
+- O especial **⚡** trocado com um doce elimina todos os doces daquele tipo; duas ⚡ juntas limpam o tabuleiro.
+- A partir da fase 21 aparecem doces com **cadeado** (2 detonações para sumir); eles não podem ser trocados e não caem, mas podem ser atingidos por matches, bombas ou ⚡.
+- O tempo base é 60 s e cai a cada 10 fases, até 33 s na fase 100.
 - Bombas aparecem no tabuleiro doce e explodem a área 3×3 ao serem trocadas com qualquer doce; bombas vizinhas entram em cadeia.
 - Explosões usam som próprio, faísca, texto de pontos e tremida; o fundo ambiente é o mesmo do modo clássico (ondas/fita).
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.

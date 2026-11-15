@@ -299,3 +299,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - `rankFamily`, `rankClassicScope` e `rankDifficulty` separam a navegação e o cache;
   - abrir o ranking pela tela de morte usa a família correta;
   - o layout foi validado em 320/390 px com as novas linhas.
+
+## ADR-024 — 2×2, relâmpago, cadeados e tempo de 60s no modo doce
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** o modo doce precisava de mais variedade tática e de uma progressão de dificuldade baseada em obstáculos, não apenas em mais tipos de doce.
+- **Decisão:** aceitar quadrados 2×2 como match; adicionar o especial ⚡ (troca com um doce elimina todos do tipo; duas ⚡ limpam o tabuleiro); limitar os tipos a 6; a partir da fase 21 substituir o sétimo tipo por doces com cadeado, que têm 2 cargas, não podem ser trocados nem caem e são reduzidos por matches/explosões; reduzir o tempo base para 60 s (33 s na fase 100).
+- **Consequências:**
+  - `candyFindMatches` ganhou a varredura 2×2;
+  - `candyState.locks` guarda as cargas e a coluna é colapsada em segmentos entre cadeados;
+  - `CANDY_LIGHTNING` é um tipo especial separado de bombas;
+  - o alvo do ⚡ é decidido antes da troca, garantindo o tipo correto;
+  - efeitos e sons novos: `Sound.lightning()`, `Sound.lockHit()`, flash e células zap;
+  - o balanceamento dos cadeados e do tempo de 60 s precisa de playtest.

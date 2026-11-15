@@ -135,14 +135,22 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 
 - [ ] Em **Jogar → Modo Doce**, o tabuleiro de doces abre corretamente.
 - [ ] O tabuleiro tem 8×8 doces, sem matches iniciais e com pelo menos uma jogada possível.
+- [ ] Um quadrado 2×2 do mesmo tipo também é uma combinação válida.
+- [ ] O especial **⚡** aparece no tabuleiro e, trocado com um doce, elimina todos os doces daquele tipo.
+- [ ] Duas ⚡ juntas causam a sobrecarga e limpam o tabuleiro.
+- [ ] A partir da fase 21 aparecem doces com **cadeado**.
+- [ ] Um doce com cadeado não pode ser trocado e precisa de 2 detonações para sumir.
+- [ ] Cadeados não caem e bloqueiam a passagem dos doces na coluna.
 - [ ] Trocar doces adjacentes que formam 3+ limpa as peças, pontua e preenche a coluna.
 - [ ] Uma troca inválida desfaz o movimento e zera a sequência.
 - [ ] Cascatas mostram combo e somam pontos.
-- [ ] O tempo começa em 75 s na fase 1 e diminui a cada 10 fases; não há vidas.
+- [ ] O tempo começa em 60 s na fase 1 e diminui a cada 10 fases; não há vidas.
 - [ ] A meta de pontos sobe por fase e a barra de progresso acompanha.
 - [ ] Ao atingir a meta, a próxima fase começa com tabuleiro novo.
 - [ ] Na fase 11 entram mais tipos e a mensagem de dificuldade aumentada aparece.
-- [ ] Na fase 31 o sétimo tipo é adicionado.
+- [ ] São 5 tipos até a fase 10 e 6 tipos da fase 11 em diante; não há sétimo tipo.
+- [ ] Na fase 21 surgem os cadeados no lugar do sétimo tipo.
+- [ ] Na fase 31 o sétimo tipo não é adicionado.
 - [ ] Bombas aparecem no tabuleiro (a partir da fase 4 no início e por chance no refill).
 - [ ] Trocar uma bomba com qualquer doce explode a área 3×3 ao redor e soma pontos.
 - [ ] Bombas vizinhas explodem em cadeia.
