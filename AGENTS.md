@@ -55,8 +55,9 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 6. Manter menu inicial, tutorial e configurações acessíveis.
 7. Manter a paleta preto/laranja no modo escuro, laranja/branco no claro e o fundo SVG (ondas desfocadas à direita no escuro, fita laranja desfocada no claro).
 8. Manter o áudio sintetizado com Web Audio API, sem arquivos externos.
-9. Manter os headers de segurança em `_headers` e não quebrar a CSP.
-10. Atualizar a documentação de contexto junto com mudanças de comportamento.
+9. Manter a sequência 🔥: +1 por parede concluída, zerada ao levar dano; o chip deve mostrar apenas o ícone e o número.
+10. Manter os headers de segurança em `_headers` e não quebrar a CSP.
+11. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 

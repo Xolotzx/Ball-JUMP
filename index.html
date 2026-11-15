@@ -67,7 +67,7 @@
   .app{position:relative;z-index:1;width:min(100%,780px);margin:0 auto;padding:clamp(12px,2.6vw,26px) clamp(12px,3vw,22px) 10px;display:flex;flex-direction:column;flex:1}
 
   /* ===== superfícies liquid glass ===== */
-  .stat,.icon-btn,.meta-chip,.close-btn,.diff-option,.theme-card,.switch-row{
+  .stat,.icon-btn,.meta-chip,.close-btn,.diff-option,.theme-card,.switch-row,.streak-chip{
     background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom));
     border:1px solid var(--glass-border);
     box-shadow:inset 0 1px 0 var(--glass-highlight),0 10px 28px -26px var(--shadow);
@@ -95,6 +95,21 @@
   .stat-value{font-family:var(--mono);font-size:19px;font-weight:800;line-height:1;display:flex;align-items:baseline;gap:2px;white-space:nowrap}
   .stat-value i,.progress-num i{font-style:normal;color:var(--muted);font-size:11px;font-weight:700}
   .stat-lives .heart{color:var(--ball);font-size:15px}
+  .streak-chip{
+    display:inline-flex;align-items:center;justify-content:center;gap:4px;align-self:center;
+    min-height:34px;padding:4px 10px;border-radius:999px;white-space:nowrap;
+    font-family:var(--mono);font-size:13px;font-weight:900;line-height:1;color:var(--text);
+    background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 16%,var(--glass-top)),color-mix(in srgb,var(--accent) 7%,var(--glass-bottom)));
+    border-color:color-mix(in srgb,var(--accent) 42%,var(--glass-border));
+    cursor:default;
+  }
+  .streak-chip[hidden]{display:none}
+  .streak-chip b{font:inherit}
+  .streak-flame{font-size:14px;line-height:1;filter:drop-shadow(0 0 4px rgba(255,110,0,.35));transform-origin:50% 100%}
+  .streak-chip.is-hot{animation:streak-pop .38s cubic-bezier(.2,.9,.25,1)}
+  .streak-chip.is-hot .streak-flame{animation:flame-flicker .46s ease-out}
+  @keyframes streak-pop{0%{transform:scale(.76)}55%{transform:scale(1.13)}100%{transform:scale(1)}}
+  @keyframes flame-flicker{0%{transform:scale(.82) rotate(-4deg)}40%{transform:scale(1.26) rotate(4deg)}72%{transform:scale(1.08) rotate(-2deg)}100%{transform:scale(1) rotate(0)}}
   .stat-progress{flex:1 1 150px;min-width:126px}
   .progress-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
   .progress-num{font-family:var(--mono);font-size:14px;font-weight:800;white-space:nowrap}
@@ -436,6 +451,8 @@
   @media (max-width:620px){
     .hud-stats{flex-wrap:wrap;flex-basis:100%}
     .stat{flex:1 1 0;min-width:0;padding:7px 10px;min-height:50px}
+    .streak-chip{min-height:32px;padding:4px 8px;font-size:12px}
+    .streak-flame{font-size:13px}
     .stat-progress{flex-basis:100%;order:3;min-height:46px}
     .hud-actions{flex-basis:100%}
     .dir-btn{flex:1;min-height:46px}
@@ -524,6 +541,9 @@
         <div class="stat stat-lives" title="Vidas restantes">
           <span class="stat-label">VIDAS</span>
           <span class="stat-value"><span class="heart" aria-hidden="true">♥</span><b id="livesVal">3</b></span>
+        </div>
+        <div class="streak-chip" id="streakChip" hidden aria-live="polite" aria-label="Sequência de 0 movimentos sem tomar dano">
+          <span class="streak-flame" aria-hidden="true">🔥</span><b id="streakVal">0</b>
         </div>
         <div class="stat stat-progress" title="Área preenchida — meta 95%">
           <div class="progress-top"><span class="stat-label">ÁREA</span><span class="progress-num"><b id="pctVal">0%</b><i>/95%</i></span></div>
@@ -677,7 +697,7 @@
         </li>
         <li>
           <span class="step-num" aria-hidden="true">3</span>
-          <div><strong>Cuidado com as bolinhas</strong><p>Se uma bolinha encostar na parede enquanto ela cresce, a parede quebra e você perde <b>1 vida</b>. Planeje o momento e o lugar.</p></div>
+          <div><strong>Cuidado com as bolinhas</strong><p>Se uma bolinha encostar na parede enquanto ela cresce, a parede quebra, você perde <b>1 vida</b> e a sequência volta a zero. Planeje o momento e o lugar.</p></div>
         </li>
         <li>
           <span class="step-num" aria-hidden="true">4</span>
@@ -690,7 +710,7 @@
         <div><span class="control-tag">Celular</span><p><b>Toque</b> constrói · botão <b>HORIZ / VERT</b> gira. A tela não rola enquanto você joga.</p></div>
       </div>
 
-      <p class="tutorial-note">Dificuldade, aparência e som ficam em <b>Configurações</b>.</p>
+      <p class="tutorial-note">A sequência 🔥 aumenta a cada parede concluída. Dificuldade, aparência e som ficam em <b>Configurações</b>.</p>
     </div>
     <footer class="tutorial-foot">
       <button id="closeTutorialBtn" class="secondary-btn" type="button">Voltar</button>
@@ -824,6 +844,7 @@ const ui = {
   level: $('levelVal'), lives: $('livesVal'), pct: $('pctVal'), bar: $('pctBar'),
   dirBtn: $('dirBtn'), dirText: $('dirText'), settings: $('settingsBtn'),
   diffChip: $('diffChip'), ballChip: $('ballChip'),
+  streakChip: $('streakChip'), streakVal: $('streakVal'),
   overlay: $('overlay'), overlayKicker: $('overlayKicker'), overlayTitle: $('overlayTitle'),
   overlayText: $('overlayText'), overlayBtn: $('overlayBtn'), toast: $('toast'),
   modal: $('settingsModal'), closeSettings: $('closeSettings'), difficultyList: $('difficultyList'),
@@ -1150,6 +1171,27 @@ const Sound = (() => {
     noiseSweep({ duration: 0.8, vol: 0.014, from: 900, to: 5200, delay: 0.18, send: 0.4, type: 'bandpass', q: 0.6 });
   }
 
+  function fire(streak = 1) {
+    if (!enabled) return;
+    const intensity = Math.min(1, 0.5 + streak * 0.04);
+    noiseSweep({
+      duration: 0.28, vol: 0.009 * intensity, from: 220, to: 900,
+      delay: 0.02, type: 'bandpass', q: 1.2, send: 0.24
+    });
+    noiseSweep({
+      duration: 0.05, vol: 0.0032 * intensity, from: 2200, to: 1100,
+      delay: 0.1, type: 'bandpass', q: 2, send: 0.18
+    });
+    noiseSweep({
+      duration: 0.04, vol: 0.0026 * intensity, from: 3000, to: 1700,
+      delay: 0.17, type: 'bandpass', q: 2, send: 0.16
+    });
+    voice(118, 0.2, {
+      type: 'sine', vol: 0.006 * intensity, slide: 78,
+      delay: 0.02, cutoff: 550, send: 0.12
+    });
+  }
+
   function bounce(x = GAME_W / 2) {
     if (!enabled) return;
     const now = performance.now();
@@ -1184,7 +1226,7 @@ const Sound = (() => {
 
   function unlock() { ensure(); }
 
-  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, deny, click, setEnabled, unlock };
+  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, setEnabled, unlock };
 })();
 
 /* =========================================================
@@ -1199,6 +1241,7 @@ const state = {
   difficulty: prefs.difficulty,
   theme: prefs.theme,
   dir: 'h',
+  streak: 0,
   phase: 'playing',   // playing | levelup | gameover | victory
   paused: false,
   filled: 0,
@@ -1394,6 +1437,25 @@ function updateHUD() {
   ui.dirBtn.setAttribute('aria-label', 'Direção da parede: ' + (state.dir === 'h' ? 'horizontal' : 'vertical') + '. Toque para alternar.');
 }
 
+function updateStreakHUD(animate = false) {
+  const n = Math.max(0, state.streak);
+  ui.streakVal.textContent = n;
+  ui.streakChip.hidden = n <= 0;
+  ui.streakChip.setAttribute(
+    'aria-label',
+    'Sequência de ' + n + (n === 1 ? ' movimento' : ' movimentos') + ' sem tomar dano'
+  );
+  if (n <= 0) {
+    ui.streakChip.classList.remove('is-hot');
+    return;
+  }
+  if (animate) {
+    ui.streakChip.classList.remove('is-hot');
+    void ui.streakChip.offsetWidth;
+    ui.streakChip.classList.add('is-hot');
+  }
+}
+
 function setDirection(dir, silent = false) {
   state.dir = dir === 'v' ? 'v' : 'h';
   updateHUD();
@@ -1534,6 +1596,8 @@ function beginLevel(level) {
 function restartGame(fromSettings = false) {
   Sound.stopBuild();
   state.lives = difficulty().lives;
+  state.streak = 0;
+  updateStreakHUD();
   state.paused = modalOpen;
   beginLevel(1);
   if (!fromSettings) showToast('Novo jogo — nível 1', 'good', 1700);
@@ -1704,6 +1768,8 @@ function failBuild(ball) {
   Sound.stopBuild();
   Sound.lifeLost();
   state.lives = Math.max(0, state.lives - 1);
+  state.streak = 0;
+  updateStreakHUD();
   state.shake = 1;
   state.flash = 1;
   if (ball) burst(ball.x, ball.y, '#ff5a5a', 16, 2.8);
@@ -1726,6 +1792,9 @@ function completeBuild() {
   state.build = null;
   Sound.stopBuild();
   Sound.success();
+  state.streak += 1;
+  updateStreakHUD(true);
+  Sound.fire(state.streak);
   markSceneDirty();
   floodFill();
   refreshProgress();

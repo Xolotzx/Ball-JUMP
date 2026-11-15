@@ -145,3 +145,15 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - maior custo de CPU no áudio (aceitável);
   - nenhum arquivo de áudio externo;
   - bounce limitado por taxa para evitar saturação.
+
+## ADR-013 — Sequência 🔥 por movimentos sem dano
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** recompensar consistência sem alterar o balanceamento principal.
+- **Decisão:** +1 na sequência por parede concluída; zerar ao levar dano. Exibir apenas 🔥 + número no HUD, com animação e som de fogo sutil.
+- **Consequências:**
+  - feedback positivo a cada parede concluída;
+  - reinício/dano limpam a sequência;
+  - a sequência persiste entre níveis;
+  - não concede vantagem mecânica além do feedback.

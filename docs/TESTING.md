@@ -43,6 +43,10 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Modo escuro usa preto e laranja; modo claro usa laranja e branco.
 - [ ] Fundo SVG aparece corretamente: ondas desfocadas à direita no escuro e fita laranja desfocada no claro, sem prejudicar a leitura.
 - [ ] Painéis de texto mantêm contraste sobre o fundo.
+- [ ] Sequência 🔥 fica oculta com zero e aparece após a primeira parede concluída.
+- [ ] Cada parede concluída aumenta o número; o ícone pulsa e toca o som de fogo.
+- [ ] Levar dano zera a sequência e oculta o chip.
+- [ ] A sequência persiste ao avançar de nível e zera em novo jogo.
 
 ## 4. Dificuldades e persistência
 

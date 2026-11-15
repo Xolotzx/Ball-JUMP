@@ -55,7 +55,7 @@ Valores do grid:
 O estado global `state` contém:
 
 - `grid`, `balls`, `build`;
-- `level`, `lives`, `difficulty`, `theme`, `dir`;
+- `level`, `lives`, `streak`, `difficulty`, `theme`, `dir`;
 - `phase` (`playing`, `levelup`, `gameover`, `victory`);
 - `paused`, `transition`, `filled`, `progress`;
 - efeitos visuais (`fills`, `particles`, `shake`, `flash`);
@@ -102,8 +102,8 @@ Funções principais:
 - `updateGrowth(dt)`: consome intervalos e chama `growStep`.
 - `growStep(build)`: expande os dois lados, marca `BUILD`, verifica colisão.
 - `ballTouchesBuild()`: colisão bolinha × parede em construção.
-- `failBuild(ball)`: limpa blocos em construção, perde vida, efeitos e áudio.
-- `completeBuild()`: converte `BUILD` em `WALL`, dispara flood fill e progresso.
+- `failBuild(ball)`: limpa blocos em construção, perde vida, **zera a sequência** e efeitos/áudio.
+- `completeBuild()`: converte `BUILD` em `WALL`, incrementa a sequência, atualiza o HUD, toca o som de fogo e dispara flood fill/progresso.
 
 Intervalo de crescimento: `difficulty.divisor * 23` ms por bloco.
 
@@ -140,7 +140,8 @@ Componentes de UI:
 - tutorial: `#tutorialModal`;
 - configurações: `#settingsModal`;
 - overlay de nível/game over/vitória: `#overlay`;
-- HUD, toast e meta-informações.
+- HUD, toast e meta-informações;
+- chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero.
 
 Controle de sobreposição:
 

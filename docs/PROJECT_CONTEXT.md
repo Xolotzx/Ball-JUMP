@@ -68,6 +68,14 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
   - Hardcore: 1 vida, parede bem lenta (`divisor = 6`).
 - Alterar dificuldade reinicia no nível 1.
 
+### Sequência 🔥
+
+- Cada **parede concluída com sucesso** aumenta a sequência em **+1**.
+- Levar dano (parede destruída por bolinha) **zera** a sequência.
+- A sequência persiste entre níveis; é zerada em um novo jogo/reinício.
+- O HUD mostra 🔥 + número apenas; o ícone pulsa e emite um som de fogo sutil ao aumentar.
+- O contador é apenas visual/sonoro; não altera velocidade, pontuação ou vidas.
+
 ### Áudio
 
 - Web Audio API, sintetizado em tempo real, sem arquivos de mídia.

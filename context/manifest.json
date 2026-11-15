@@ -95,7 +95,8 @@
     "lifeGainPerLevel": 1,
     "baseSpeed": 1.2,
     "wallGrowthMsPerTile": "difficulty.divisor * 23",
-    "storageKey": "kbounce.settings.v1"
+    "storageKey": "kbounce.settings.v1",
+    "streak": "increments per completed wall, resets on damage or new game, persists across levels"
   },
   "difficulty": {
     "easy": { "lives": 5, "divisor": 2 },

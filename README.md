@@ -18,6 +18,7 @@ Preencha **95%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 
 - 100 níveis e uma bolinha extra a cada 2 níveis.
 - 4 dificuldades.
+- Sequência 🔥: cada parede concluída aumenta o contador; levar dano zera. Inclui animação e som de fogo sutil.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.
 - Efeitos sonoros gerados com Web Audio API, com reverb, harmônicos e pan estéreo.
