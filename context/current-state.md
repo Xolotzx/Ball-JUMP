@@ -15,7 +15,7 @@
 
 ## Regras em vigor
 
-- Meta: **95%**.
+- Meta: **75%**.
 - **+1 vida** por fase concluída.
 - 100 níveis; +1 bolinha a cada 2 níveis.
 - 4 dificuldades.
@@ -37,6 +37,7 @@
 - Headers de segurança e CSP adicionados ao deploy.
 - Página 404 e allowlist de publicação adicionadas.
 - Paleta alterada para preto/laranja (escuro) e laranja/branco (claro).
+- Meta reduzida de 95% para 75%.
 - Modo Fácil com parede quase instantânea.
 - Segunda iteração do HUD: sequência → nível → vidas, bloco de objetivo removido e rodapé discreto.
 - Sequência 🔥 adicionada: +1 por parede concluída, zera ao levar dano, com som de fogo sutil.

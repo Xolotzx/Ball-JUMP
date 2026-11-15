@@ -39,17 +39,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - acessibilidade do canvas depende de rótulos e da UI HTML;
   - cache de cena necessário para desempenho.
 
-## ADR-004 — Meta de 95% e +1 vida por fase
+## ADR-004 — Meta de 75% e +1 vida por fase
 
 - **Data:** 2026-11-15
 - **Status:** aceita
-- **Contexto:** aumentar o desafio e recompensar progressão contínua; requisito do produto.
-- **Decisão:** meta de **95%** da área interna; ao concluir cada fase, conceder **+1 vida**.
+- **Contexto:** equilibrar desafio e progressão; meta ajustada para 75% nesta iteração.
+- **Decisão:** meta de **75%** da área interna; ao concluir cada fase, conceder **+1 vida**.
 - **Consequências:**
-  - `GOAL_CELLS = 479`;
-  - níveis mais longos e exigentes;
+  - `GOAL_CELLS = 378`;
+  - níveis mais acessíveis;
   - a vida extra reduz a punição acumulada;
-  - tutela e HUD devem refletir 95% e a recompensa.
+  - tutorial e HUD devem refletir 75% e a recompensa.
 
 ## ADR-005 — Remover compartilhamento
 

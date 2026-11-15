@@ -22,7 +22,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] “Como jogar” abre o tutorial e o botão “Voltar” retorna ao menu.
 - [ ] “Jogar agora” no tutorial inicia a partida.
 - [ ] “Configurações” abre o modal, pausa o jogo e, ao fechar, retorna ao menu ou ao jogo.
-- [ ] HUD mostra nível, vidas, área (x%/95%), direção e configurações.
+- [ ] HUD mostra nível, vidas, área (x%/75%), direção e configurações.
 - [ ] Botão de compartilhamento não existe.
 
 ## 3. Gameplay e visual
@@ -34,7 +34,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Parede atingida por bolinha é destruída e perde 1 vida.
 - [ ] Área fechada sem bolinha é preenchida automaticamente.
 - [ ] Progresso do HUD aumenta após flood fill.
-- [ ] Ao atingir 95%, o nível é concluído.
+- [ ] Ao atingir 75%, o nível é concluído.
 - [ ] Overlay mostra “+1 VIDA”.
 - [ ] Após a transição, o próximo nível começa com a vida extra.
 - [ ] +1 bolinha a cada 2 níveis.
@@ -106,7 +106,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 
 - Colisão de bolinhas com paredes em construção.
 - Flood fill preenchendo região com bolinha.
-- Contagem de 95% (`GOAL_CELLS`).
+- Contagem de 75% (`GOAL_CELLS`).
 - +1 vida por fase e transição de nível.
 - Pausa/retomada com menu, tutorial e configurações.
 - CSP bloqueando script/style/favicon.

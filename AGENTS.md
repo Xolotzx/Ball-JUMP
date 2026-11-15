@@ -30,7 +30,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 
 - Arena lógica: **600 × 400 px**, `TILE = 20`, grid **30 × 20**.
 - Área interna: **28 × 18 = 504 células**; borda é parede sólida.
-- Meta de cada fase: **95%** da área interna (`GOAL_CELLS = 479`).
+- Meta de cada fase: **75%** da área interna (`GOAL_CELLS = 378`).
 - Níveis: **1 a 100**; começa com **2 bolinhas** e ganha **+1 bolinha a cada 2 níveis**.
 - Ao concluir **cada fase**, o jogador ganha **+1 vida**.
 - Dificuldades:
@@ -49,7 +49,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 
 1. O jogo deve continuar funcionando ao abrir `index.html` diretamente, sem servidor.
 2. Não adicionar requisições de rede, CDNs, fontes externas ou dependências de runtime.
-3. Manter a meta em **95%** e a vida extra por fase, salvo mudança explícita de requisito.
+3. Manter a meta em **75%** e a vida extra por fase, salvo mudança explícita de requisito.
 4. Manter suporte a desktop e mobile, incluindo `touchstart`, escala correta e `touch-action: none` no canvas.
 5. Manter o botão de compartilhamento removido.
 6. Manter menu inicial, tutorial e configurações acessíveis.

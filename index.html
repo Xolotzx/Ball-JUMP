@@ -115,7 +115,7 @@
   .progress-num{font-family:var(--mono);font-size:14px;font-weight:800;white-space:nowrap}
   .progress-track{position:relative;height:6px;border-radius:99px;background:color-mix(in srgb,var(--text) 9%,transparent);box-shadow:inset 0 1px 2px rgba(0,0,0,.12);overflow:visible;margin-top:2px}
   .progress-fill{position:absolute;left:0;top:0;bottom:0;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .35s cubic-bezier(.2,.8,.2,1)}
-  .goal-mark{position:absolute;left:95%;top:-3px;bottom:-3px;width:2px;border-radius:2px;background:var(--goal);opacity:.72}
+  .goal-mark{position:absolute;left:75%;top:-3px;bottom:-3px;width:2px;border-radius:2px;background:var(--goal);opacity:.72}
   .dir-btn{
     display:flex;align-items:center;justify-content:center;gap:7px;min-width:94px;padding:0 14px;
     border-radius:16px;cursor:pointer;font-family:var(--mono);
@@ -530,8 +530,8 @@
           <span class="stat-label">VIDAS</span>
           <span class="stat-value"><span class="heart" aria-hidden="true">♥</span><b id="livesVal">3</b></span>
         </div>
-        <div class="stat stat-progress" title="Área preenchida — meta 95%">
-          <div class="progress-top"><span class="stat-label">ÁREA</span><span class="progress-num"><b id="pctVal">0%</b><i>/95%</i></span></div>
+        <div class="stat stat-progress" title="Área preenchida — meta 75%">
+          <div class="progress-top"><span class="stat-label">ÁREA</span><span class="progress-num"><b id="pctVal">0%</b><i>/75%</i></span></div>
           <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="pctBar"></div><span class="goal-mark"></span></div>
         </div>
       </div>
@@ -578,7 +578,7 @@
   <div class="menu-card">
     <span class="menu-kicker">Menu principal</span>
     <h1 id="menuTitle">Escolha uma opção</h1>
-    <p class="menu-sub">Preencha 95% da arena e prenda as bolinhas.</p>
+    <p class="menu-sub">Preencha 75% da arena e prenda as bolinhas.</p>
     <div class="menu-actions">
       <button id="playBtn" class="menu-btn primary" type="button">
         <span class="menu-icon" aria-hidden="true">▶</span>
@@ -669,7 +669,7 @@
       <ol class="tutorial-steps">
         <li>
           <span class="step-num" aria-hidden="true">1</span>
-          <div><strong>Encha 95% da arena</strong><p>Isolar as bolinhas vai preenchendo a área. Quando a barra de <b>ÁREA</b> alcançar a marca de 95%, o nível termina.</p></div>
+          <div><strong>Encha 75% da arena</strong><p>Isolar as bolinhas vai preenchendo a área. Quando a barra de <b>ÁREA</b> alcançar a marca de 75%, o nível termina.</p></div>
         </li>
         <li>
           <span class="step-num" aria-hidden="true">2</span>
@@ -708,7 +708,7 @@
 const GAME_W = 600, GAME_H = 400, TILE = 20, COLS = 30, ROWS = 20;
 const EMPTY = 0, WALL = 1, BUILD = 2;
 const BALL_R = 6.5, SPEED = 1.2;
-const GOAL_PCT = 95, MAX_LEVEL = 100;
+const GOAL_PCT = 75, MAX_LEVEL = 100;
 const STEP_MS = 1000 / 60;
 const INTERIOR_TOTAL = (COLS - 2) * (ROWS - 2);
 const GOAL_CELLS = Math.ceil(INTERIOR_TOTAL * GOAL_PCT / 100);

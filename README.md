@@ -9,7 +9,7 @@ Jogo web inspirado no clássico JezzBall, feito em um único arquivo HTML com Ca
 
 ## Como funciona
 
-Preencha **95%** da arena construindo paredes para isolar as bolinhas. Se uma bolinha tocar em uma parede que ainda está crescendo, você perde uma vida. Ao concluir cada fase, você ganha **+1 vida**.
+Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bolinha tocar em uma parede que ainda está crescendo, você perde uma vida. Ao concluir cada fase, você ganha **+1 vida**.
 
 - **PC:** clique esquerdo constrói · clique direito alterna a direção · `Espaço` também alterna.
 - **Celular:** toque constrói · use o botão **HORIZ / VERT** para alternar a direção.

@@ -86,12 +86,12 @@ try {
   fail('manifest.json é JSON válido', error.message);
 }
 
-check(manifest?.runtimeFacts?.goalPercent === 95, 'manifesto declara meta de 95%');
+check(manifest?.runtimeFacts?.goalPercent === 75, 'manifesto declara meta de 75%');
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
 const projectContext = exists('docs/PROJECT_CONTEXT.md') ? read('docs/PROJECT_CONTEXT.md') : '';
-check(projectContext.includes('95%'), 'contexto do projeto menciona 95%');
+check(projectContext.includes('75%'), 'contexto do projeto menciona 75%');
 check(projectContext.includes('+1 vida'), 'contexto do projeto menciona +1 vida por fase');
 
 const agents = exists('AGENTS.md') ? read('AGENTS.md') : '';
@@ -102,7 +102,7 @@ check(agents.includes('Nunca'), 'AGENTS.md contém proibições explícitas');
 console.log('\nInvariantes do jogo:');
 const index = exists('index.html') ? read('index.html') : '';
 check(index.includes('<title>Balljump-game'), 'título Balljump-game presente');
-check(index.includes('const GOAL_PCT = 95'), 'GOAL_PCT definido como 95');
+check(index.includes('const GOAL_PCT = 75'), 'GOAL_PCT definido como 75');
 check(index.includes('state.lives++'), 'incremento de vida por fase presente');
 check(!/id=["']shareBtn["']/.test(index), 'botão de compartilhar removido');
 check(!/navigator\.share|navigator\.clipboard/.test(index), 'sem Web Share/clipboard no runtime');

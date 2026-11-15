@@ -5,7 +5,7 @@
 
 ## 1. Visão
 
-Balljump-game é um jogo casual de estratégia para navegador, inspirado no clássico JezzBall. O jogador constrói paredes para dividir a arena e isolar bolinhas. Áreas fechadas sem bolinhas são preenchidas automaticamente. O objetivo é preencher **95%** da área interna antes de perder todas as vidas.
+Balljump-game é um jogo casual de estratégia para navegador, inspirado no clássico JezzBall. O jogador constrói paredes para dividir a arena e isolar bolinhas. Áreas fechadas sem bolinhas são preenchidas automaticamente. O objetivo é preencher **75%** da área interna antes de perder todas as vidas.
 
 O projeto tem uma restrição deliberada: **todo o runtime fica em um único `index.html`**, sem dependências, sem back-end e sem chamadas de rede. A documentação de contexto e segurança é externa ao runtime.
 
@@ -29,7 +29,7 @@ O projeto tem uma restrição deliberada: **todo o runtime fica em um único `in
 - Grid: **30 colunas × 20 linhas**.
 - Borda: parede sólida permanente.
 - Área interna jogável: **28 × 18 = 504 células**.
-- Meta: **95%** da área interna; `GOAL_CELLS = ceil(504 × 0,95) = 479`.
+- Meta: **75%** da área interna; `GOAL_CELLS = ceil(504 × 0,75) = 378`.
 
 ### Construção de paredes
 

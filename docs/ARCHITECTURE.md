@@ -42,7 +42,7 @@ Constantes principais em `index.html`:
 | `COLS`, `ROWS` | `30`, `20` | Grid. |
 | `BALL_R` | `6.5` | Raio de colisão da bolinha. |
 | `SPEED` | `1.2` | Velocidade por passo fixo. |
-| `GOAL_PCT` | `95` | Meta de preenchimento. |
+| `GOAL_PCT` | `75` | Meta de preenchimento. |
 | `MAX_LEVEL` | `100` | Último nível. |
 | `STEP_MS` | `1000 / 60` | Passo fixo da simulação. |
 
