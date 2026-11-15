@@ -246,6 +246,15 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Geração inicial sem matches e com pelo menos uma jogada possível.
 - Troca de células adjacentes por clique/toque; se não formar 3+, a troca é
   desfeita e a sequência zera.
+- Bombas (`CANDY_BOMB`, tipo especial fora dos 7 doces) aparecem no tabuleiro
+  (seed por fase + chance no refill), não entram em matches e explodem quando
+  trocadas com qualquer doce:
+  - a explosão limpa a área 3×3 ao redor;
+  - bombas dentro da área entram em cadeia;
+  - o dano soma pontos, faíscas, texto flutuante, tremida e `Sound.explosion()`;
+  - depois do refill, cascatas normais continuam com `Sound.candyPop()`.
+- O fundo do modo doce é transparente sobre o mesmo fundo ambiente do clássico
+  (body + `.wave-bg`/`.ribbon-bg`); o `.app` fica oculto enquanto `body.candy-active`.
 - `candyFindMatches` detecta runs horizontais/verticais; `candyCollapseAndRefill`
   remove, colapsa e preenche; cascatas geram combos e multiplicam pontos.
 - Pontuação: `doces × 50 × combo`; a sequência sobe +1 por troca válida.

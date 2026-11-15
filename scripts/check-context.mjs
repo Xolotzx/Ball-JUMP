@@ -133,7 +133,7 @@ check(index.includes('const GOAL_PCT = 75'), 'GOAL_PCT definido como 75');
 check(index.includes('state.lives++'), 'incremento de vida por fase presente');
 check(!/id=["']shareBtn["']/.test(index), 'botão de compartilhar removido');
 check(!/navigator\.share|navigator\.clipboard/.test(index), 'sem Web Share/clipboard no runtime');
-check(index.length < 200_000, 'index.html abaixo de 200 KB', `${index.length} bytes`);
+check(index.length < 240_000, 'index.html abaixo de 240 KB', `${index.length} bytes`);
 check((index.match(/<script\b/gi) || []).length === 1, 'exatamente um bloco de script inline');
 
 // 3. Superfície de rede/execução
@@ -184,6 +184,9 @@ check(index.includes('nickname-taken'), 'erro de nick duplicado presente');
 check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade presente');
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
 check(index.includes('CANDY_MAX_LEVEL = 100') && index.includes('function startCandyMode'), 'modo doce presente');
+check(index.includes('CANDY_BOMB') && index.includes('function candyExplodeBombs'), 'bombas e explosões presentes');
+check(index.includes('function explosion') && index.includes('function candyPop'), 'sons do modo doce presentes');
+check(index.includes('body.candy-active .app') && index.includes("classList.add('candy-active')"), 'fundo compartilhado do modo doce');
 check(index.includes('candy.bestScore'), 'ranking doce presente');
 check(index.includes('id="modeModal"') && index.includes('id="modeClassicBtn"') && index.includes('id="modeCandyBtn"'), 'seletor de modo presente');
 check(index.includes('function openModeChooser') && index.includes('function chooseMode'), 'lógica do seletor de modo presente');

@@ -160,6 +160,8 @@
         "levels": 100,
         "timer": true,
         "difficultyRampEvery": 10,
+        "bombs": "3x3 explosion on swap, chain reaction",
+        "background": "shared classic ambient waves/ribbon",
         "rankingCategories": ["streak", "level", "score"]
       },
       "avatarFallback": "first letter of the nick"
@@ -190,6 +192,7 @@
     "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",
     "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
     "candy mode is a 8x8 match-3 with 100 levels, timer instead of lives and its own candy ranking",
+    "candy bombs explode a 3x3 area on swap and can chain; the candy screen shares the classic ambient background",
     "candy ranking has streak, level and score categories and does not affect classic scores",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
     "nicknames are unique via balljumpNicknames reservation; rename releases the old key in the same transaction",

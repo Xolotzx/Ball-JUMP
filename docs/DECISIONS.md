@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~187 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~195 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -258,3 +258,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - `modeOpen` entra no controle de overlays/`inert`;
   - o foco inicial do seletor vai para **Modo Clássico**;
   - ao escolher o modo doce, o foco vai para **← Menu**.
+
+## ADR-021 — Bombas, explosões e fundo compartilhado no modo doce
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** o modo doce precisava de mais impacto, som satisfatório e uma mecânica especial sem criar uma imagem de fundo separada.
+- **Decisão:** adicionar o tipo especial `CANDY_BOMB` (fora dos 7 doces), semeado por fase e por chance no refill. Trocar uma bomba com qualquer doce detona a área 3×3; bombas na área entram em cadeia. A explosão usa `Sound.explosion()`, faísca, texto flutuante, células explodindo e tremida. O modo doce usa o mesmo fundo ambiente do clássico, com `body.candy-active` ocultando o `.app` e a `#candyScreen` transparente.
+- **Consequências:**
+  - bombas não entram em matches normais e sempre dão uma jogada válida;
+  - o refill pode criar novas bombas, mantendo a mecânica presente;
+  - combos normais usam `Sound.candyPop()`, com `Sound.fire()` em combos grandes;
+  - o fundo não duplica SVGs nem imagens;
+  - a animação/score de explosão precisa de playtest para balancear;
+  - a CSP não muda, pois tudo é CSS/DOM/Web Audio.

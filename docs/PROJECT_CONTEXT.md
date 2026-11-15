@@ -94,6 +94,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Tela de menu ao entrar, com **Jogar**, **Ranking** e **Configurações**.
 - **Jogar** abre um seletor com **Modo Clássico** e **Modo Doce**.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente a cada 10 fases.
+- Bombas aparecem no tabuleiro doce e explodem a área 3×3 ao serem trocadas com qualquer doce; bombas vizinhas entram em cadeia.
+- Explosões usam som próprio, faísca, texto de pontos e tremida; o fundo ambiente é o mesmo do modo clássico (ondas/fita).
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
 - O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.
 - Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.

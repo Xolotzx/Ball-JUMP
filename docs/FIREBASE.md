@@ -42,6 +42,7 @@ administrativo ou `.env` no repositório.
    mostrando o top 10 do modo selecionado.
 9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+,
    cumpra a meta antes do tempo e avance. As vidas são substituídas por tempo.
+   Bombas aparecem no tabuleiro e explodem a área 3×3 quando trocadas com um doce.
 10. A cada 10 fases o modo Doce aumenta a dificuldade (mais tipos, meta maior e
     menos tempo), até a fase 100.
 11. O título acompanha a seleção: “Ranking geral”, “Ranking modo fácil”,

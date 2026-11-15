@@ -314,11 +314,9 @@
   .candy-screen{
     position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;
     padding:14px;overflow:auto;overscroll-behavior:contain;
-    background:
-      radial-gradient(circle at 18% 0%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 55%),
-      radial-gradient(circle at 86% 92%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 55%),
-      var(--page);
+    background:color-mix(in srgb,var(--page) 14%,transparent);
   }
+  body.candy-active .app{display:none}
   .candy-shell{width:min(100%,560px);display:flex;flex-direction:column;gap:11px}
   .candy-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .candy-back{
@@ -351,6 +349,7 @@
   .candy-progress{height:7px;border-radius:99px;background:color-mix(in srgb,var(--text) 12%,transparent);overflow:hidden}
   .candy-progress > div{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--accent-2),var(--accent));transition:width .22s ease}
   .candy-board{
+    position:relative;overflow:hidden;
     display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:8px;border-radius:18px;
     background:color-mix(in srgb,var(--surface-solid) 80%,transparent);
     border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-highlight),0 24px 60px -34px var(--shadow);
@@ -376,6 +375,58 @@
   .candy-cell[data-type="4"]{background:linear-gradient(150deg,#d3a5ff,#7c3aed)}
   .candy-cell[data-type="5"]{background:linear-gradient(150deg,#ff9b57,#c2410c)}
   .candy-cell[data-type="6"]{background:linear-gradient(150deg,#7ee7e7,#0f9fa8)}
+  .candy-cell[data-type="bomb"]{
+    background:radial-gradient(circle at 35% 28%,#fff8dc 0%,#ffd166 24%,#f97316 54%,#b91c1c 82%,#450a0a 100%);
+    color:#1a0b06;font-size:clamp(16px,4.6vw,30px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 0 1px rgba(255,220,150,.55),0 0 20px rgba(255,100,0,.45);
+    animation:candy-bomb-pulse 1.15s ease-in-out infinite;
+    text-shadow:0 1px 1px rgba(255,255,255,.35);
+  }
+  .candy-cell[data-type="bomb"]::after{
+    content:"";position:absolute;inset:16%;border-radius:50%;
+    border:1px dashed rgba(255,235,190,.55);pointer-events:none;
+  }
+  .candy-cell.is-exploding{
+    animation:candy-explode .34s ease-out forwards;z-index:4;
+  }
+  .candy-board.is-shaking{animation:candy-shake .32s ease-out}
+  .candy-blast{
+    position:absolute;z-index:8;pointer-events:none;border-radius:50%;
+    background:radial-gradient(circle,#fff 0%,#ffe08a 16%,rgba(255,122,24,.55) 42%,transparent 70%);
+    mix-blend-mode:screen;
+    animation:candy-blast .48s ease-out forwards;
+  }
+  .candy-float{
+    position:absolute;z-index:9;pointer-events:none;white-space:nowrap;
+    font-family:var(--mono);font-size:14px;font-weight:900;color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,.65),0 0 12px rgba(255,140,40,.7);
+    animation:candy-float .72s ease-out forwards;
+  }
+  @keyframes candy-bomb-pulse{
+    0%,100%{filter:brightness(1);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 1px rgba(255,190,100,.35),0 0 14px rgba(255,90,0,.28)}
+    50%{filter:brightness(1.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 0 2px rgba(255,210,130,.5),0 0 26px rgba(255,90,0,.55)}
+  }
+  @keyframes candy-explode{
+    0%{transform:scale(1);opacity:1;filter:brightness(1)}
+    45%{transform:scale(1.28);opacity:1;filter:brightness(2.2)}
+    100%{transform:scale(.1) rotate(20deg);opacity:0;filter:brightness(3)}
+  }
+  @keyframes candy-shake{
+    0%,100%{transform:translate(0,0)}
+    20%{transform:translate(-3px,2px)}
+    40%{transform:translate(3px,-2px)}
+    60%{transform:translate(-2px,-1px)}
+    80%{transform:translate(2px,1px)}
+  }
+  @keyframes candy-blast{
+    0%{transform:scale(.18);opacity:1}
+    100%{transform:scale(1.55);opacity:0}
+  }
+  @keyframes candy-float{
+    0%{transform:translate(-50%,-30%) scale(.8);opacity:0}
+    20%{opacity:1;transform:translate(-50%,-75%) scale(1.12)}
+    100%{opacity:0;transform:translate(-50%,-190%) scale(1)}
+  }
   .candy-message{margin:0;text-align:center;font-size:10.5px;line-height:1.45;color:var(--muted);min-height:16px}
   .candy-message.is-good{color:var(--accent);font-weight:800}
   .candy-hint{margin:0;text-align:center;font-size:8.5px;line-height:1.45;color:var(--muted);opacity:.8}
@@ -1271,9 +1322,21 @@ const DIFFICULTIES = {
 };
 
 const CANDY_TYPES = ['🍬', '🍭', '🍫', '🍩', '🍪', '🧁', '🍯'];
+const CANDY_BOMB = CANDY_TYPES.length;
 const CANDY_SIZE = 8;
 const CANDY_MAX_LEVEL = 100;
 const CANDY_TIER_NAMES = ['Doçura 1', 'Doçura 2', 'Doçura 3', 'Doçura 4', 'Doçura 5', 'Doçura 6', 'Doçura 7', 'Doçura 8', 'Doçura 9', 'Doçura 10'];
+
+function candyBombChance(level) {
+  return Math.min(0.075, 0.008 + level * 0.0006);
+}
+
+function candyBombSeedCount(level) {
+  if (level < 4) return 0;
+  if (level < 40) return 1;
+  if (level < 75) return 2;
+  return 3;
+}
 
 function candyTier(level) {
   return Math.min(9, Math.floor((level - 1) / 10));
@@ -1714,6 +1777,28 @@ const Sound = (() => {
     noiseSweep({ duration: 0.16, vol: 0.018, from: 480, to: 120, delay: 0, type: 'lowpass', send: 0.1 });
   }
 
+  function explosion() {
+    if (!enabled) return;
+    voice(64, 0.62, { type: 'sine', vol: 0.17, slide: 38, attack: 0.002, send: 0.08, cutoff: 240 });
+    voice(104, 0.36, { type: 'triangle', vol: 0.08, slide: 52, attack: 0.002, send: 0.16, cutoff: 520 });
+    noiseSweep({ duration: 0.5, vol: 0.058, from: 2200, to: 90, type: 'lowpass', send: 0.28 });
+    noiseSweep({ duration: 0.16, vol: 0.032, from: 520, to: 2800, delay: 0.02, type: 'bandpass', q: 0.8, send: 0.22 });
+    [1046.5, 1318.51, 1567.98, 2093].forEach((freq, i) => {
+      bell(freq, 0.34, 0.031, 0.03 + i * 0.03, (i - 1.5) * 0.18);
+    });
+  }
+
+  function candyPop(combo = 1) {
+    if (!enabled) return;
+    const level = Math.min(8, Math.max(1, combo));
+    const base = 440 + level * 64;
+    voice(base, 0.16, { type: 'triangle', vol: 0.05, attack: 0.002, slide: base * 1.75, send: 0.16, cutoff: 3600 });
+    bell(base * 2.02, 0.34, 0.034, 0.012, 0.12);
+    if (combo > 1) {
+      noiseSweep({ duration: 0.12, vol: 0.008 * Math.min(3, combo), from: 700, to: 2600, type: 'bandpass', q: 1.1, send: 0.2 });
+    }
+  }
+
   function gameOver() {
     const notes = [329.63, 261.63, 196, 130.81];
     notes.forEach((freq, i) => {
@@ -1807,7 +1892,7 @@ const Sound = (() => {
 
   function unlock() { ensure(); }
 
-  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, setEnabled, setVolume, unlock };
+  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, explosion, candyPop, setEnabled, setVolume, unlock };
 })();
 
 /* =========================================================
@@ -3569,8 +3654,10 @@ function candyFindMatches(grid) {
   for (let r = 0; r < CANDY_SIZE; r++) {
     let run = 1;
     for (let c = 1; c <= CANDY_SIZE; c++) {
-      const curr = c < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
-      const prev = grid[r * CANDY_SIZE + c - 1];
+      const currRaw = c < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
+      const prevRaw = grid[r * CANDY_SIZE + c - 1];
+      const curr = currRaw === CANDY_BOMB ? null : currRaw;
+      const prev = prevRaw === CANDY_BOMB ? null : prevRaw;
       if (c < CANDY_SIZE && curr !== null && prev !== null && curr === prev) {
         run += 1;
       } else {
@@ -3584,8 +3671,10 @@ function candyFindMatches(grid) {
   for (let c = 0; c < CANDY_SIZE; c++) {
     let run = 1;
     for (let r = 1; r <= CANDY_SIZE; r++) {
-      const curr = r < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
-      const prev = grid[(r - 1) * CANDY_SIZE + c];
+      const currRaw = r < CANDY_SIZE ? grid[r * CANDY_SIZE + c] : null;
+      const prevRaw = grid[(r - 1) * CANDY_SIZE + c];
+      const curr = currRaw === CANDY_BOMB ? null : currRaw;
+      const prev = prevRaw === CANDY_BOMB ? null : prevRaw;
       if (r < CANDY_SIZE && curr !== null && prev !== null && curr === prev) {
         run += 1;
       } else {
@@ -3600,6 +3689,9 @@ function candyFindMatches(grid) {
 }
 
 function candyHasMove(grid) {
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i] === CANDY_BOMB) return true;
+  }
   const trySwap = (a, b) => {
     const temp = grid[a];
     grid[a] = grid[b];
@@ -3619,6 +3711,23 @@ function candyHasMove(grid) {
   return false;
 }
 
+function candySeedBombs(grid) {
+  const count = candyBombSeedCount(candyState.level);
+  const available = [];
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i] !== CANDY_BOMB) available.push(i);
+  }
+  for (let n = 0; n < count && available.length; n++) {
+    const pick = Math.floor(Math.random() * available.length);
+    grid[available.splice(pick, 1)[0]] = CANDY_BOMB;
+  }
+}
+
+function candyRandomType() {
+  if (Math.random() < candyBombChance(candyState.level)) return CANDY_BOMB;
+  return Math.floor(Math.random() * candyState.types);
+}
+
 function candyGenerateGrid(types) {
   for (let attempt = 0; attempt < 120; attempt++) {
     const grid = new Array(CANDY_SIZE * CANDY_SIZE).fill(0);
@@ -3633,7 +3742,10 @@ function candyGenerateGrid(types) {
         grid[i] = type;
       }
     }
-    if (candyFindMatches(grid).size === 0 && candyHasMove(grid)) return grid;
+    if (candyFindMatches(grid).size === 0) {
+      candySeedBombs(grid);
+      if (candyHasMove(grid)) return grid;
+    }
   }
   return new Array(CANDY_SIZE * CANDY_SIZE).fill(0).map((_, i) => i % types);
 }
@@ -3648,7 +3760,7 @@ function candyCollapseAndRefill() {
     }
     for (let r = CANDY_SIZE - 1; r >= 0; r--) {
       const value = values[CANDY_SIZE - 1 - r];
-      grid[r * CANDY_SIZE + c] = value === undefined ? Math.floor(Math.random() * candyState.types) : value;
+      grid[r * CANDY_SIZE + c] = value === undefined ? candyRandomType() : value;
     }
   }
 }
@@ -3674,17 +3786,23 @@ function candyRender() {
   for (let i = 0; i < candyState.cells.length; i++) {
     const cell = candyState.cells[i];
     const type = candyState.grid[i];
-    cell.classList.remove('is-clearing', 'is-selected');
+    cell.classList.remove('is-clearing', 'is-selected', 'is-exploding', 'is-bomb');
+    const r = Math.floor(i / CANDY_SIZE) + 1;
+    const c = (i % CANDY_SIZE) + 1;
     if (type === null || type === undefined) {
       cell.dataset.type = '';
       cell.textContent = '';
       cell.setAttribute('aria-label', 'Espaço vazio');
+    } else if (type === CANDY_BOMB) {
+      cell.dataset.type = 'bomb';
+      cell.textContent = '💣';
+      cell.classList.add('is-bomb');
+      cell.classList.toggle('is-selected', i === candyState.selected);
+      cell.setAttribute('aria-label', 'Bomba, linha ' + r + ', coluna ' + c);
     } else {
       cell.dataset.type = String(type);
       cell.textContent = CANDY_TYPES[type] || '🍬';
       cell.classList.toggle('is-selected', i === candyState.selected);
-      const r = Math.floor(i / CANDY_SIZE) + 1;
-      const c = (i % CANDY_SIZE) + 1;
       cell.setAttribute('aria-label', 'Doce, linha ' + r + ', coluna ' + c);
     }
   }
@@ -3775,7 +3893,9 @@ function startCandyMode() {
   candyState.streak = 0;
   candyState.bestStreak = 0;
   candyState.selected = -1;
+  candyClearFx();
   ui.candyScreen.hidden = false;
+  document.body.classList.add('candy-active');
   state.paused = true;
   beginCandyLevel(1);
   candyStartTimer();
@@ -3790,7 +3910,9 @@ function exitCandyMode() {
   candyState.busy = false;
   candyState.paused = true;
   candyState.selected = -1;
+  candyClearFx();
   ui.candyScreen.hidden = true;
+  document.body.classList.remove('candy-active');
   candyOpen = false;
   openStartMenu();
 }
@@ -3848,8 +3970,11 @@ async function candyResolveMatches(initialMatches, cascade) {
     for (const index of matches) {
       if (candyState.cells[index]) candyState.cells[index].classList.add('is-clearing');
     }
-    if (combo === 1) Sound.success();
-    else Sound.fire(combo);
+    if (combo === 1) Sound.candyPop(1);
+    else {
+      Sound.candyPop(combo);
+      if (combo >= 3) Sound.fire(combo);
+    }
     await candyDelay(230);
     if (!candyState.active || candyState.ended) return;
     for (const index of matches) candyState.grid[index] = null;
@@ -3879,6 +4004,107 @@ async function candyResolveMatches(initialMatches, cascade) {
   candyUpdateHUD();
 }
 
+function candyBlastAt(index) {
+  const cell = candyState.cells[index];
+  if (!cell || !ui.candyBoard) return;
+  const cellRect = cell.getBoundingClientRect();
+  const boardRect = ui.candyBoard.getBoundingClientRect();
+  const size = Math.max(cellRect.width, cellRect.height) * 2.6;
+  const blast = document.createElement('span');
+  blast.className = 'candy-blast';
+  blast.style.width = size + 'px';
+  blast.style.height = size + 'px';
+  blast.style.left = (cellRect.left - boardRect.left + cellRect.width / 2 - size / 2) + 'px';
+  blast.style.top = (cellRect.top - boardRect.top + cellRect.height / 2 - size / 2) + 'px';
+  ui.candyBoard.appendChild(blast);
+  setTimeout(() => blast.remove(), 540);
+}
+
+function candyFloatText(index, text) {
+  const cell = candyState.cells[index];
+  if (!cell || !ui.candyBoard) return;
+  const cellRect = cell.getBoundingClientRect();
+  const boardRect = ui.candyBoard.getBoundingClientRect();
+  const label = document.createElement('span');
+  label.className = 'candy-float';
+  label.textContent = text;
+  label.style.left = (cellRect.left - boardRect.left + cellRect.width / 2) + 'px';
+  label.style.top = (cellRect.top - boardRect.top + cellRect.height * 0.2) + 'px';
+  ui.candyBoard.appendChild(label);
+  setTimeout(() => label.remove(), 760);
+}
+
+function candyClearFx() {
+  if (!ui.candyBoard) return;
+  ui.candyBoard.querySelectorAll('.candy-blast,.candy-float').forEach(el => el.remove());
+  ui.candyBoard.classList.remove('is-shaking');
+}
+
+function candyExplosionSet(bombs) {
+  const blast = new Set();
+  const queued = new Set();
+  const queue = [];
+  for (const index of bombs) {
+    if (!queued.has(index)) {
+      queued.add(index);
+      queue.push(index);
+    }
+  }
+  while (queue.length) {
+    const index = queue.pop();
+    const row = Math.floor(index / CANDY_SIZE);
+    const col = index % CANDY_SIZE;
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        const r = row + dr;
+        const c = col + dc;
+        if (r < 0 || r >= CANDY_SIZE || c < 0 || c >= CANDY_SIZE) continue;
+        const next = r * CANDY_SIZE + c;
+        blast.add(next);
+        if (candyState.grid[next] === CANDY_BOMB && !queued.has(next)) {
+          queued.add(next);
+          queue.push(next);
+        }
+      }
+    }
+  }
+  return blast;
+}
+
+async function candyExplodeBombs(bombs) {
+  if (!candyState.active || candyState.ended) return;
+  const grid = candyState.grid;
+  const blast = candyExplosionSet(bombs);
+  let bombCount = 0;
+  for (const index of blast) {
+    if (grid[index] === CANDY_BOMB) bombCount += 1;
+  }
+  const points = blast.size * 60 + bombCount * 150;
+  candyState.levelScore += points;
+  candyState.runScore += points;
+  candyUpdateHUD();
+  candySetMessage('Boom! +' + points.toLocaleString('pt-BR') + ' pontos', true);
+  Sound.explosion();
+  if (bombCount > 1) Sound.fire(4);
+  ui.candyBoard.classList.remove('is-shaking');
+  void ui.candyBoard.offsetWidth;
+  ui.candyBoard.classList.add('is-shaking');
+  for (const index of bombs) candyBlastAt(index);
+  candyFloatText(bombs[0], '+' + points.toLocaleString('pt-BR'));
+  for (const index of blast) {
+    if (candyState.cells[index]) candyState.cells[index].classList.add('is-exploding');
+  }
+  await candyDelay(320);
+  if (!candyState.active || candyState.ended) return;
+  for (const index of blast) grid[index] = null;
+  candyRender();
+  candyCollapseAndRefill();
+  candyRender();
+  await candyDelay(180);
+  if (!candyState.active || candyState.ended) return;
+  await candyResolveMatches(candyFindMatches(grid), 2);
+}
+
 async function candyTrySwap(a, b) {
   if (!candyState.active || candyState.busy || candyState.paused || candyState.ended) return;
   candyState.busy = true;
@@ -3890,6 +4116,14 @@ async function candyTrySwap(a, b) {
   Sound.click();
   await candyDelay(170);
   if (!candyState.active || candyState.ended) return;
+  const bombPositions = [a, b].filter(index => grid[index] === CANDY_BOMB);
+  if (bombPositions.length) {
+    candyState.streak += 1;
+    candyState.bestStreak = Math.max(candyState.bestStreak, candyState.streak);
+    candyUpdateHUD();
+    await candyExplodeBombs(bombPositions);
+    return;
+  }
   const matches = candyFindMatches(grid);
   if (matches.size === 0) {
     grid[b] = grid[a];

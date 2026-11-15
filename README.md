@@ -24,6 +24,9 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - O botão **Jogar** abre a escolha entre **Modo Clássico** e **Modo Doce**.
 - **Modo Doce**: match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio (streak, níveis e pontos).
 - Dificuldade do modo doce aumenta a cada 10 fases: mais tipos, meta maior e menos tempo.
+- Bombas aparecem no tabuleiro doce; troque uma bomba com qualquer doce para explodir a área ao redor, com reações em cadeia.
+- Explosões com som, faíscas, texto flutuante e tremida no tabuleiro.
+- O modo doce usa o mesmo fundo ambiente (ondas/fita) do modo clássico.
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.

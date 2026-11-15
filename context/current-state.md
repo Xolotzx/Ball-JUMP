@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~187 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~195 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://balljump-game.pages.dev
 - **Projeto Cloudflare:** `balljump-game`
 - **Repositório:** privado, branch `main`
@@ -55,6 +55,8 @@
 - Botão **Como jogar** adicionado às configurações, abrindo o tutorial por cima do modal.
 - Modo Doce (match-3) adicionado: 100 fases, tempo em vez de vidas, streak/pontos, ranking próprio e rampa a cada 10 fases.
 - Botão **Jogar** agora abre um seletor com **Modo Clássico** e **Modo Doce**; o menu não tem mais botão duplicado.
+- Bombas aparecem no modo doce e explodem a área 3×3 ao serem trocadas com qualquer doce; cadeias, faíscas, texto de pontos, tremida e som próprio.
+- O modo doce usa o mesmo fundo ambiente do clássico (ondas/fita); o `.app` clássico fica oculto durante o modo doce.
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
@@ -78,8 +80,8 @@
 
 - Validar manualmente o login Google real (popup e fallback de redirect) em desktop e mobile.
 - Validar manualmente a edição de perfil (nick, foto JPG/PNG/WebP, remoção e persistência) com conta real.
-- Validar o modo doce em navegador real: trocas, cascatas, tempo, fases 10/11, 30/31, 90/100 e ranking Doce.
-- Ajustar metas/tempos do modo doce após playtest em celular e desktop.
+- Validar o modo doce em navegador real: trocas, cascatas, tempo, bombas/cadeias, fases 10/11, 30/31, 90/100 e ranking Doce.
+- Ajustar metas/tempos e frequência/força das bombas após playtest em celular e desktop.
 - Revalidar headers/CSP no ambiente de produção a cada deploy (validado em 2026-11-15).
 - Conectar Cloudflare Pages ao GitHub para deploy automático (requer autorização do GitHub App).
 - Adicionar testes de navegador automatizados.

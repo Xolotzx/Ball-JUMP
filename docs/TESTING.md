@@ -137,6 +137,12 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Ao atingir a meta, a próxima fase começa com tabuleiro novo.
 - [ ] Na fase 11 entram mais tipos e a mensagem de dificuldade aumentada aparece.
 - [ ] Na fase 31 o sétimo tipo é adicionado.
+- [ ] Bombas aparecem no tabuleiro (a partir da fase 4 no início e por chance no refill).
+- [ ] Trocar uma bomba com qualquer doce explode a área 3×3 ao redor e soma pontos.
+- [ ] Bombas vizinhas explodem em cadeia.
+- [ ] A explosão mostra faísca, células explodindo, texto de pontos e tremida no tabuleiro.
+- [ ] O som de explosão é audível e o volume respeita o slider.
+- [ ] O fundo do modo doce é o mesmo do clássico (ondas/fita), sem imagem nova.
 - [ ] Ao esgotar o tempo, abre **FIM DO TEMPO** com streak, fase e pontos.
 - [ ] A tela final mostra o botão **Menu** e **Jogar novamente** reinicia o modo doce.
 - [ ] O ranking **Doce** tem abas Streak, Níveis e Pontos, separado dos rankings clássicos.
