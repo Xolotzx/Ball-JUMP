@@ -83,7 +83,7 @@ requestAnimationFrame
 - Cena estática (`sceneCanvas`): fundo, grade, paredes e moldura são desenhados em um canvas auxiliar de 2× e reutilizados até `sceneDirty = true`.
 - Elementos dinâmicos: paredes em construção, preenchimentos animados, hover, bolinhas, partículas, flash e shake.
 - Tema: variáveis CSS em `html` e paleta do canvas em `THEMES.dark` (preto/laranja) / `THEMES.light` (laranja/branco).
-- Fundo ambiente: SVG inline com ondas laranja e `filter: blur()`, decorativo e sem dependência externa.
+- Fundo ambiente: SVG inline; ondas laranja com `filter: blur()` no tema escuro e uma fita laranja no tema claro. Decorativo, sem dependência externa.
 - A estética “liquid glass” fica no CSS; o canvas usa cores e brilho reduzido.
 
 ### Cache de cena
@@ -164,7 +164,7 @@ O módulo `Sound` encapsula:
 
 O áudio é desbloqueado no primeiro gesto do usuário; se o contexto estiver suspenso, `resume()` é chamado.
 
-O fundo ambiente é um SVG inline com ondas laranja, filtrado com `blur`; não há imagem externa.
+O fundo ambiente usa SVG inline: ondas laranja desfocadas no tema escuro e uma fita laranja no tema claro; não há imagem externa.
 
 ## 12. Persistência
 

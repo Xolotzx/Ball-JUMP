@@ -129,7 +129,7 @@
   "visual": {
     "dark": "black and orange",
     "light": "orange and white",
-    "ambientBackground": "inline SVG orange waves with blur"
+    "ambientBackground": "inline SVG: blurred orange waves in dark mode, orange ribbon in light mode"
   },
   "audio": {
     "engine": "Web Audio API",

@@ -50,9 +50,17 @@
     opacity:var(--wave-opacity);
     filter:blur(34px) saturate(145%);
     transform:translateZ(0);
-    transition:opacity .4s;
+    transition:opacity .4s,visibility .4s;
   }
   .wave-bg svg{display:block;width:100%;height:100%}
+  .ribbon-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+    opacity:0; visibility:hidden;
+    transition:opacity .5s,visibility .5s;
+  }
+  .ribbon-bg svg{display:block;width:100%;height:100%}
+  [data-theme="light"] .wave-bg{opacity:0;visibility:hidden}
+  [data-theme="light"] .ribbon-bg{opacity:1;visibility:visible}
   button{font:inherit;color:inherit}
   button:focus-visible,a:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .app{position:relative;z-index:1;width:min(100%,780px);margin:0 auto;padding:clamp(12px,2.6vw,26px) clamp(12px,3vw,22px) 10px;display:flex;flex-direction:column;flex:1}
@@ -480,6 +488,30 @@
     <path fill="none" stroke="rgba(255,230,190,.38)" stroke-width="8" opacity=".5" d="M760,480 C880,300 1080,250 1180,380 C1250,470 1180,590 1050,650"/>
   </svg>
 </div>
+<div class="ribbon-bg" aria-hidden="true">
+  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs>
+      <linearGradient id="ribbonA" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ef3b1f"/>
+        <stop offset=".45" stop-color="#ff5a1f"/>
+        <stop offset="1" stop-color="#ff9a2e"/>
+      </linearGradient>
+      <linearGradient id="ribbonB" x1="0" y1="0" x2=".8" y2="1">
+        <stop offset="0" stop-color="#ff6a1f"/>
+        <stop offset=".5" stop-color="#ff7a22"/>
+        <stop offset="1" stop-color="#ff9d34"/>
+      </linearGradient>
+    </defs>
+    <g style="filter:drop-shadow(0 30px 40px rgba(170,70,20,.18))">
+      <path d="M 120,-120 C 240,250 390,620 520,820 C 570,895 650,940 740,905 C 830,870 850,780 790,700 C 680,550 480,260 300,-120"
+            fill="none" stroke="url(#ribbonB)" stroke-width="230" stroke-linecap="round"/>
+      <path d="M 420,60 C 460,200 620,320 900,400 C 1200,490 1450,560 1740,690"
+            fill="none" stroke="url(#ribbonA)" stroke-width="300" stroke-linecap="round"/>
+      <path d="M 460,120 C 530,250 700,335 930,405"
+            fill="none" stroke="rgba(255,255,255,.32)" stroke-width="8" stroke-linecap="round"/>
+    </g>
+  </svg>
+</div>
 <div class="app">
   <header class="topbar">
     <div class="hud" role="group" aria-label="Painel do jogo">
@@ -729,18 +761,18 @@ const THEMES = {
     preview: { bg: '#090604', wall: '#6f4a32', build: '#ff7a18', ball: '#ffb347' }
   },
   light: {
-    name: 'Claro', sub: 'Laranja & branco', metaColor: '#fffaf4',
+    name: 'Claro', sub: 'Laranja & branco', metaColor: '#f6f2e7',
     vars: {
-      page: '#fffaf4', 'page-2': '#ffe9d6',
+      page: '#f6f2e7', 'page-2': '#efe9da',
       surface: 'rgba(255,255,255,.62)', 'surface-solid': '#fffaf6', 'surface-hover': 'rgba(255,255,255,.90)',
       line: 'rgba(92,45,15,.12)', text: '#2a1407', muted: '#7e5a42',
       accent: '#ea580c', 'accent-2': '#fb923c', 'accent-text': '#241004',
-      glow: 'rgba(234,88,12,.12)', ball: '#ea580c', 'ball-glow': 'rgba(234,88,12,.18)',
+      glow: 'rgba(234,88,12,.08)', ball: '#ea580c', 'ball-glow': 'rgba(234,88,12,.18)',
       'canvas-border': 'rgba(120,55,20,.22)', goal: '#7c2d12',
       'glass-border': 'rgba(255,255,255,.82)', 'glass-top': 'rgba(255,255,255,.90)',
       'glass-bottom': 'rgba(255,232,212,.55)', 'glass-highlight': 'rgba(255,255,255,.98)',
       shadow: 'rgba(120,60,20,.16)', backdrop: 'rgba(86,42,12,.18)', dot: 'rgba(120,60,20,.05)',
-      'wave-opacity': '.30', 'page-glow': 'rgba(255,145,60,.22)', 'dir-h': '#ea580c', 'dir-v': '#ffffff'
+      'wave-opacity': '.30', 'page-glow': 'rgba(255,170,90,.10)', 'dir-h': '#ea580c', 'dir-v': '#ffffff'
     },
     c: {
       bgTop: '#fffaf5', bgBottom: '#ffeddc', grid: 'rgba(120,60,20,.06)',

@@ -126,8 +126,8 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 
 - **Data:** 2026-11-15
 - **Status:** aceita
-- **Contexto:** identidade visual mais quente e imersiva, alinhada à referência de ondas laranja sobre preto.
-- **Decisão:** usar preto + laranja no modo escuro, laranja + branco no claro, e um fundo SVG inline de ondas laranja com blur.
+- **Contexto:** identidade visual mais quente e imersiva, alinhada às referências de ondas laranja sobre preto e à fita laranja sobre fundo creme.
+- **Decisão:** usar preto + laranja no modo escuro, laranja + branco no claro, com fundo SVG inline: ondas desfocadas no escuro e fita laranja no claro.
 - **Consequências:**
   - remove azul/verde/amarelo da identidade principal;
   - botões de direção usam laranja e creme/branco;
