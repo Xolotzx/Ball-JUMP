@@ -95,8 +95,9 @@
 - Auth Google via Firebase Authentication; domínio de produção explicitamente autorizado.
 - Firestore em modo produção; regras exigem autenticação para leitura.
 - Escrita somente pelo próprio UID; schema, tipos, limites, timestamps e monotonicidade validados.
+- `scores` é validado por modo (`easy`, `normal`, `hard`, `hardcore`), com `bestStreak`/`bestLevel` inteiros e dentro dos limites.
 - Nicks únicos: reserva em `balljumpNicknames/{key}` com chave normalizada; leitura autenticada; create/update/delete só pelo UID dono; conflito resolvido por transação no cliente.
-- Perfil mínimo: nick público, foto opcional em data URL, melhor streak, melhor nível e `updatedAt`; sem e-mail ou telefone.
+- Perfil mínimo: nick público, foto opcional em data URL, scores por modo, melhor streak, melhor nível e `updatedAt`; sem e-mail ou telefone.
 - A foto é validada no cliente e nas regras (`data:image/(jpeg|png|webp);base64,`, até 90.000 caracteres) e aplicada apenas via `background-image`; valores inválidos caem para a inicial.
 - Não há upload em Firebase Storage; a imagem não passa por servidor próprio.
 - SDK oficial fixado em `10.14.1`, carregado por import dinâmico do gstatic e allowlisted na CSP.

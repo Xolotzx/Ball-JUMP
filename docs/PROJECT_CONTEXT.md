@@ -100,15 +100,18 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Estética “liquid glass”, com brilho reduzido.
 - Configurações pausam o jogo; fechar retorna ao jogo ou ao menu, conforme a origem.
 - Tela de fim de jogo com estatísticas da corrida, **Entrar com Google**, perfil e acesso ao ranking.
-- Ranking com abas **🔥 Streak** e **🏆 Níveis**, top 10, acessível pelo menu e pela tela de morte.
+- Ranking com seletor **Geral / Fácil / Normal / Difícil / Hardcore** e abas **🔥 Streak** e **🏆 Níveis**, top 10 por modo.
+- O título do ranking acompanha o modo: “Ranking geral” ou “Ranking modo fácil”.
 - Perfil personalizável: nick (até 30 caracteres na UI) e foto opcional.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).
 
 ### Conta e ranking
 
 - Login via Firebase Authentication com Google.
-- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel` e `updatedAt`.
-- O perfil é criado no primeiro login e entra no ranking.
+- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores` e `updatedAt`.
+- `scores` guarda `{ bestStreak, bestLevel }` por dificuldade (`easy`, `normal`, `hard`, `hardcore`); os campos globais preservam o melhor histórico geral.
+- O modo da corrida é salvo junto ao resultado pendente e aplicado apenas ao ranking daquela dificuldade.
+- O perfil é criado no primeiro login e entra no ranking geral.
 - O nick começa como o nome do Google, mas pode ser alterado; sincronizações preservam o nick/foto salvos.
 - Nicks são únicos: uma reserva em `balljumpNicknames/{key}` usa a versão normalizada (minúscula, sem acentos) e impede duas contas com o mesmo nome.
 - Se o nome do Google já estiver ocupado, o primeiro login cria uma variante automática (`Lucas 2`, `Lucas 3`, ...).
@@ -153,6 +156,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Nick e foto do perfil são visíveis para outros usuários autenticados; e-mail/telefone não são armazenados.
 - A unicidade de nick é garantida pela transação do cliente e pela coleção `balljumpNicknames`; a coleção é legível por usuários autenticados e gravável apenas pelo dono da reserva.
 - Nicks antigos duplicados só são corrigidos quando cada conta faz login novamente.
+- Perfis criados antes dos rankings por dificuldade não têm `scores`; eles aparecem no ranking **Geral** e entram nos rankings de modo ao jogar cada dificuldade.
+- O ranking exibe o top 10 por modo e métrica; não calcula a posição global de quem está fora do topo.
 - A foto em data URL aumenta o tamanho do documento no Firestore; o limite de 90.000 caracteres evita abuso, mas ainda é um custo de leitura do ranking.
 - Não há App Check nem suíte automatizada de login; o fluxo Google e o upload de foto precisam de validação manual com uma conta real.
 - O ranking exibe o top 10 por métrica; não calcula a posição global de quem está fora do topo.

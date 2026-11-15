@@ -145,7 +145,7 @@
     "authorizedDomain": "balljump-game.pages.dev",
     "sdkVersion": "10.14.1",
     "rulesLocation": "../Botanica Studio/botanicstudio/firebase/firestore.rules",
-    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "updatedAt"],
+    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "scores", "updatedAt"],
     "profileCustomization": {
       "editable": ["name", "photo"],
       "nameMaxLengthUI": 30,
@@ -153,6 +153,7 @@
       "nicknameUnique": true,
       "nicknameNormalization": "lowercase, diacritics removed, non-alphanumerics collapsed to hyphen",
       "photo": "optional 160x160 JPEG data URL, max 90000 chars, no Firebase Storage",
+      "rankScopes": ["geral", "easy", "normal", "hard", "hardcore"],
       "avatarFallback": "first letter of the nick"
     },
     "readPolicy": "authenticated users only",
@@ -175,7 +176,8 @@
     "player gains one life per completed level",
     "share button remains removed",
     "menu, tutorial, settings, death screen, profile editor and ranking remain available",
-    "ranking documents store only name, optional photo, bestStreak, bestLevel and server updatedAt",
+    "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",
+    "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
     "nicknames are unique via balljumpNicknames reservation; rename releases the old key in the same transaction",
     "ranking reads require authentication and writes require owner UID with monotonic scores",

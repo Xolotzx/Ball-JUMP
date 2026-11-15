@@ -200,17 +200,18 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Projeto compartilhado: `botanicstudio` (mesmo Firebase do Botanica Studio).
 - SDK modular **10.14.1** importado dinamicamente de `https://www.gstatic.com/firebasejs/10.14.1/` somente ao abrir a tela de morte/ranking ou iniciar login.
 - Auth: Google via `signInWithPopup`, com fallback para `signInWithRedirect`.
-- Firestore: banco `(default)`, coleção `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `updatedAt`.
-- No game over/vitória, a corrida é salva em `sessionStorage` até o login/submissão; depois é enviada com `runTransaction`.
+- Firestore: banco `(default)`, coleção `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `updatedAt`.
+- No game over/vitória, a corrida é salva em `sessionStorage` com `difficulty` até o login/submissão; depois é enviada com `runTransaction`.
 - Melhores scores são monotônicos (`max`) e `updatedAt` usa `serverTimestamp`.
+- `scores` guarda `{ bestStreak, bestLevel }` por dificuldade (`easy`, `normal`, `hard`, `hardcore`). A chave só é criada quando o jogador conclui uma corrida naquele modo. Os campos globais continuam sendo o máximo histórico.
 - Perfil editável em `#profileModal`:
   - nick de 1 a 30 caracteres, normalizado e renderizado com `textContent`;
   - foto opcional processada em canvas 160×160 via `createImageBitmap` (fallback
     `FileReader` + data URL), JPEG com qualidade decrescente, limitada a 90.000
     caracteres e validada como data URL; sem blob URL por causa da CSP;
   - `saveProfileEdits` usa transação, preserva scores e atualiza o cache `fb.profile`.
-- `syncProfile` preserva `name`/`photo` existentes; só usa o nome do Google na
-  criação do perfil.
+- `syncProfile` preserva `name`/`photo`/`scores` existentes; só usa o nome do Google na
+  criação do perfil e mescla a corrida pendente apenas no modo correspondente.
 - Unicidade de nick:
   - `nicknameKeyFor()` normaliza o nick (minúsculas, sem acentos, separadores
     colapsados) e `claimNickname()` reserva a chave em `balljumpNicknames/{key}`;
@@ -220,7 +221,14 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
   - ao renomear, a reserva antiga é apagada na mesma transação.
 - Avatares (perfil e linhas do ranking) usam `background-image` com data URL
   validada; sem foto, mostram a inicial do nick.
-- Ranking: consultas `orderBy('bestStreak', desc)` e `orderBy('bestLevel', desc)`, limite 20; interface mostra top 10.
+- Ranking:
+  - seletor **Geral / Fácil / Normal / Difícil / Hardcore** gerado a partir de
+    `DIFFICULTIES`; título dinâmico (“Ranking modo fácil”, …);
+  - abas **Streak** e **Níveis**, top 10;
+  - consultas por modo: `orderBy('scores.<modo>.bestStreak'|'bestLevel')`;
+  - modo **Geral**: `orderBy('bestStreak'|'bestLevel')`;
+  - cache por modo em `rankData[modo]`, com `rankRequest` para descartar respostas
+    antigas ao trocar de modo rapidamente.
 - Leitura exige autenticação; escrita apenas pelo UID do usuário. Regras publicadas no projeto compartilhado.
 - CSP permite somente gstatic/Firebase/Google Auth e `img-src data:`; COOP `same-origin-allow-popups` para o popup OAuth.
 - O jogo principal não depende de Firebase. Falha de rede não bloqueia o reinício.

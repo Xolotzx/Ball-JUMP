@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~149 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~152 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -202,3 +202,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - reservas são legíveis por usuários autenticados e graváveis apenas pelo dono;
   - a unicidade é garantida pelo fluxo do cliente e pela transação; um cliente malicioso ainda pode criar reservas sem uso, mas não duplicar nicks pela UI;
   - a coleção de reservas é compartilhada no mesmo projeto Firebase do Botanica.
+
+## ADR-017 — Rankings separados por dificuldade
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** scores de dificuldades diferentes não são comparáveis; o jogador precisa de um ranking justo por modo.
+- **Decisão:** guardar `scores.{easy,normal,hard,hardcore}.{bestStreak,bestLevel}` no perfil. A corrida pendente inclui `difficulty`; `syncProfile` mescla o resultado apenas no modo correspondente. A UI do ranking ganha um seletor **Geral / Fácil / Normal / Difícil / Hardcore** e consulta `orderBy('scores.<modo>...')`. O ranking **Geral** usa `bestStreak`/`bestLevel`.
+- **Consequências:**
+  - cada modo tem seu próprio top 10 de streak e níveis;
+  - o ranking geral é preservado;
+  - perfis antigos sem `scores` aparecem no geral e entram nos modos ao jogar;
+  - as consultas usam campos aninhados e dependem dos índices automáticos do Firestore;
+  - as regras validam o mapa `scores` e mantêm o schema compatível com perfis antigos;
+  - o cache do ranking é por modo e descarta respostas antigas.

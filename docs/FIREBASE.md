@@ -37,7 +37,10 @@ administrativo ou `.env` no repositório.
    automática (`Lucas 2`, `Lucas 3`, ...). O jogador pode trocar depois.
 7. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
    **Ver ranking** na tela de fim de jogo.
-8. O ranking tem abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10.
+8. O ranking tem um seletor **Geral / Fácil / Normal / Difícil / Hardcore** e
+   abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10 do modo selecionado.
+9. O título acompanha a seleção: “Ranking geral” ou “Ranking modo fácil”, por
+   exemplo.
 
 ## 3. Modelo de dados
 
@@ -45,10 +48,27 @@ administrativo ou `.env` no repositório.
 balljumpProfiles/{uid} {
   name: string          // nick público, 1..40 caracteres (UI limita a 30)
   photo: string         // opcional: data URL JPEG/PNG/WebP, até 90.000 chars
-  bestStreak: int       // 0..1.000.000, máximo histórico
-  bestLevel: int        // 1..100, maior nível alcançado
+  bestStreak: int       // 0..1.000.000, melhor histórico geral
+  bestLevel: int        // 1..100, maior nível histórico geral
+  scores: map           // opcional: melhores por dificuldade
   updatedAt: timestamp  // serverTimestamp()
 }
+
+scores = {
+  easy:     { bestStreak: int, bestLevel: int },
+  normal:   { bestStreak: int, bestLevel: int },
+  hard:     { bestStreak: int, bestLevel: int },
+  hardcore: { bestStreak: int, bestLevel: int }
+}
+```
+
+- Cada chave de `scores` só existe depois que o jogador conclui uma corrida naquela
+  dificuldade. Perfis antigos sem `scores` continuam válidos e aparecem no ranking
+  **Geral**; entram nos rankings de modo ao jogar.
+- As chaves ausentes não aparecem nas consultas `orderBy('scores.<modo>...')`, então
+  o ranking de um modo não lista quem nunca jogou nele.
+- `bestStreak`/`bestLevel` globais continuam sendo o máximo histórico e alimentam o
+  ranking **Geral**.
 
 balljumpNicknames/{key} {
   uid: string           // dono da reserva
@@ -92,13 +112,31 @@ function isBalljumpOwner(uid) {
   return request.auth != null && request.auth.uid == uid;
 }
 
+function isBalljumpModeScore(score) {
+  return score is map
+    && score.keys().hasOnly(['bestStreak', 'bestLevel'])
+    && score.bestStreak is int && score.bestStreak >= 0 && score.bestStreak <= 1000000
+    && score.bestLevel is int && score.bestLevel >= 1 && score.bestLevel <= 100;
+}
+
+function isBalljumpScores(scores) {
+  return scores is map
+    && scores.size() <= 4
+    && scores.keys().hasOnly(['easy', 'normal', 'hard', 'hardcore'])
+    && (!scores.keys().hasAny(['easy']) || isBalljumpModeScore(scores.easy))
+    && (!scores.keys().hasAny(['normal']) || isBalljumpModeScore(scores.normal))
+    && (!scores.keys().hasAny(['hard']) || isBalljumpModeScore(scores.hard))
+    && (!scores.keys().hasAny(['hardcore']) || isBalljumpModeScore(scores.hardcore));
+}
+
 function isBalljumpProfile(p) {
-  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'updatedAt'])
+  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'scores', 'updatedAt'])
     && p.name is string && p.name.size() >= 1 && p.name.size() <= 40
     && p.photo is string && p.photo.size() <= 90000
     && (p.photo.size() == 0 || p.photo.matches('^data:image/(jpeg|png|webp);base64,.*'))
     && p.bestStreak is int && p.bestStreak >= 0 && p.bestStreak <= 1000000
     && p.bestLevel is int && p.bestLevel >= 1 && p.bestLevel <= 100
+    && (!p.keys().hasAny(['scores']) || isBalljumpScores(p.scores))
     && p.updatedAt == request.time;
 }
 
@@ -193,6 +231,16 @@ Também foi validado:
   - Ao renomear, a reserva antiga é apagada e a nova é gravada na mesma
     transação. Duas pessoas não conseguem confirmar o mesmo nick ao mesmo tempo
     porque as transações conflitam na mesma reserva.
+- Ranking por dificuldade:
+  - `openEndModal` salva a corrida pendente com `difficulty` (easy/normal/hard/hardcore).
+  - `syncProfile` mescla o resultado em `scores.<modo>` com `max`, preservando
+    os outros modos e atualizando os campos globais.
+  - `loadRanks` consulta `orderBy('scores.<modo>.bestStreak')` e
+    `.bestLevel`; o modo **Geral** consulta `bestStreak`/`bestLevel`.
+  - O cache é por modo (`rankData[modo]`), com requisições concorrentes
+    descartadas por `rankRequest`.
+  - O seletor de modo é gerado a partir de `DIFFICULTIES`; o título vira
+    “Ranking modo fácil”, “Ranking modo normal”, etc.
 
 ## 7. CSP e rede
 
@@ -222,11 +270,15 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
    **"Esse nick já está em uso"**. Confirme que o primeiro jogador mantém o nick.
 9. Altere o nick da segunda conta para um nome livre e confirme que o antigo
    volta a ficar disponível.
-10. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
-11. Confira no console do Firebase → Firestore → `balljumpProfiles` e
+10. Jogue uma corrida em cada dificuldade e confira:
+    - **Ranking modo fácil/normal/difícil/hardcore** lista apenas quem jogou o modo;
+    - as abas **Streak** e **Níveis** mostram os valores daquele modo;
+    - o **Ranking geral** continua com o melhor histórico.
+11. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
+12. Confira no console do Firebase → Firestore → `balljumpProfiles` e
     `balljumpNicknames`.
-12. Teste o botão **Sair** e o login novamente.
-13. Teste com popups bloqueados para validar o fallback de redirecionamento.
+13. Teste o botão **Sair** e o login novamente.
+14. Teste com popups bloqueados para validar o fallback de redirecionamento.
 
 ## 9. Troubleshooting
 
@@ -243,6 +295,8 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 | Nick duplicado em perfis antigos | perfis criados antes da reserva | fazer login com cada conta; o app cria a reserva e aplica sufixo se necessário |
 | Nick recusado mesmo livre | reserva antiga ainda existe | verificar `balljumpNicknames/{key}`; o dono precisa renomear/liberar |
 | `permission-denied` ao salvar nick | regras de `balljumpNicknames` não publicadas | publicar as regras mescladas |
+| Ranking de um modo vazio | ninguém jogou aquele modo ou falta `scores.<modo>` | jogar uma corrida no modo; conferir o campo `scores` |
+| Ranking por modo não carrega | consulta `orderBy('scores.<modo>...')` inválida | conferir o nome do modo (`easy/normal/hard/hardcore`) e as regras |
 | Ranking vazio | nenhum perfil criado ainda | entrar com Google para criar o primeiro |
 
 Não registre tokens, cookies ou credenciais nos logs de suporte.

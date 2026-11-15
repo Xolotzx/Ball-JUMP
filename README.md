@@ -20,6 +20,7 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - 4 dificuldades.
 - Sequência 🔥: cada parede concluída aumenta o contador; levar dano zera. Inclui animação e som de fogo sutil.
 - Login com Google no fim da partida, perfil e ranking de **streak** e **níveis**.
+- Rankings separados por dificuldade (**Fácil**, **Normal**, **Difícil**, **Hardcore**) e um ranking **Geral**.
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.

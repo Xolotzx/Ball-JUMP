@@ -108,6 +108,13 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Trocar de aba não quebra a lista.
 - [ ] **Sair** volta ao estado de login.
 - [ ] O menu **Ranking** abre o ranking mesmo antes de morrer.
+- [ ] O seletor **Geral / Fácil / Normal / Difícil / Hardcore** aparece e mostra o título “Ranking modo fácil” etc.
+- [ ] O ranking de cada dificuldade lista apenas jogadores que jogaram aquele modo.
+- [ ] As abas **Streak** e **Níveis** usam os valores do modo selecionado.
+- [ ] O ranking **Geral** continua mostrando o melhor histórico.
+- [ ] Jogar uma corrida no modo Fácil atualiza o ranking Fácil e não altera os outros modos.
+- [ ] Trocar de modo rapidamente não deixa linhas de outro modo na lista.
+- [ ] Perfil antigo sem `scores` aparece no Geral e passa a aparecer no modo após jogar.
 - [ ] O nome do jogador é exibido como texto (testar um nome com `<b>`; não deve virar HTML).
 
 ### Edição de perfil
@@ -145,6 +152,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Leitura sem autenticação é negada.
 - [ ] Escrita com UID diferente é negada.
 - [ ] `bestStreak`/`bestLevel` não podem diminuir.
+- [ ] `scores` com modo inválido, tipo errado ou valor fora do limite é negado.
 - [ ] Schema inválido, nome vazio/longo ou timestamp incorreto é negado.
 - [ ] `photo` ausente, fora do prefixo permitido ou acima de 90.000 caracteres é negado.
 - [ ] `balljumpNicknames` exige autenticação para leitura e só permite escrita ao UID dono.

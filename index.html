@@ -432,6 +432,20 @@
   .death-foot{justify-content:stretch}
   .death-foot .primary-btn{width:100%}
   .rank-body{gap:13px}
+  .rank-filters{display:flex;flex-direction:column;gap:7px}
+  .rank-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:6px}
+  .rank-mode{
+    min-height:32px;border-radius:9px;border:1px solid var(--glass-border);cursor:pointer;
+    background:var(--surface);color:var(--muted);
+    font-family:var(--mono);font-size:9.5px;font-weight:900;letter-spacing:.03em;
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .rank-mode:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--glass-border));color:var(--text)}
+  .rank-mode.is-active{
+    background:color-mix(in srgb,var(--accent) 13%,var(--surface));
+    border-color:color-mix(in srgb,var(--accent) 55%,var(--glass-border));
+    color:var(--accent);box-shadow:inset 0 1px 0 var(--glass-highlight);
+  }
   .rank-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .rank-tab{
     min-height:38px;border-radius:11px;border:1px solid var(--glass-border);cursor:pointer;
@@ -888,7 +902,7 @@
           <span class="avatar" id="deathAvatar" aria-hidden="true">J</span>
           <div class="profile-info">
             <strong id="deathName">Jogador</strong>
-            <span class="profile-sub">Perfil conectado</span>
+            <span class="profile-sub" id="deathProfileSub">Perfil conectado</span>
           </div>
           <button id="deathSignOut" class="link-btn" type="button">Sair</button>
         </div>
@@ -912,15 +926,18 @@
   <section class="modal rank-modal" role="dialog" aria-modal="true" aria-labelledby="rankTitle">
     <header class="modal-head">
       <div>
-        <h2 id="rankTitle">Ranking</h2>
-        <p>Maiores sequências e níveis alcançados.</p>
+        <h2 id="rankTitle">Ranking geral</h2>
+        <p id="rankSubtitle">Maiores sequências e níveis em todos os modos.</p>
       </div>
       <button id="closeRank" class="close-btn" type="button" aria-label="Fechar ranking">✕</button>
     </header>
     <div class="modal-body rank-body">
-      <div class="rank-tabs" role="tablist" aria-label="Tipo de ranking">
-        <button id="rankStreakTab" class="rank-tab is-active" type="button" role="tab" aria-selected="true">🔥 Streak</button>
-        <button id="rankLevelTab" class="rank-tab" type="button" role="tab" aria-selected="false">🏆 Níveis</button>
+      <div class="rank-filters">
+        <div class="rank-modes" id="rankModes" role="tablist" aria-label="Dificuldade do ranking"></div>
+        <div class="rank-tabs" role="tablist" aria-label="Tipo de ranking">
+          <button id="rankStreakTab" class="rank-tab is-active" type="button" role="tab" aria-selected="true">🔥 Streak</button>
+          <button id="rankLevelTab" class="rank-tab" type="button" role="tab" aria-selected="false">🏆 Níveis</button>
+        </div>
       </div>
 
       <div class="rank-auth" id="rankAuth">
@@ -1146,10 +1163,11 @@ const ui = {
   deathSubtitle: $('deathSubtitle'), deathStreakVal: $('deathStreakVal'), deathLevelVal: $('deathLevelVal'),
   deathAuth: $('deathAuth'), deathAuthHint: $('deathAuthHint'), deathLoginBtn: $('deathLoginBtn'),
   deathAuthError: $('deathAuthError'), deathProfile: $('deathProfile'), deathAvatar: $('deathAvatar'),
-  deathName: $('deathName'), deathBest: $('deathBest'), deathSignOut: $('deathSignOut'),
+  deathName: $('deathName'), deathProfileSub: $('deathProfileSub'), deathBest: $('deathBest'), deathSignOut: $('deathSignOut'),
   deathRankBtn: $('deathRankBtn'), deathNote: $('deathNote'), deathRestart: $('deathRestart'),
   deathEditProfile: $('deathEditProfile'),
   rankModal: $('rankModal'), closeRank: $('closeRank'), rankAuth: $('rankAuth'),
+  rankTitle: $('rankTitle'), rankSubtitle: $('rankSubtitle'), rankModes: $('rankModes'),
   rankAuthHint: $('rankAuthHint'), rankLoginBtn: $('rankLoginBtn'), rankError: $('rankError'),
   rankContent: $('rankContent'), rankProfile: $('rankProfile'), rankAvatar: $('rankAvatar'),
   rankName: $('rankName'), rankBest: $('rankBest'), rankSignOut: $('rankSignOut'),
@@ -1591,9 +1609,10 @@ const firebaseRuntime = {
   pendingRun: null,
   syncPromise: null,
   rankMode: 'streak',
-  rankData: { streak: [], level: [] },
-  rankLoaded: false,
-  rankLoading: false,
+  rankDifficulty: 'normal',
+  rankData: {},
+  rankLoaded: {},
+  rankRequest: 0,
   rankFocus: null,
   profileFocus: null
 };
@@ -1874,6 +1893,7 @@ function changeDifficulty(key) {
   if (!DIFFICULTIES[key] || key === state.difficulty) return;
   state.difficulty = key;
   prefs.difficulty = key;
+  firebaseRuntime.rankDifficulty = key;
   savePrefs();
   syncSettingsUI();
   restartGame(true);
@@ -2711,6 +2731,46 @@ function setAvatar(element, name, photo) {
   }
 }
 
+function sanitizeScores(value) {
+  const source = value && typeof value === 'object' ? value : {};
+  const scores = {};
+  for (const key of Object.keys(DIFFICULTIES)) {
+    const entry = source[key];
+    if (entry && typeof entry === 'object') {
+      scores[key] = {
+        bestStreak: clampInt(entry.bestStreak, 0, 1000000),
+        bestLevel: clampInt(entry.bestLevel, 1, 100)
+      };
+    }
+  }
+  return scores;
+}
+
+function profileScoreFor(profile, scope) {
+  if (!profile) return { bestStreak: 0, bestLevel: 1 };
+  if (scope === 'geral') {
+    return {
+      bestStreak: clampInt(profile.bestStreak, 0, 1000000),
+      bestLevel: clampInt(profile.bestLevel, 1, 100)
+    };
+  }
+  const entry = profile.scores && profile.scores[scope];
+  return {
+    bestStreak: clampInt(entry && entry.bestStreak, 0, 1000000),
+    bestLevel: clampInt(entry && entry.bestLevel, 1, 100)
+  };
+}
+
+function mergePendingScore(scores, pending) {
+  if (!pending || !DIFFICULTIES[pending.difficulty]) return scores;
+  const previous = scores[pending.difficulty] || { bestStreak: 0, bestLevel: 1 };
+  scores[pending.difficulty] = {
+    bestStreak: clampInt(Math.max(previous.bestStreak, pending.bestStreak), 0, 1000000),
+    bestLevel: clampInt(Math.max(previous.bestLevel, pending.bestLevel), 1, 100)
+  };
+  return scores;
+}
+
 function readPendingRun() {
   try {
     const raw = sessionStorage.getItem(PENDING_RUN_KEY);
@@ -2718,18 +2778,27 @@ function readPendingRun() {
       const data = JSON.parse(raw);
       return {
         bestStreak: clampInt(data.bestStreak, 0, 1000000),
-        bestLevel: clampInt(data.bestLevel, 1, 100)
+        bestLevel: clampInt(data.bestLevel, 1, 100),
+        difficulty: typeof data.difficulty === 'string' && DIFFICULTIES[data.difficulty] ? data.difficulty : ''
       };
     }
   } catch (_) {}
-  return firebaseRuntime.pendingRun || null;
+  const fallback = firebaseRuntime.pendingRun;
+  if (!fallback) return null;
+  return {
+    bestStreak: clampInt(fallback.bestStreak, 0, 1000000),
+    bestLevel: clampInt(fallback.bestLevel, 1, 100),
+    difficulty: typeof fallback.difficulty === 'string' && DIFFICULTIES[fallback.difficulty] ? fallback.difficulty : ''
+  };
 }
 
 function savePendingRun(run) {
+  const difficulty = run && DIFFICULTIES[run.difficulty] ? run.difficulty : '';
   const data = {
     bestStreak: clampInt(run && run.bestStreak, 0, 1000000),
     bestLevel: clampInt(run && run.bestLevel, 1, 100)
   };
+  if (difficulty) data.difficulty = difficulty;
   firebaseRuntime.pendingRun = data;
   try { sessionStorage.setItem(PENDING_RUN_KEY, JSON.stringify(data)); } catch (_) {}
 }
@@ -2777,11 +2846,14 @@ function updateAuthUI() {
   ui.deathProfile.hidden = !signed;
   if (signed) {
     const fallbackName = displayNameOf(fb.user);
-    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1 };
+    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {} };
     const name = profile.name || fallbackName;
+    const mode = DIFFICULTIES[state.difficulty] ? state.difficulty : 'normal';
+    const best = profileScoreFor(profile, mode);
     ui.deathName.textContent = name;
     setAvatar(ui.deathAvatar, name, profile.photo);
-    ui.deathBest.textContent = `🔥 ${profile.bestStreak} · nível ${profile.bestLevel}`;
+    ui.deathProfileSub.textContent = 'Perfil conectado · ' + DIFFICULTIES[mode].name;
+    ui.deathBest.textContent = `🔥 ${best.bestStreak} · nível ${best.bestLevel}`;
     if (fb.error) ui.deathNote.textContent = fb.error;
     else if (fb.syncing) ui.deathNote.textContent = 'Salvando resultado…';
     else if (fb.profile) ui.deathNote.textContent = 'Resultado salvo no ranking.';
@@ -2800,11 +2872,13 @@ function updateAuthUI() {
   ui.rankProfile.hidden = !signed;
   if (signed) {
     const fallbackName = displayNameOf(fb.user);
-    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1 };
+    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {} };
     const name = profile.name || fallbackName;
+    const scope = fb.rankDifficulty === 'geral' || DIFFICULTIES[fb.rankDifficulty] ? fb.rankDifficulty : 'geral';
+    const best = profileScoreFor(profile, scope);
     setAvatar(ui.rankAvatar, name, profile.photo);
     ui.rankName.textContent = name;
-    ui.rankBest.textContent = `🔥 ${profile.bestStreak} · nível ${profile.bestLevel}`;
+    ui.rankBest.textContent = `🔥 ${best.bestStreak} · nível ${best.bestLevel}`;
     if (fb.error) {
       ui.rankStatus.textContent = fb.error;
       ui.rankStatus.classList.add('is-error');
@@ -2905,11 +2979,22 @@ async function syncProfile() {
         name: claimed.name,
         updatedAt: fs.serverTimestamp()
       });
+      const scores = mergePendingScore(sanitizeScores(old.scores), pending);
+      const modeScores = Object.values(scores);
       values = {
         name: claimed.name,
         photo: preservedPhoto,
-        bestStreak: clampInt(Math.max(Number(old.bestStreak) || 0, pending ? pending.bestStreak : 0), 0, 1000000),
-        bestLevel: clampInt(Math.max(Number(old.bestLevel) || 1, pending ? pending.bestLevel : 1), 1, 100),
+        bestStreak: clampInt(Math.max(
+          Number(old.bestStreak) || 0,
+          pending ? pending.bestStreak : 0,
+          ...modeScores.map(score => score.bestStreak)
+        ), 0, 1000000),
+        bestLevel: clampInt(Math.max(
+          Number(old.bestLevel) || 1,
+          pending ? pending.bestLevel : 1,
+          ...modeScores.map(score => score.bestLevel)
+        ), 1, 100),
+        scores,
         updatedAt: fs.serverTimestamp()
       };
       tx.set(ref, values);
@@ -2918,7 +3003,8 @@ async function syncProfile() {
       name: values.name,
       photo: values.photo,
       bestStreak: values.bestStreak,
-      bestLevel: values.bestLevel
+      bestLevel: values.bestLevel,
+      scores: values.scores
     };
     fb.profileUid = fb.user.uid;
     clearPendingRun();
@@ -2937,6 +3023,9 @@ async function handleAuthChanged() {
     fb.profileUid = null;
     fb.error = '';
     fb.syncing = false;
+    fb.rankData = {};
+    fb.rankLoaded = {};
+    fb.rankRequest = 0;
     updateAuthUI();
     if (rankOpen) {
       ui.rankList.replaceChildren();
@@ -2957,7 +3046,7 @@ async function handleAuthChanged() {
     fb.error = firebaseErrorMessage(error);
   }
   updateAuthUI();
-  if (rankOpen) loadRanks();
+  if (rankOpen) loadRanks(true);
 }
 
 function startGoogleSignIn() {
@@ -3044,7 +3133,8 @@ function openEndModal(victory = false) {
 
   const run = {
     bestStreak: state.runBestStreak,
-    bestLevel: state.level
+    bestLevel: state.level,
+    difficulty: state.difficulty
   };
   savePendingRun(run);
 
@@ -3105,6 +3195,52 @@ function restartFromDeath() {
 /* =========================================================
    RANKING
    ========================================================= */
+function buildRankModeButtons() {
+  if (!ui.rankModes) return;
+  const scopes = [{ key: 'geral', label: 'Geral' }]
+    .concat(Object.values(DIFFICULTIES).map(d => ({ key: d.key, label: d.name })));
+  ui.rankModes.replaceChildren();
+  for (const scope of scopes) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'rank-mode';
+    button.dataset.diff = scope.key;
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-selected', 'false');
+    button.textContent = scope.label;
+    button.addEventListener('click', () => setRankDifficulty(scope.key));
+    ui.rankModes.appendChild(button);
+  }
+}
+
+function rankScopeLabel(scope) {
+  if (scope === 'geral') return 'Geral';
+  return DIFFICULTIES[scope] ? DIFFICULTIES[scope].name : 'Geral';
+}
+
+function setRankDifficulty(scope, options = {}) {
+  const fb = firebaseRuntime;
+  fb.rankDifficulty = scope === 'geral' || DIFFICULTIES[scope] ? scope : 'geral';
+  const active = fb.rankDifficulty;
+  if (ui.rankModes) {
+    for (const button of ui.rankModes.querySelectorAll('.rank-mode')) {
+      const selected = button.dataset.diff === active;
+      button.classList.toggle('is-active', selected);
+      button.setAttribute('aria-selected', String(selected));
+    }
+  }
+  const label = rankScopeLabel(active);
+  ui.rankTitle.textContent = active === 'geral' ? 'Ranking geral' : 'Ranking modo ' + label.toLowerCase();
+  ui.rankSubtitle.textContent = active === 'geral'
+    ? 'Maiores sequências e níveis em todos os modos.'
+    : 'Top 10 no modo ' + label + '.';
+  ui.rankEmpty.textContent = active === 'geral'
+    ? 'Nenhum jogador no ranking geral ainda.'
+    : 'Nenhum jogador no ranking do modo ' + label + ' ainda.';
+  updateAuthUI();
+  if (options.load !== false && fb.user) loadRanks();
+}
+
 function openRankModal() {
   if (rankOpen) return;
   rankOpen = true;
@@ -3115,7 +3251,8 @@ function openRankModal() {
   ui.rankStatus.textContent = '';
   ui.rankStatus.classList.remove('is-error');
   updateAuthUI();
-  setRankMode(firebaseRuntime.rankMode);
+  setRankDifficulty(firebaseRuntime.rankDifficulty, { load: false });
+  setRankMode(firebaseRuntime.rankMode, { load: false });
   clearTimeout(rankHideTimer);
   ui.rankModal.hidden = false;
   requestAnimationFrame(() => {
@@ -3125,7 +3262,7 @@ function openRankModal() {
 
   ensureFirebase().then(() => {
     if (!firebaseRuntime.user) return;
-    syncProfile().then(() => loadRanks()).catch(() => {});
+    syncProfile().then(() => loadRanks(true)).catch(() => {});
   }).catch(() => {});
 
   setTimeout(() => {
@@ -3156,59 +3293,80 @@ function closeRankModal() {
   }, 40);
 }
 
-function setRankMode(mode) {
-  firebaseRuntime.rankMode = mode === 'level' ? 'level' : 'streak';
-  const streakActive = firebaseRuntime.rankMode === 'streak';
+function setRankMode(mode, options = {}) {
+  const fb = firebaseRuntime;
+  fb.rankMode = mode === 'level' ? 'level' : 'streak';
+  const streakActive = fb.rankMode === 'streak';
   ui.rankStreakTab.classList.toggle('is-active', streakActive);
   ui.rankLevelTab.classList.toggle('is-active', !streakActive);
   ui.rankStreakTab.setAttribute('aria-selected', String(streakActive));
   ui.rankLevelTab.setAttribute('aria-selected', String(!streakActive));
-  if (firebaseRuntime.user) renderRank();
+  if (fb.user && options.load !== false) {
+    if (fb.rankLoaded[fb.rankDifficulty]) renderRank();
+    else loadRanks();
+  }
 }
 
-function rankEntryFromDoc(snapshot) {
+function rankEntryFromDoc(snapshot, scope) {
   const data = snapshot.data() || {};
+  const mode = scope === 'geral' ? data : (data.scores && data.scores[scope]) || {};
   return {
     uid: snapshot.id,
     name: String(data.name || 'Jogador').trim().slice(0, 40) || 'Jogador',
     photo: isPhotoDataURL(data.photo) ? data.photo : '',
-    bestStreak: clampInt(data.bestStreak, 0, 1000000),
-    bestLevel: clampInt(data.bestLevel, 1, 100)
+    bestStreak: clampInt(mode.bestStreak, 0, 1000000),
+    bestLevel: clampInt(mode.bestLevel, 1, 100)
   };
 }
 
-async function loadRanks() {
+async function loadRanks(force = false) {
   const fb = firebaseRuntime;
-  if (!rankOpen || !fb.user || !fb.db || !fb.mods || fb.rankLoading) return;
-  fb.rankLoading = true;
+  if (!rankOpen || !fb.user || !fb.db || !fb.mods) return;
+  const scope = fb.rankDifficulty;
+  if (!force && fb.rankLoaded[scope]) {
+    renderRank();
+    return;
+  }
+  const requestId = (fb.rankRequest || 0) + 1;
+  fb.rankRequest = requestId;
   ui.rankStatus.textContent = 'Carregando ranking…';
   ui.rankStatus.classList.remove('is-error');
+  if (!fb.rankLoaded[scope]) {
+    ui.rankList.replaceChildren();
+    ui.rankEmpty.hidden = true;
+  }
   try {
     const fs = fb.mods.firestoreModule;
     const base = fs.collection(fb.db, RANK_COLLECTION);
+    const streakField = scope === 'geral' ? 'bestStreak' : `scores.${scope}.bestStreak`;
+    const levelField = scope === 'geral' ? 'bestLevel' : `scores.${scope}.bestLevel`;
     const [streakSnap, levelSnap] = await Promise.all([
-      fs.getDocs(fs.query(base, fs.orderBy('bestStreak', 'desc'), fs.limit(RANK_FETCH_LIMIT))),
-      fs.getDocs(fs.query(base, fs.orderBy('bestLevel', 'desc'), fs.limit(RANK_FETCH_LIMIT)))
+      fs.getDocs(fs.query(base, fs.orderBy(streakField, 'desc'), fs.limit(RANK_FETCH_LIMIT))),
+      fs.getDocs(fs.query(base, fs.orderBy(levelField, 'desc'), fs.limit(RANK_FETCH_LIMIT)))
     ]);
-    fb.rankData.streak = streakSnap.docs.map(rankEntryFromDoc);
-    fb.rankData.level = levelSnap.docs.map(rankEntryFromDoc);
-    fb.rankLoaded = true;
+    if (requestId !== fb.rankRequest) return;
+    fb.rankData[scope] = {
+      streak: streakSnap.docs.map(doc => rankEntryFromDoc(doc, scope)),
+      level: levelSnap.docs.map(doc => rankEntryFromDoc(doc, scope))
+    };
+    fb.rankLoaded[scope] = true;
     ui.rankStatus.textContent = '';
     ui.rankStatus.classList.remove('is-error');
     renderRank();
   } catch (error) {
+    if (requestId !== fb.rankRequest) return;
     ui.rankStatus.textContent = firebaseErrorMessage(error);
     ui.rankStatus.classList.add('is-error');
-  } finally {
-    fb.rankLoading = false;
   }
 }
 
 function renderRank() {
   const fb = firebaseRuntime;
   if (!fb.user) return;
+  const scope = fb.rankDifficulty;
   const mode = fb.rankMode;
-  let rows = [...fb.rankData[mode]];
+  const cache = fb.rankData[scope] || { streak: [], level: [] };
+  let rows = [...(cache[mode] || [])];
   rows.sort((a, b) => {
     if (mode === 'streak') {
       return (b.bestStreak - a.bestStreak)
@@ -3222,10 +3380,7 @@ function renderRank() {
   rows = rows.slice(0, RANK_SHOW_LIMIT);
 
   ui.rankList.replaceChildren();
-  ui.rankEmpty.hidden = rows.length !== 0;
-  if (rows.length === 0 && fb.rankLoaded) {
-    ui.rankEmpty.hidden = false;
-  }
+  ui.rankEmpty.hidden = rows.length !== 0 || !fb.rankLoaded[scope];
 
   rows.forEach((entry, index) => {
     const item = document.createElement('li');
@@ -3418,6 +3573,7 @@ async function saveProfileEdits() {
         photo,
         bestStreak: clampInt(old.bestStreak, 0, 1000000),
         bestLevel: clampInt(old.bestLevel, 1, 100),
+        scores: sanitizeScores(old.scores),
         updatedAt: fs.serverTimestamp()
       };
       tx.set(ref, values);
@@ -3426,12 +3582,13 @@ async function saveProfileEdits() {
       name: values.name,
       photo: values.photo,
       bestStreak: values.bestStreak,
-      bestLevel: values.bestLevel
+      bestLevel: values.bestLevel,
+      scores: values.scores
     };
     fb.profileUid = fb.user.uid;
     closeProfileEditor();
     updateAuthUI();
-    if (rankOpen) loadRanks();
+    if (rankOpen) loadRanks(true);
   } catch (error) {
     setProfileError(firebaseErrorMessage(error) || 'Não foi possível salvar o perfil.');
   } finally {
@@ -3693,11 +3850,14 @@ function init() {
   setupCanvas();
   state.difficulty = prefs.difficulty;
   state.lives = difficulty().lives;
+  firebaseRuntime.rankDifficulty = DIFFICULTIES[prefs.difficulty] ? prefs.difficulty : 'normal';
   renderSettingsUI();
   applyTheme(prefs.theme);
   Sound.setEnabled(prefs.sound);
   setDirection('h', true);
   beginLevel(1);
+  buildRankModeButtons();
+  setRankDifficulty(firebaseRuntime.rankDifficulty, { load: false });
   bindEvents();
   openStartMenu();
   maybeBootstrapFirebase();

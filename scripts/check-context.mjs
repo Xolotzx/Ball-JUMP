@@ -91,8 +91,15 @@ check(manifest?.runtimeFacts?.goalPercent === 75, 'manifesto declara meta de 75%
 check(manifest?.firebase?.collection === 'balljumpProfiles', 'manifesto declara coleção do ranking');
 check(manifest?.firebase?.nicknameCollection === 'balljumpNicknames', 'manifesto declara coleção de nicks');
 check(manifest?.firebase?.profileFields?.includes('photo'), 'manifesto declara foto no perfil');
+check(manifest?.firebase?.profileFields?.includes('scores'), 'manifesto declara scores por modo');
 check(String(manifest?.firebase?.profileCustomization?.photo || '').includes('90000'), 'manifesto declara limite da foto');
 check(manifest?.firebase?.profileCustomization?.nicknameUnique === true, 'manifesto declara nick único');
+check(
+  Array.isArray(manifest?.firebase?.profileCustomization?.rankScopes)
+    && manifest.firebase.profileCustomization.rankScopes.includes('geral')
+    && manifest.firebase.profileCustomization.rankScopes.includes('easy'),
+  'manifesto declara escopos de ranking'
+);
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
@@ -104,6 +111,7 @@ const firebaseDocs = exists('docs/FIREBASE.md') ? read('docs/FIREBASE.md') : '';
 check(firebaseDocs.includes('photo'), 'docs/FIREBASE.md documenta a foto');
 check(firebaseDocs.includes('90000'), 'docs/FIREBASE.md documenta o limite da foto');
 check(firebaseDocs.includes('balljumpNicknames'), 'docs/FIREBASE.md documenta nicks únicos');
+check(firebaseDocs.includes('scores'), 'docs/FIREBASE.md documenta scores por modo');
 
 const securityDocs = exists('docs/SECURITY.md') ? read('docs/SECURITY.md') : '';
 check(/data URL|data:image/.test(securityDocs), 'docs/SECURITY.md cobre a foto de perfil');
@@ -168,6 +176,8 @@ check(index.includes("RANK_COLLECTION = 'balljumpProfiles'"), 'coleção do rank
 check(index.includes("NICK_COLLECTION = 'balljumpNicknames'"), 'coleção de nicks definida');
 check(index.includes('function nicknameKeyFor') && index.includes('function claimNickname'), 'reserva de nick presente');
 check(index.includes('nickname-taken'), 'erro de nick duplicado presente');
+check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade presente');
+check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
 check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
 check(index.includes('function isPhotoDataURL'), 'validação de foto presente');
 check(index.includes('90000'), 'limite de foto presente no cliente');
