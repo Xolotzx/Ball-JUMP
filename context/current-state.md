@@ -36,6 +36,9 @@
 - Documentação de engenharia de contexto adicionada.
 - Headers de segurança e CSP adicionados ao deploy.
 - Página 404 e allowlist de publicação adicionadas.
+- Paleta alterada para preto/laranja (escuro) e laranja/branco (claro).
+- Fundo ambiente em ondas laranja desfocadas adicionado.
+- Áudio aprimorado com reverb, harmônicos, compressor e pan estéreo.
 - README e política de segurança adicionados.
 
 ## Pendências e próximos passos

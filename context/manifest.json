@@ -126,6 +126,16 @@
     "secretsPolicy": "never commit or include secrets in context",
     "sensitivityLevels": ["public", "internal", "restricted"]
   },
+  "visual": {
+    "dark": "black and orange",
+    "light": "orange and white",
+    "ambientBackground": "inline SVG orange waves with blur"
+  },
+  "audio": {
+    "engine": "Web Audio API",
+    "reverb": "generated impulse response",
+    "effects": ["build", "wallComplete", "lifeLost", "levelUp", "victory", "bounce", "click", "deny"]
+  },
   "invariants": [
     "index.html works offline via file://",
     "no external runtime resources or network calls",

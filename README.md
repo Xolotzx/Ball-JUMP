@@ -18,8 +18,9 @@ Preencha **95%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 
 - 100 níveis e uma bolinha extra a cada 2 níveis.
 - 4 dificuldades.
-- Modos escuro e claro.
-- Efeitos sonoros gerados com Web Audio API.
+- Modo **Preto & laranja** e modo **Laranja & branco**.
+- Fundo ambiente em ondas laranja desfocadas, embutido em SVG.
+- Efeitos sonoros gerados com Web Audio API, com reverb, harmônicos e pan estéreo.
 - Layout responsivo com suporte a toque.
 - Sem dependências ou arquivos externos.
 

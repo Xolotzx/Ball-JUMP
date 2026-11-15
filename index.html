@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#070b12" id="themeColor">
+<meta name="theme-color" content="#000000" id="themeColor">
 <meta name="description" content="Jogo de estratégia inspirado no clássico JezzBall, com 100 níveis, modos claro e escuro e áudio sintetizado.">
 <title>Balljump-game — 100 níveis</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b1220'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%23ef4444'/%3E%3Ccircle cx='27' cy='27' r='4' fill='%23fecaca'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23000000'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%23ff7a18'/%3E%3Ccircle cx='27' cy='27' r='4' fill='%23ffe0b0'/%3E%3C/svg%3E">
 <style>
   /* ===== design tokens (modo escuro por padrão; o JS troca para claro) ===== */
   :root{
-    --page:#070b12; --page-2:#0d1420;
-    --surface:rgba(255,255,255,.055); --surface-solid:#101827; --surface-hover:rgba(255,255,255,.10);
-    --line:rgba(255,255,255,.11); --text:#eef3fa; --muted:#98a8bd;
-    --accent:#7dd3fc; --accent-2:#a5b4fc; --accent-text:#07131f;
-    --glow:rgba(125,211,252,.15); --ball:#ef4444; --ball-glow:rgba(239,68,68,.22);
-    --canvas-border:rgba(255,255,255,.16); --goal:#e2e8f0;
-    --glass-border:rgba(255,255,255,.13); --glass-top:rgba(255,255,255,.085);
-    --glass-bottom:rgba(255,255,255,.025); --glass-highlight:rgba(255,255,255,.24);
-    --shadow:rgba(0,0,0,.38); --backdrop:rgba(3,7,14,.58); --dot:rgba(255,255,255,.052);
-    --dir-h:#3ddc84; --dir-v:#f7c948;
+    --page:#000000; --page-2:#0a0705;
+    --surface:rgba(255,122,24,.06); --surface-solid:#120b06; --surface-hover:rgba(255,122,24,.13);
+    --line:rgba(255,156,77,.16); --text:#fff4e8; --muted:#c7a385;
+    --accent:#ff7a18; --accent-2:#ffb347; --accent-text:#1d0d02;
+    --glow:rgba(255,106,0,.18); --ball:#ff7a18; --ball-glow:rgba(255,122,24,.22);
+    --canvas-border:rgba(255,140,60,.28); --goal:#ffcf8a;
+    --glass-border:rgba(255,170,90,.18); --glass-top:rgba(255,214,170,.10);
+    --glass-bottom:rgba(255,122,24,.028); --glass-highlight:rgba(255,224,190,.30);
+    --shadow:rgba(0,0,0,.55); --backdrop:rgba(0,0,0,.30); --dot:rgba(255,170,90,.055);
+    --wave-opacity:.88; --page-glow:rgba(255,92,0,.34);
+    --dir-h:#ff7a18; --dir-v:#ffe5cf;
     --font:"Segoe UI",system-ui,-apple-system,"Trebuchet MS",Roboto,sans-serif;
     --mono:ui-monospace,"Cascadia Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
     --radius:18px;
@@ -33,9 +34,8 @@
     margin:0; font-family:var(--font); color:var(--text);
     background:var(--page);
     background-image:
-      radial-gradient(860px 540px at 9% -12%, var(--glow), transparent 64%),
-      radial-gradient(760px 480px at 106% 3%, color-mix(in srgb,var(--accent-2) 8%, transparent), transparent 62%),
-      linear-gradient(180deg,var(--page),var(--page-2));
+      radial-gradient(760px 440px at 8% -12%, var(--glow), transparent 66%),
+      linear-gradient(180deg, var(--page) 0%, var(--page-2) 56%, var(--page-glow) 100%);
     background-attachment:fixed; min-height:100dvh;
     display:flex; flex-direction:column; overflow-x:hidden;
     transition:background-color .4s;
@@ -45,12 +45,14 @@
     background-image:radial-gradient(var(--dot) 1px, transparent 1px);
     background-size:26px 26px; opacity:.55;
   }
-  body::after{
-    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background:
-      radial-gradient(42% 32% at 7% 10%, color-mix(in srgb,var(--accent) 5%, transparent), transparent 74%),
-      radial-gradient(38% 36% at 96% 72%, color-mix(in srgb,var(--accent-2) 4%, transparent), transparent 74%);
+  .wave-bg{
+    position:fixed; inset:-8% -8% -2%; z-index:0; pointer-events:none; overflow:hidden;
+    opacity:var(--wave-opacity);
+    filter:blur(34px) saturate(145%);
+    transform:translateZ(0);
+    transition:opacity .4s;
   }
+  .wave-bg svg{display:block;width:100%;height:100%}
   button{font:inherit;color:inherit}
   button:focus-visible,a:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .app{position:relative;z-index:1;width:min(100%,780px);margin:0 auto;padding:clamp(12px,2.6vw,26px) clamp(12px,3vw,22px) 10px;display:flex;flex-direction:column;flex:1}
@@ -93,7 +95,7 @@
   .dir-btn{
     display:flex;align-items:center;justify-content:center;gap:7px;min-width:94px;padding:0 14px;
     border-radius:16px;cursor:pointer;font-family:var(--mono);
-    font-size:12px;font-weight:900;letter-spacing:.08em;color:#08160b;
+    font-size:12px;font-weight:900;letter-spacing:.08em;color:#1d0d02;
     -webkit-backdrop-filter:blur(16px) saturate(165%);
     backdrop-filter:blur(16px) saturate(165%);
     transition:transform .1s,filter .2s;-webkit-tap-highlight-color:transparent;
@@ -105,7 +107,7 @@
   }
   .dir-btn.is-vert{
     background:linear-gradient(155deg,color-mix(in srgb,var(--dir-v) 80%,#fff),var(--dir-v));
-    border:1px solid color-mix(in srgb,var(--dir-v) 42%,var(--glass-border));
+    border:1px solid color-mix(in srgb,var(--accent) 38%,var(--glass-border));
     box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 22px -20px var(--shadow);
   }
   .dir-btn:active{transform:translateY(1px) scale(.985)}
@@ -136,11 +138,26 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.18);
   }
   canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-  .meta-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding:0 3px}
+  .meta-row{
+    display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;color:var(--muted);
+    padding:7px 9px;border-radius:13px;
+    background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom)),color-mix(in srgb,var(--surface-solid) 54%,transparent);
+    border:1px solid var(--glass-border);
+    box-shadow:inset 0 1px 0 var(--glass-highlight);
+    -webkit-backdrop-filter:blur(16px) saturate(150%);
+    backdrop-filter:blur(16px) saturate(150%);
+  }
   .meta-chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;font-weight:800;padding:4px 8px;border-radius:99px;white-space:nowrap}
   .meta-hint{margin-left:auto;letter-spacing:.02em}
   .hint-mobile{display:none}
-  .instructions{font-size:12px;line-height:1.55;color:var(--muted);padding:0 3px}
+  .instructions{
+    font-size:12px;line-height:1.55;color:var(--muted);padding:10px 12px;border-radius:14px;
+    background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom)),color-mix(in srgb,var(--surface-solid) 58%,transparent);
+    border:1px solid var(--glass-border);
+    box-shadow:inset 0 1px 0 var(--glass-highlight);
+    -webkit-backdrop-filter:blur(16px) saturate(150%);
+    backdrop-filter:blur(16px) saturate(150%);
+  }
   .instructions b{color:var(--text);font-weight:700}
   .instructions kbd{font-family:var(--mono);font-size:10px;background:var(--surface);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 4px;color:var(--text)}
 
@@ -167,10 +184,10 @@
   .overlay h2{margin:0;font-size:clamp(23px,5.4vw,34px);letter-spacing:-.04em;font-weight:900;line-height:1.02}
   .overlay p{margin:9px auto 0;font-size:12.5px;line-height:1.5;color:var(--muted);max-width:290px}
   .overlay .primary-btn{margin-top:18px}
-  .overlay[data-kind="gameover"] .overlay-kicker{color:#ff8080}
-  .overlay[data-kind="victory"] .overlay-kicker{color:#ffd76a}
+  .overlay[data-kind="gameover"] .overlay-kicker{color:#ff6b52}
+  .overlay[data-kind="victory"] .overlay-kicker{color:#ffb347}
   [data-theme="light"] .overlay[data-kind="gameover"] .overlay-kicker{color:#b91c1c}
-  [data-theme="light"] .overlay[data-kind="victory"] .overlay-kicker{color:#8a6100}
+  [data-theme="light"] .overlay[data-kind="victory"] .overlay-kicker{color:#9a3412}
   .primary-btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid color-mix(in srgb,var(--accent) 55%,#fff 10%);cursor:pointer;
     padding:12px 20px;border-radius:13px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 72%,#fff),var(--accent));
@@ -195,7 +212,15 @@
   [data-theme="light"] .toast.is-bad{color:#9f1d1d;border-color:rgba(170,35,35,.28)}
   .toast.is-good{border-color:color-mix(in srgb,var(--accent) 38%,var(--glass-border));color:var(--text)}
 
-  footer{padding:14px 2px 2px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:10px;letter-spacing:.03em}
+  footer{
+    margin-top:12px;padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    color:var(--muted);font-size:10px;letter-spacing:.03em;border-radius:14px;
+    background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom)),color-mix(in srgb,var(--surface-solid) 58%,transparent);
+    border:1px solid var(--glass-border);
+    box-shadow:inset 0 1px 0 var(--glass-highlight);
+    -webkit-backdrop-filter:blur(16px) saturate(150%);
+    backdrop-filter:blur(16px) saturate(150%);
+  }
   footer b{color:var(--text);font-weight:700}
 
   /* ===== menu inicial ===== */
@@ -430,6 +455,31 @@
 </style>
 </head>
 <body>
+<div class="wave-bg" aria-hidden="true">
+  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <defs>
+      <linearGradient id="wg1" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#ff3d00"/>
+        <stop offset=".48" stop-color="#ff7a00"/>
+        <stop offset="1" stop-color="#ffc46b"/>
+      </linearGradient>
+      <linearGradient id="wg2" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#9a1600"/>
+        <stop offset=".5" stop-color="#ff4d00"/>
+        <stop offset="1" stop-color="#ff9a2e"/>
+      </linearGradient>
+      <linearGradient id="wg3" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#ff6a00"/>
+        <stop offset="1" stop-color="#ffd08a"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#wg2)" opacity=".9" d="M-80,1010 L-80,760 C160,690 300,740 430,860 C560,985 700,1010 820,1010 Z"/>
+    <path fill="url(#wg1)" opacity=".92" d="M250,1010 C420,760 600,330 900,190 C1080,105 1240,210 1350,430 C1440,610 1460,830 1520,1010 Z"/>
+    <path fill="url(#wg3)" opacity=".62" d="M430,1010 C600,790 790,650 980,700 C1130,740 1180,900 1280,1010 Z"/>
+    <path fill="url(#wg2)" opacity=".8" d="M1180,1010 C1300,820 1470,740 1640,850 L1640,1010 Z"/>
+    <path fill="none" stroke="rgba(255,230,190,.38)" stroke-width="8" opacity=".5" d="M760,480 C880,300 1080,250 1180,380 C1250,470 1180,590 1050,650"/>
+  </svg>
+</div>
 <div class="app">
   <header class="topbar">
     <div class="hud" role="group" aria-label="Painel do jogo">
@@ -451,7 +501,7 @@
         <button id="dirBtn" class="dir-btn is-horiz" type="button" aria-label="Direção da parede: horizontal. Toque para alternar.">
           <span class="dir-icon" aria-hidden="true"></span><span id="dirText">HORIZ</span>
         </button>
-        <button id="settingsBtn" class="icon-btn" type="button" aria-label="Abrir configurações" title="Configurações">⚙️</button>
+        <button id="settingsBtn" class="icon-btn" type="button" aria-label="Abrir configurações" title="Configurações">&#9881;&#xFE0E;</button>
       </div>
     </div>
   </header>
@@ -503,7 +553,7 @@
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
       <button id="menuSettingsBtn" class="menu-btn" type="button">
-        <span class="menu-icon" aria-hidden="true">⚙️</span>
+        <span class="menu-icon" aria-hidden="true">&#9881;&#xFE0E;</span>
         <span class="menu-label">Configurações</span>
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
@@ -655,50 +705,52 @@ const DIFFICULTIES = {
    ========================================================= */
 const THEMES = {
   dark: {
-    name: 'Escuro', sub: 'Meia-noite', metaColor: '#070b12',
+    name: 'Escuro', sub: 'Preto & laranja', metaColor: '#000000',
     vars: {
-      page: '#070b12', 'page-2': '#0d1420',
-      surface: 'rgba(255,255,255,.055)', 'surface-solid': '#101827', 'surface-hover': 'rgba(255,255,255,.10)',
-      line: 'rgba(255,255,255,.13)', text: '#eef3fa', muted: '#98a8bd',
-      accent: '#7dd3fc', 'accent-2': '#a5b4fc', 'accent-text': '#07131f',
-      glow: 'rgba(125,211,252,.15)', ball: '#ef4444', 'ball-glow': 'rgba(239,68,68,.22)',
-      'canvas-border': 'rgba(255,255,255,.18)', goal: '#e2e8f0',
-      'glass-border': 'rgba(255,255,255,.16)', 'glass-top': 'rgba(255,255,255,.105)',
-      'glass-bottom': 'rgba(255,255,255,.032)', 'glass-highlight': 'rgba(255,255,255,.30)',
-      shadow: 'rgba(0,0,0,.38)', backdrop: 'rgba(3,7,14,.58)', dot: 'rgba(255,255,255,.052)'
+      page: '#000000', 'page-2': '#0a0705',
+      surface: 'rgba(255,122,24,.06)', 'surface-solid': '#120b06', 'surface-hover': 'rgba(255,122,24,.13)',
+      line: 'rgba(255,156,77,.16)', text: '#fff4e8', muted: '#c7a385',
+      accent: '#ff7a18', 'accent-2': '#ffb347', 'accent-text': '#1d0d02',
+      glow: 'rgba(255,106,0,.18)', ball: '#ff7a18', 'ball-glow': 'rgba(255,122,24,.22)',
+      'canvas-border': 'rgba(255,140,60,.28)', goal: '#ffcf8a',
+      'glass-border': 'rgba(255,170,90,.18)', 'glass-top': 'rgba(255,214,170,.10)',
+      'glass-bottom': 'rgba(255,122,24,.028)', 'glass-highlight': 'rgba(255,224,190,.30)',
+      shadow: 'rgba(0,0,0,.55)', backdrop: 'rgba(0,0,0,.30)', dot: 'rgba(255,170,90,.055)',
+      'wave-opacity': '.88', 'page-glow': 'rgba(255,92,0,.34)', 'dir-h': '#ff7a18', 'dir-v': '#ffe5cf'
     },
     c: {
-      bgTop: '#0c1525', bgBottom: '#0a111d', grid: 'rgba(148,163,184,.05)',
-      wall: '#475569', wallTop: '#64748b', wallSide: '#334155', wallLine: '#1e293b',
-      border: '#526078', borderTop: '#94a3b8', borderLine: '#1e293b',
-      build: '#38bdf8', buildGlow: 'rgba(56,189,248,.32)', buildSoft: 'rgba(56,189,248,.14)',
-      fill: 'rgba(56,189,248,.26)',
-      balls: ['#ef4444', '#f87171', '#dc2626'], ballGlow: 'rgba(239,68,68,.22)', ballHi: '#fecaca'
+      bgTop: '#090604', bgBottom: '#050403', grid: 'rgba(255,150,70,.055)',
+      wall: '#3a2b21', wallTop: '#6f4a32', wallSide: '#241811', wallLine: '#160d08',
+      border: '#5b4030', borderTop: '#c07a45', borderLine: '#2a1810',
+      build: '#ff7a18', buildGlow: 'rgba(255,122,24,.32)', buildSoft: 'rgba(255,122,24,.15)',
+      fill: 'rgba(255,122,24,.28)',
+      balls: ['#ff7a18', '#ffb347', '#ffe0b0'], ballGlow: 'rgba(255,122,24,.24)', ballHi: '#fff2dd'
     },
-    preview: { bg: '#0c1525', wall: '#64748b', build: '#38bdf8', ball: '#ef4444' }
+    preview: { bg: '#090604', wall: '#6f4a32', build: '#ff7a18', ball: '#ffb347' }
   },
   light: {
-    name: 'Claro', sub: 'Luz do dia', metaColor: '#eef2f7',
+    name: 'Claro', sub: 'Laranja & branco', metaColor: '#fffaf4',
     vars: {
-      page: '#eef2f7', 'page-2': '#e3e9f1',
-      surface: 'rgba(255,255,255,.55)', 'surface-solid': '#f8fafc', 'surface-hover': 'rgba(255,255,255,.82)',
-      line: 'rgba(15,23,42,.10)', text: '#192335', muted: '#60708a',
-      accent: '#2563eb', 'accent-2': '#0ea5e9', 'accent-text': '#ffffff',
-      glow: 'rgba(37,99,235,.10)', ball: '#dc2626', 'ball-glow': 'rgba(220,38,38,.16)',
-      'canvas-border': 'rgba(15,23,42,.16)', goal: '#1e293b',
-      'glass-border': 'rgba(255,255,255,.72)', 'glass-top': 'rgba(255,255,255,.82)',
-      'glass-bottom': 'rgba(255,255,255,.42)', 'glass-highlight': 'rgba(255,255,255,.95)',
-      shadow: 'rgba(50,65,90,.18)', backdrop: 'rgba(35,45,62,.32)', dot: 'rgba(15,23,42,.055)'
+      page: '#fffaf4', 'page-2': '#ffe9d6',
+      surface: 'rgba(255,255,255,.62)', 'surface-solid': '#fffaf6', 'surface-hover': 'rgba(255,255,255,.90)',
+      line: 'rgba(92,45,15,.12)', text: '#2a1407', muted: '#7e5a42',
+      accent: '#ea580c', 'accent-2': '#fb923c', 'accent-text': '#241004',
+      glow: 'rgba(234,88,12,.12)', ball: '#ea580c', 'ball-glow': 'rgba(234,88,12,.18)',
+      'canvas-border': 'rgba(120,55,20,.22)', goal: '#7c2d12',
+      'glass-border': 'rgba(255,255,255,.82)', 'glass-top': 'rgba(255,255,255,.90)',
+      'glass-bottom': 'rgba(255,232,212,.55)', 'glass-highlight': 'rgba(255,255,255,.98)',
+      shadow: 'rgba(120,60,20,.16)', backdrop: 'rgba(86,42,12,.18)', dot: 'rgba(120,60,20,.05)',
+      'wave-opacity': '.30', 'page-glow': 'rgba(255,145,60,.22)', 'dir-h': '#ea580c', 'dir-v': '#ffffff'
     },
     c: {
-      bgTop: '#f7f9fc', bgBottom: '#e8eef6', grid: 'rgba(30,41,59,.055)',
-      wall: '#9aa9bd', wallTop: '#cbd5e1', wallSide: '#6f8098', wallLine: '#586a82',
-      border: '#64748b', borderTop: '#cbd5e1', borderLine: '#475569',
-      build: '#2563eb', buildGlow: 'rgba(37,99,235,.22)', buildSoft: 'rgba(37,99,235,.12)',
-      fill: 'rgba(37,99,235,.22)',
-      balls: ['#dc2626', '#ef4444', '#b91c1c'], ballGlow: 'rgba(220,38,38,.18)', ballHi: '#ffe4e6'
+      bgTop: '#fffaf5', bgBottom: '#ffeddc', grid: 'rgba(120,60,20,.06)',
+      wall: '#d8b9a3', wallTop: '#f4e1d1', wallSide: '#b58a70', wallLine: '#8b634c',
+      border: '#b07a54', borderTop: '#f3d9c5', borderLine: '#7a4a2c',
+      build: '#ea580c', buildGlow: 'rgba(234,88,12,.22)', buildSoft: 'rgba(234,88,12,.12)',
+      fill: 'rgba(234,88,12,.22)',
+      balls: ['#e24a00', '#f97316', '#c2410c'], ballGlow: 'rgba(234,88,12,.16)', ballHi: '#ffe5d2'
     },
-    preview: { bg: '#f7f9fc', wall: '#9aa9bd', build: '#2563eb', ball: '#dc2626' }
+    preview: { bg: '#fffaf5', wall: '#d8b9a3', build: '#ea580c', ball: '#e24a00' }
   }
 };
 
@@ -754,9 +806,30 @@ const appRoot = document.querySelector('.app');
    ÁUDIO SINTETIZADO (Web Audio API)
    ========================================================= */
 const Sound = (() => {
-  let ac = null, master = null, enabled = prefs.sound;
-  let buildOsc = null, buildGain = null, buildLfo = null;
+  let ac = null, master = null, dryBus = null, reverbIn = null, reverb = null, wet = null;
+  let enabled = prefs.sound;
+  let buildOsc = null, buildGain = null, buildFilter = null, buildLfo = null;
   let lastBounce = 0;
+  let noiseBuffer = null;
+
+  const clampPan = (v) => Math.max(-1, Math.min(1, v || 0));
+
+  function makeImpulse(seconds = 1.7, decay = 2.6) {
+    const rate = ac.sampleRate;
+    const length = Math.max(1, Math.floor(rate * seconds));
+    const impulse = ac.createBuffer(2, length, rate);
+    for (let channel = 0; channel < 2; channel++) {
+      const data = impulse.getChannelData(channel);
+      let last = 0;
+      for (let i = 0; i < length; i++) {
+        const t = i / length;
+        const noise = Math.random() * 2 - 1;
+        last = last * 0.72 + noise * 0.28;
+        data[i] = last * Math.pow(1 - t, decay) * (i < rate * 0.012 ? 0.2 : 1);
+      }
+    }
+    return impulse;
+  }
 
   function ensure() {
     if (!enabled) return false;
@@ -766,33 +839,176 @@ const Sound = (() => {
       try {
         ac = new AC();
         master = ac.createGain();
-        master.gain.value = 0.5;
+        master.gain.value = 0.7;
         const comp = ac.createDynamicsCompressor();
-        comp.threshold.value = -18; comp.knee.value = 22; comp.ratio.value = 7;
-        comp.attack.value = 0.003; comp.release.value = 0.25;
-        master.connect(comp).connect(ac.destination);
-      } catch (_) { return false; }
+        comp.threshold.value = -20;
+        comp.knee.value = 24;
+        comp.ratio.value = 4;
+        comp.attack.value = 0.004;
+        comp.release.value = 0.24;
+        comp.connect(ac.destination);
+        master.connect(comp);
+
+        dryBus = ac.createGain();
+        dryBus.gain.value = 0.94;
+        dryBus.connect(master);
+
+        reverb = ac.createConvolver();
+        reverb.buffer = makeImpulse();
+        const reverbFilter = ac.createBiquadFilter();
+        reverbFilter.type = 'lowpass';
+        reverbFilter.frequency.value = 3400;
+        reverbIn = ac.createGain();
+        reverbIn.gain.value = 1;
+        wet = ac.createGain();
+        wet.gain.value = 0.23;
+        reverbIn.connect(reverb);
+        reverb.connect(reverbFilter);
+        reverbFilter.connect(wet);
+        wet.connect(master);
+      } catch (_) {
+        return false;
+      }
     }
     if (ac.state === 'suspended') ac.resume().catch(() => {});
     return true;
   }
 
-  function tone(freq, dur, opts = {}) {
+  function voice(freq, duration, options = {}) {
     if (!enabled || !ensure()) return;
-    const { type = 'sine', vol = 0.07, delay = 0, slide = null, attack = 0.006 } = opts;
+    const {
+      type = 'sine', vol = 0.045, delay = 0, attack = 0.008,
+      slide = null, pan = 0, send = 0.2, cutoff = null, q = 0.7, detune = 0
+    } = options;
+    let osc = null;
+    const nodes = [];
     try {
       const t0 = ac.currentTime + delay;
-      const osc = ac.createOscillator();
-      const gain = ac.createGain();
+      osc = ac.createOscillator();
       osc.type = type;
+      osc.detune.value = detune;
       osc.frequency.setValueAtTime(Math.max(20, freq), t0);
-      if (slide) osc.frequency.exponentialRampToValueAtTime(Math.max(20, slide), t0 + dur);
+      if (slide) osc.frequency.exponentialRampToValueAtTime(Math.max(20, slide), t0 + duration);
+
+      let tail = osc;
+      nodes.push(osc);
+      if (cutoff) {
+        const filter = ac.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(cutoff, t0);
+        filter.Q.value = q;
+        tail.connect(filter);
+        tail = filter;
+        nodes.push(filter);
+      }
+
+      const gain = ac.createGain();
       gain.gain.setValueAtTime(0.0001, t0);
-      gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t0 + attack);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      osc.connect(gain).connect(master);
-      osc.start(t0); osc.stop(t0 + dur + 0.03);
-    } catch (_) {}
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0003, vol), t0 + attack);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+      tail.connect(gain);
+      tail = gain;
+      nodes.push(gain);
+
+      if (ac.createStereoPanner) {
+        const panner = ac.createStereoPanner();
+        panner.pan.value = clampPan(pan);
+        tail.connect(panner);
+        tail = panner;
+        nodes.push(panner);
+      }
+
+      tail.connect(dryBus);
+      if (send > 0) {
+        const sendGain = ac.createGain();
+        sendGain.gain.value = send;
+        tail.connect(sendGain);
+        sendGain.connect(reverbIn);
+        nodes.push(sendGain);
+      }
+
+      osc.start(t0);
+      osc.stop(t0 + duration + 0.05);
+      osc.addEventListener('ended', () => {
+        for (const node of nodes) {
+          try { node.disconnect(); } catch (_) {}
+        }
+      }, { once: true });
+    } catch (_) {
+      if (osc) {
+        try { osc.disconnect(); } catch (_) {}
+      }
+    }
+  }
+
+  function bell(freq, duration = 0.55, vol = 0.05, delay = 0, pan = 0) {
+    voice(freq, duration, { type: 'sine', vol, delay, pan, send: 0.35, cutoff: 5200, attack: 0.004 });
+    voice(freq * 2.01, duration * 0.72, { type: 'sine', vol: vol * 0.28, delay, pan, send: 0.4, cutoff: 7200, attack: 0.003 });
+    voice(freq * 2.99, duration * 0.45, { type: 'sine', vol: vol * 0.11, delay: delay + 0.004, pan: -pan * 0.6, send: 0.4, cutoff: 8400, attack: 0.002 });
+  }
+
+  function noiseBufferForContext() {
+    if (!noiseBuffer) {
+      const length = Math.floor(ac.sampleRate * 0.8);
+      noiseBuffer = ac.createBuffer(1, length, ac.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
+    }
+    return noiseBuffer;
+  }
+
+  function noiseSweep(options = {}) {
+    if (!enabled || !ensure()) return;
+    const {
+      duration = 0.24, vol = 0.018, from = 500, to = 2400,
+      delay = 0, pan = 0, type = 'bandpass', send = 0.25, q = 0.9
+    } = options;
+    const nodes = [];
+    try {
+      const t0 = ac.currentTime + delay;
+      const source = ac.createBufferSource();
+      source.buffer = noiseBufferForContext();
+      const filter = ac.createBiquadFilter();
+      filter.type = type;
+      filter.Q.value = q;
+      filter.frequency.setValueAtTime(from, t0);
+      filter.frequency.exponentialRampToValueAtTime(Math.max(40, to), t0 + duration);
+      const gain = ac.createGain();
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+
+      source.connect(filter);
+      filter.connect(gain);
+      let tail = gain;
+      if (ac.createStereoPanner) {
+        const panner = ac.createStereoPanner();
+        panner.pan.value = clampPan(pan);
+        tail.connect(panner);
+        tail = panner;
+        nodes.push(panner);
+      }
+      tail.connect(dryBus);
+      if (send > 0) {
+        const sendGain = ac.createGain();
+        sendGain.gain.value = send;
+        tail.connect(sendGain);
+        sendGain.connect(reverbIn);
+        nodes.push(sendGain);
+      }
+      nodes.push(source, filter, gain);
+      source.start(t0);
+      source.stop(t0 + duration + 0.03);
+      source.addEventListener('ended', () => {
+        for (const node of nodes) {
+          try { node.disconnect(); } catch (_) {}
+        }
+      }, { once: true });
+    } catch (_) {
+      for (const node of nodes) {
+        try { node.disconnect(); } catch (_) {}
+      }
+    }
   }
 
   function startBuild() {
@@ -801,69 +1017,138 @@ const Sound = (() => {
     try {
       buildOsc = ac.createOscillator();
       buildGain = ac.createGain();
+      buildFilter = ac.createBiquadFilter();
       buildLfo = ac.createOscillator();
       const lfoGain = ac.createGain();
+
       buildOsc.type = 'triangle';
-      buildOsc.frequency.value = 520;
-      buildLfo.type = 'sine'; buildLfo.frequency.value = 8.5; lfoGain.gain.value = 9;
+      buildOsc.frequency.value = 290;
+      buildFilter.type = 'lowpass';
+      buildFilter.frequency.value = 720;
+      buildFilter.Q.value = 0.6;
+
+      buildLfo.type = 'sine';
+      buildLfo.frequency.value = 6.2;
+      lfoGain.gain.value = 5.5;
       buildLfo.connect(lfoGain).connect(buildOsc.frequency);
+
       buildGain.gain.setValueAtTime(0.0001, ac.currentTime);
-      buildGain.gain.exponentialRampToValueAtTime(0.014, ac.currentTime + 0.06);
-      buildOsc.connect(buildGain).connect(master);
-      buildOsc.start(); buildLfo.start();
-    } catch (_) { buildOsc = buildGain = buildLfo = null; }
+      buildGain.gain.exponentialRampToValueAtTime(0.0105, ac.currentTime + 0.09);
+
+      buildOsc.connect(buildFilter);
+      buildFilter.connect(buildGain);
+      buildGain.connect(dryBus);
+      const send = ac.createGain();
+      send.gain.value = 0.09;
+      buildGain.connect(send);
+      send.connect(reverbIn);
+
+      buildOsc.start();
+      buildLfo.start();
+    } catch (_) {
+      buildOsc = buildGain = buildFilter = buildLfo = null;
+    }
   }
+
   function updateBuild(progress) {
     if (!buildOsc || !ac) return;
-    try { buildOsc.frequency.setTargetAtTime(500 + Math.min(1, progress) * 480, ac.currentTime, 0.035); } catch (_) {}
+    const value = Math.max(0, Math.min(1, progress || 0));
+    try {
+      buildOsc.frequency.setTargetAtTime(265 + value * 330, ac.currentTime, 0.04);
+      buildFilter.frequency.setTargetAtTime(620 + value * 620, ac.currentTime, 0.05);
+    } catch (_) {}
   }
+
   function stopBuild() {
     if (!buildOsc || !ac) return;
     const osc = buildOsc, gain = buildGain, lfo = buildLfo;
-    buildOsc = buildGain = buildLfo = null;
+    buildOsc = buildGain = buildFilter = buildLfo = null;
     try {
       const t = ac.currentTime;
       gain.gain.cancelScheduledValues(t);
       gain.gain.setValueAtTime(Math.max(0.0001, gain.gain.value), t);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
-      osc.stop(t + 0.09); lfo.stop(t + 0.09);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+      osc.stop(t + 0.1);
+      lfo.stop(t + 0.1);
     } catch (_) {}
   }
+
   function success() {
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
-      tone(f, 0.19, { type: 'triangle', vol: 0.085, delay: i * 0.065 }));
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    notes.forEach((freq, i) => bell(freq, 0.6, 0.05, i * 0.062, (i - 1.5) * 0.22));
+    voice(261.63, 0.42, { type: 'triangle', vol: 0.018, attack: 0.01, send: 0.4, cutoff: 1600 });
+    noiseSweep({ duration: 0.3, vol: 0.013, from: 420, to: 2600, delay: 0.03, pan: 0.18, send: 0.3 });
   }
+
   function lifeLost() {
-    tone(300, 0.42, { type: 'sawtooth', vol: 0.075, slide: 85, attack: 0.01 });
-    tone(150, 0.5, { type: 'square', vol: 0.035, slide: 55, delay: 0.045 });
+    voice(92, 0.38, { type: 'sine', vol: 0.12, slide: 48, attack: 0.004, send: 0.06, cutoff: 480 });
+    voice(220, 0.5, { type: 'triangle', vol: 0.038, slide: 138, delay: 0.02, send: 0.24, cutoff: 900 });
+    voice(164.81, 0.62, { type: 'sine', vol: 0.032, slide: 104, delay: 0.09, send: 0.3, cutoff: 760 });
+    noiseSweep({ duration: 0.16, vol: 0.018, from: 480, to: 120, delay: 0, type: 'lowpass', send: 0.1 });
   }
+
   function gameOver() {
-    [392, 330, 262, 196].forEach((f, i) =>
-      tone(f, 0.32, { type: 'sawtooth', vol: 0.055, delay: 0.12 + i * 0.16, slide: f * 0.82 }));
+    const notes = [329.63, 261.63, 196, 130.81];
+    notes.forEach((freq, i) => {
+      voice(freq, 0.75, {
+        type: 'triangle', vol: 0.038, delay: 0.14 + i * 0.17,
+        slide: freq * 0.84, send: 0.32, cutoff: 1100
+      });
+    });
+    voice(65, 0.8, { type: 'sine', vol: 0.07, slide: 42, delay: 0.12, send: 0.08, cutoff: 240 });
   }
+
   function fanfare() {
-    const notes = [523, 659, 784, 1047, 784, 1047, 1319];
-    notes.forEach((f, i) => tone(f, 0.2, { type: 'triangle', vol: 0.08, delay: i * 0.1 }));
+    const chord = [196, 261.63, 329.63];
+    chord.forEach((freq) => {
+      voice(freq, 0.9, { type: 'sine', vol: 0.018, attack: 0.03, send: 0.35, cutoff: 1700 });
+    });
+    const notes = [392, 523.25, 659.25, 783.99, 1046.5, 1318.51];
+    notes.forEach((freq, i) => bell(freq, 0.62, 0.042, i * 0.095, (i - 2.5) * 0.14));
+    noiseSweep({ duration: 0.4, vol: 0.011, from: 700, to: 4200, delay: 0.12, send: 0.35, type: 'bandpass', q: 0.7 });
   }
+
   function victory() {
-    const notes = [523, 659, 784, 1047, 1319, 1568, 2093];
-    notes.forEach((f, i) => tone(f, i === notes.length - 1 ? 0.6 : 0.22,
-      { type: 'triangle', vol: 0.085, delay: i * 0.13 }));
+    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 2093];
+    notes.forEach((freq, i) => bell(freq, i === notes.length - 1 ? 1.1 : 0.65, 0.048, i * 0.12, (i - 3) * 0.12));
+    [130.81, 196, 261.63].forEach((freq) => {
+      voice(freq, 1.6, { type: 'triangle', vol: 0.022, attack: 0.05, send: 0.4, cutoff: 1200 });
+    });
+    noiseSweep({ duration: 0.8, vol: 0.014, from: 900, to: 5200, delay: 0.18, send: 0.4, type: 'bandpass', q: 0.6 });
   }
-  function bounce() {
+
+  function bounce(x = GAME_W / 2) {
     if (!enabled) return;
     const now = performance.now();
-    if (now - lastBounce < 55) return;
+    if (now - lastBounce < 45) return;
     lastBounce = now;
-    tone(430 + Math.random() * 380, 0.035, { type: 'sine', vol: 0.016 });
+    const pan = (x / GAME_W * 2 - 1) * 0.45;
+    const base = 155 + Math.random() * 70;
+    voice(base, 0.13, { type: 'sine', vol: 0.017, pan, attack: 0.002, send: 0.12, cutoff: 1300 });
+    voice(base * 2.02, 0.085, { type: 'triangle', vol: 0.007, pan, attack: 0.002, send: 0.1, cutoff: 2600 });
   }
-  function deny() { tone(145, 0.09, { type: 'square', vol: 0.028 }); }
-  function click() { tone(680, 0.05, { type: 'sine', vol: 0.03 }); }
+
+  function deny() {
+    voice(150, 0.1, { type: 'triangle', vol: 0.028, cutoff: 700, send: 0.04 });
+    voice(110, 0.15, { type: 'sine', vol: 0.024, delay: 0.065, cutoff: 600, send: 0.04 });
+  }
+
+  function click() {
+    voice(740, 0.055, { type: 'sine', vol: 0.018, attack: 0.002, send: 0.05, cutoff: 3200 });
+    voice(1180, 0.045, { type: 'sine', vol: 0.007, delay: 0.006, send: 0.05, cutoff: 4200 });
+  }
+
   function setEnabled(value) {
     enabled = !!value;
     if (!enabled) stopBuild();
-    else ensure();
+    if (ac) {
+      try {
+        master.gain.setTargetAtTime(enabled ? 0.7 : 0.0001, ac.currentTime, 0.02);
+      } catch (_) {}
+    }
+    if (enabled) ensure();
   }
+
   function unlock() { ensure(); }
 
   return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, deny, click, setEnabled, unlock };
@@ -1180,7 +1465,10 @@ function toggleSound() {
   savePrefs();
   Sound.setEnabled(prefs.sound);
   syncSettingsUI();
-  if (prefs.sound) Sound.click();
+  if (prefs.sound) {
+    Sound.click();
+    if (state.build && state.phase === 'playing' && !state.paused) Sound.startBuild();
+  }
   ui.settingsStatus.textContent = prefs.sound ? 'Efeitos sonoros ativados.' : 'Efeitos sonoros desativados.';
 }
 
@@ -1590,7 +1878,7 @@ function moveAxis(ball, axis) {
         else ball.y = (cy + 1) * TILE + r + 0.01;
         ball.vy = -ball.vy;
       }
-      Sound.bounce();
+      Sound.bounce(ball.x);
       return;
     }
   }

@@ -82,7 +82,8 @@ requestAnimationFrame
 - Canvas principal: `#game`, escala lógica 600×400, ajustado por `devicePixelRatio` (máximo 2).
 - Cena estática (`sceneCanvas`): fundo, grade, paredes e moldura são desenhados em um canvas auxiliar de 2× e reutilizados até `sceneDirty = true`.
 - Elementos dinâmicos: paredes em construção, preenchimentos animados, hover, bolinhas, partículas, flash e shake.
-- Tema: variáveis CSS em `html` e paleta do canvas em `THEMES.dark` / `THEMES.light`.
+- Tema: variáveis CSS em `html` e paleta do canvas em `THEMES.dark` (preto/laranja) / `THEMES.light` (laranja/branco).
+- Fundo ambiente: SVG inline com ondas laranja e `filter: blur()`, decorativo e sem dependência externa.
 - A estética “liquid glass” fica no CSS; o canvas usa cores e brilho reduzido.
 
 ### Cache de cena
@@ -154,13 +155,16 @@ Controle de sobreposição:
 O módulo `Sound` encapsula:
 
 - criação preguiçosa de `AudioContext`;
-- compressor master;
-- tons sintetizados;
+- compressor master e barramento seco;
+- convolver com impulso gerado em memória para reverb;
+- tons com harmônicos, envelopes suaves e pan estéreo;
 - bipe contínuo de construção;
 - efeitos de sucesso, perda de vida, fanfarra, vitória e quique;
 - ativação/desativação persistida.
 
 O áudio é desbloqueado no primeiro gesto do usuário; se o contexto estiver suspenso, `resume()` é chamado.
+
+O fundo ambiente é um SVG inline com ondas laranja, filtrado com `blur`; não há imagem externa.
 
 ## 12. Persistência
 

@@ -25,7 +25,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] HUD mostra nível, vidas, área (x%/95%), direção e configurações.
 - [ ] Botão de compartilhamento não existe.
 
-## 3. Gameplay
+## 3. Gameplay e visual
 
 - [ ] Clique esquerdo/toque em célula vazia inicia parede.
 - [ ] Parede cresce nos dois sentidos.
@@ -40,6 +40,9 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] +1 bolinha a cada 2 níveis.
 - [ ] Ao zerar vidas, aparece Game Over e o reinício volta ao nível 1.
 - [ ] Nível 100 exibe vitória (pode ser validado por simulação/estado).
+- [ ] Modo escuro usa preto e laranja; modo claro usa laranja e branco.
+- [ ] Fundo de ondas laranja desfocado aparece nos dois modos sem prejudicar a leitura.
+- [ ] Painéis de texto mantêm contraste sobre o fundo.
 
 ## 4. Dificuldades e persistência
 
@@ -70,7 +73,8 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Som ascendente ao concluir parede.
 - [ ] Som descendente ao perder vida.
 - [ ] Fanfarra ao concluir nível.
-- [ ] Quique sutil.
+- [ ] Quique sutil com pan estéreo.
+- [ ] Tons com reverb e harmônicos, sem estalos ou clipping.
 - [ ] Sem erros de autoplay; áudio só após gesto do usuário.
 
 ## 7. Segurança e deploy

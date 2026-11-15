@@ -70,12 +70,14 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 
 ### Áudio
 
-- Web Audio API, sintetizado em tempo real.
+- Web Audio API, sintetizado em tempo real, sem arquivos de mídia.
+- Cadeia com compressor, barramento seco, reverb por convolução e pan estéreo.
+- Tons com harmônicos e envelopes suaves.
 - Bipe contínuo durante a construção.
-- Som ascendente ao concluir parede.
-- Som descendente ao perder vida.
-- Fanfarra ao concluir nível.
-- Quique sutil das bolinhas.
+- Arpejo ascendente com sinos ao concluir parede.
+- Queda grave e macia ao perder vida.
+- Fanfarra e acorde de vitória.
+- Quique sutil com variação de tom e posição estéreo.
 - O contexto de áudio é desbloqueado por gesto do usuário.
 
 ### Interface
@@ -84,7 +86,9 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Tutorial em modal, com regras e controles para PC e celular.
 - HUD: nível, vidas, área, direção, configurações.
 - Botão de compartilhar removido por decisão de produto.
-- Modos de aparência **Escuro** e **Claro**, aplicados em tempo real.
+- Modo **Escuro**: preto e laranja.
+- Modo **Claro**: laranja e branco.
+- Fundo ambiente em ondas laranja desfocadas (SVG inline), presente nos dois modos.
 - Estética “liquid glass”, com brilho reduzido.
 - Configurações pausam o jogo; fechar retorna ao jogo ou ao menu, conforme a origem.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).

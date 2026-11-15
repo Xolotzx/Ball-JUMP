@@ -121,3 +121,27 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - menos leitura desnecessária do código;
   - documentação precisa ser mantida;
   - nenhum segredo pode entrar no contexto.
+
+## ADR-011 — Paleta preto/laranja, laranja/branco e fundo ambiente
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** identidade visual mais quente e imersiva, alinhada à referência de ondas laranja sobre preto.
+- **Decisão:** usar preto + laranja no modo escuro, laranja + branco no claro, e um fundo SVG inline de ondas laranja com blur.
+- **Consequências:**
+  - remove azul/verde/amarelo da identidade principal;
+  - botões de direção usam laranja e creme/branco;
+  - fundo é decorativo, sem requisição externa;
+  - textos fora da arena usam painéis de vidro para manter contraste.
+
+## ADR-012 — Áudio com reverb e harmônicos
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** efeitos anteriores eram funcionais, mas secos e pouco satisfatórios.
+- **Decisão:** adicionar compressor, convolver com impulso gerado em memória, harmônicos, pan estéreo e envelopes suaves.
+- **Consequências:**
+  - timbre mais agradável e espacial;
+  - maior custo de CPU no áudio (aceitável);
+  - nenhum arquivo de áudio externo;
+  - bounce limitado por taxa para evitar saturação.
