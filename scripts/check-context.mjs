@@ -60,6 +60,7 @@ const required = [
   'docs/ARCHITECTURE.md',
   'docs/CONTEXT_ENGINEERING.md',
   'docs/SECURITY.md',
+  'docs/FIREBASE.md',
   'docs/DECISIONS.md',
   'docs/TESTING.md',
   'context/manifest.json',
@@ -87,6 +88,7 @@ try {
 }
 
 check(manifest?.runtimeFacts?.goalPercent === 75, 'manifesto declara meta de 75%');
+check(manifest?.firebase?.collection === 'balljumpProfiles', 'manifesto declara coleção do ranking');
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
@@ -137,10 +139,21 @@ const headerChecks = [
   ['no-referrer presente', headers.includes('Referrer-Policy: no-referrer')],
   ['X-Frame-Options presente', headers.includes('X-Frame-Options: DENY')],
   ['Permissions-Policy presente', headers.includes('Permissions-Policy:')],
-  ['COOP presente', headers.includes('Cross-Origin-Opener-Policy: same-origin')],
+  ['COOP permite popups de login', headers.includes('Cross-Origin-Opener-Policy: same-origin-allow-popups')],
   ['HSTS presente', headers.includes('Strict-Transport-Security:')]
 ];
 for (const [name, condition] of headerChecks) check(condition, name);
+check(headers.includes('https://www.gstatic.com'), 'CSP permite o SDK Firebase');
+check(
+  headers.includes('https://firestore.googleapis.com')
+    && headers.includes('https://identitytoolkit.googleapis.com')
+    && headers.includes('https://securetoken.googleapis.com'),
+  'CSP permite as APIs do Firebase'
+);
+check(index.includes('https://www.gstatic.com/firebasejs/'), 'Firebase SDK via gstatic');
+check(index.includes("FIREBASE_SDK_VERSION = '10.14.1'"), 'versão do Firebase fixada');
+check(index.includes("RANK_COLLECTION = 'balljumpProfiles'"), 'coleção do ranking definida');
+check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
 
 // 5. Repositório e segredos
 console.log('\nRepositório e segredos:');

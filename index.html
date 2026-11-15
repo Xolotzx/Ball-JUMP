@@ -28,6 +28,7 @@
   }
   [data-theme="light"]{color-scheme:light}
   *,*::before,*::after{box-sizing:border-box}
+  [hidden]{display:none !important}
   html,body{min-height:100%}
   html{-webkit-text-size-adjust:100%}
   body{
@@ -354,6 +355,113 @@
   .secondary-btn:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--glass-border))}
   .secondary-btn:active{transform:scale(.98)}
 
+  /* ===== fim de jogo / ranking ===== */
+  .modal-backdrop.death-backdrop{z-index:55}
+  .modal-backdrop.rank-backdrop{z-index:60}
+  .modal.death-modal{width:min(100%,520px)}
+  .modal.rank-modal{width:min(100%,540px)}
+  .death-modal .modal-head{padding-bottom:15px}
+  .death-modal .overlay-kicker{margin-bottom:5px}
+  .death-modal .modal-head h2{font-size:clamp(28px,7vw,38px);letter-spacing:-.05em;line-height:1}
+  .death-modal .modal-head p{margin-top:6px;font-size:11.5px;color:var(--muted)}
+  .death-modal[data-kind="gameover"] .overlay-kicker{color:#ff6b52}
+  .death-modal[data-kind="victory"] .overlay-kicker{color:#ffb347}
+  .death-modal .modal-body,.rank-modal .modal-body{gap:13px}
+  .death-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .death-stat{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    min-height:88px;padding:10px;border-radius:15px;
+    background:linear-gradient(145deg,var(--glass-top),var(--glass-bottom));
+    border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-highlight);
+  }
+  .death-flame,.death-flag{font-size:20px;line-height:1}
+  .death-stat b{font-family:var(--mono);font-size:25px;line-height:1.1;color:var(--text)}
+  .death-stat small{font-size:8px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:800;text-align:center}
+  .death-auth,.rank-auth{text-align:center;padding:2px 0}
+  .auth-hint{margin:0 auto 11px;max-width:330px;font-size:11px;line-height:1.5;color:var(--muted)}
+  .google-btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;width:min(100%,330px);min-height:47px;
+    margin:0 auto;padding:0 16px;border:1px solid rgba(0,0,0,.14);border-radius:13px;cursor:pointer;
+    background:#fff;color:#1f1f1f;font-weight:800;font-size:12px;letter-spacing:.01em;
+    box-shadow:0 10px 24px -20px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.7);
+    transition:transform .12s,box-shadow .2s,opacity .2s;
+  }
+  .google-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 13px 28px -18px rgba(0,0,0,.4),inset 0 1px 0 #fff}
+  .google-btn:active:not(:disabled){transform:scale(.99)}
+  .google-btn:disabled{opacity:.58;cursor:wait;transform:none}
+  .google-g{
+    width:23px;height:23px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+    background:#fff;color:#4285f4;font-family:Arial,sans-serif;font-weight:900;font-size:16px;line-height:1;
+    border:1px solid #dadce0;
+  }
+  .auth-error{min-height:14px;margin:8px 0 0;font-size:10px;line-height:1.4;color:#ffb4b4}
+  [data-theme="light"] .auth-error{color:#9f1d1d}
+  .death-profile{display:flex;flex-direction:column;gap:8px}
+  .profile-card,.rank-profile{
+    display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:14px;
+    background:linear-gradient(145deg,var(--glass-top),var(--glass-bottom));
+    border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 var(--glass-highlight);
+  }
+  .avatar{
+    width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 76%,#fff),var(--accent));
+    color:#1d0d02;font-family:var(--mono);font-size:16px;font-weight:900;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .profile-info{display:flex;flex-direction:column;min-width:0;flex:1;text-align:left}
+  .profile-info strong{font-size:12.5px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .profile-sub{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.2}
+  .link-btn{
+    border:0;background:transparent;color:var(--muted);font-size:10px;font-weight:700;
+    text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:5px;flex:0 0 auto;
+  }
+  .link-btn:hover{color:var(--text)}
+  .profile-best{
+    margin:0;padding:7px 10px;border-radius:10px;text-align:center;
+    font-family:var(--mono);font-size:11px;font-weight:800;color:var(--accent);
+    background:color-mix(in srgb,var(--accent) 8%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--accent) 22%,var(--glass-border));
+  }
+  .death-profile .secondary-btn{width:100%}
+  .death-note{margin:0;text-align:center;font-size:9.5px;line-height:1.45;color:var(--muted)}
+  .death-foot{justify-content:stretch}
+  .death-foot .primary-btn{width:100%}
+  .rank-body{gap:13px}
+  .rank-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .rank-tab{
+    min-height:38px;border-radius:11px;border:1px solid var(--glass-border);cursor:pointer;
+    background:linear-gradient(145deg,var(--glass-top),var(--glass-bottom));
+    color:var(--muted);font-family:var(--mono);font-size:11px;font-weight:900;letter-spacing:.04em;
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .rank-tab:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--glass-border))}
+  .rank-tab.is-active{
+    background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));
+    color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 55%,#fff 10%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
+  }
+  .rank-content{display:flex;flex-direction:column;gap:9px}
+  .rank-list{
+    list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;
+    max-height:min(42vh,360px);overflow:auto;overscroll-behavior:contain;
+  }
+  .rank-row{
+    display:grid;grid-template-columns:22px 28px minmax(0,1fr) auto;align-items:center;gap:8px;
+    padding:7px 9px;border-radius:11px;background:var(--surface);border:1px solid var(--line);
+  }
+  .rank-row.is-me{border-color:color-mix(in srgb,var(--accent) 55%,var(--glass-border));background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+  .rank-pos{font-family:var(--mono);font-size:10px;font-weight:800;text-align:right;color:var(--muted)}
+  .rank-avatar{
+    width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 65%,#fff),var(--accent));
+    color:#1d0d02;font-family:var(--mono);font-size:11px;font-weight:900;
+  }
+  .rank-name{font-size:11.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rank-value{font-family:var(--mono);font-size:13px;font-weight:900;color:var(--accent)}
+  .rank-empty,.rank-status{margin:0;text-align:center;font-size:10px;line-height:1.45;color:var(--muted)}
+  .rank-status.is-error{color:#ffb4b4}
+  [data-theme="light"] .rank-status.is-error{color:#9f1d1d}
+
   /* ===== modal ===== */
   .modal-backdrop{
     position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;
@@ -585,6 +693,11 @@
         <span class="menu-label">Jogar</span>
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
+      <button id="menuRankingBtn" class="menu-btn" type="button">
+        <span class="menu-icon" aria-hidden="true">🏆</span>
+        <span class="menu-label">Ranking</span>
+        <span class="menu-chev" aria-hidden="true">›</span>
+      </button>
       <button id="menuSettingsBtn" class="menu-btn" type="button">
         <span class="menu-icon" aria-hidden="true">&#9881;&#xFE0E;</span>
         <span class="menu-label">Configurações</span>
@@ -699,6 +812,102 @@
   </section>
 </div>
 
+<!-- ===== fim de jogo / perfil ===== -->
+<div class="modal-backdrop death-backdrop" id="deathModal" hidden>
+  <section class="modal death-modal" role="dialog" aria-modal="true" aria-labelledby="deathTitle">
+    <header class="modal-head">
+      <div>
+        <span class="overlay-kicker" id="deathKicker">FIM DE JOGO</span>
+        <h2 id="deathTitle">GAME OVER</h2>
+        <p id="deathSubtitle">Você chegou ao nível 1.</p>
+      </div>
+    </header>
+    <div class="modal-body death-body">
+      <div class="death-stats">
+        <div class="death-stat">
+          <span class="death-flame" aria-hidden="true">🔥</span>
+          <b id="deathStreakVal">0</b>
+          <small>melhor sequência</small>
+        </div>
+        <div class="death-stat">
+          <span class="death-flag" aria-hidden="true">🏁</span>
+          <b id="deathLevelVal">1</b>
+          <small>nível alcançado</small>
+        </div>
+      </div>
+
+      <div class="death-auth" id="deathAuth">
+        <p class="auth-hint" id="deathAuthHint">Conecte sua conta Google para salvar o resultado e entrar no ranking.</p>
+        <button id="deathLoginBtn" class="google-btn" type="button" disabled>
+          <span class="google-g" aria-hidden="true">G</span>
+          <span class="google-label">Conectando…</span>
+        </button>
+        <p class="auth-error" id="deathAuthError" role="alert"></p>
+      </div>
+
+      <div class="death-profile" id="deathProfile" hidden>
+        <div class="profile-card">
+          <span class="avatar" id="deathAvatar" aria-hidden="true">J</span>
+          <div class="profile-info">
+            <strong id="deathName">Jogador</strong>
+            <span class="profile-sub">Perfil conectado</span>
+          </div>
+          <button id="deathSignOut" class="link-btn" type="button">Sair</button>
+        </div>
+        <p class="profile-best" id="deathBest">🔥 0 · nível 1</p>
+        <button id="deathRankBtn" class="secondary-btn" type="button">Ver ranking completo</button>
+      </div>
+
+      <p class="death-note" id="deathNote">O resultado é salvo ao entrar com Google.</p>
+    </div>
+    <footer class="tutorial-foot death-foot">
+      <button id="deathRestart" class="primary-btn" type="button">Jogar novamente</button>
+    </footer>
+  </section>
+</div>
+
+<!-- ===== ranking ===== -->
+<div class="modal-backdrop rank-backdrop" id="rankModal" hidden>
+  <section class="modal rank-modal" role="dialog" aria-modal="true" aria-labelledby="rankTitle">
+    <header class="modal-head">
+      <div>
+        <h2 id="rankTitle">Ranking</h2>
+        <p>Maiores sequências e níveis alcançados.</p>
+      </div>
+      <button id="closeRank" class="close-btn" type="button" aria-label="Fechar ranking">✕</button>
+    </header>
+    <div class="modal-body rank-body">
+      <div class="rank-tabs" role="tablist" aria-label="Tipo de ranking">
+        <button id="rankStreakTab" class="rank-tab is-active" type="button" role="tab" aria-selected="true">🔥 Streak</button>
+        <button id="rankLevelTab" class="rank-tab" type="button" role="tab" aria-selected="false">🏆 Níveis</button>
+      </div>
+
+      <div class="rank-auth" id="rankAuth">
+        <p class="auth-hint" id="rankAuthHint">Entre com Google para ver o ranking.</p>
+        <button id="rankLoginBtn" class="google-btn" type="button" disabled>
+          <span class="google-g" aria-hidden="true">G</span>
+          <span class="google-label">Conectando…</span>
+        </button>
+        <p class="auth-error" id="rankError" role="alert"></p>
+      </div>
+
+      <div class="rank-content" id="rankContent" hidden>
+        <div class="rank-profile" id="rankProfile">
+          <span class="avatar" id="rankAvatar" aria-hidden="true">J</span>
+          <div class="profile-info">
+            <strong id="rankName">Jogador</strong>
+            <span class="profile-sub" id="rankBest">🔥 0 · nível 1</span>
+          </div>
+          <button id="rankSignOut" class="link-btn" type="button">Sair</button>
+        </div>
+        <ol class="rank-list" id="rankList"></ol>
+        <p class="rank-empty" id="rankEmpty" hidden>Nenhum jogador no ranking ainda.</p>
+        <p class="rank-status" id="rankStatus" role="status"></p>
+      </div>
+    </div>
+  </section>
+</div>
+
 <script>
 'use strict';
 
@@ -713,6 +922,22 @@ const STEP_MS = 1000 / 60;
 const INTERIOR_TOTAL = (COLS - 2) * (ROWS - 2);
 const GOAL_CELLS = Math.ceil(INTERIOR_TOTAL * GOAL_PCT / 100);
 const STORAGE_KEY = 'kbounce.settings.v1';
+
+/* Firebase público (apiKey é pública por design; as regras do Firestore protegem os dados) */
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyBJT8irNZ2n9P9EZeeH4yeG-Z9IV7cM8_U',
+  authDomain: 'botanicstudio.firebaseapp.com',
+  projectId: 'botanicstudio',
+  storageBucket: 'botanicstudio.firebasestorage.app',
+  messagingSenderId: '877868215369',
+  appId: '1:877868215369:web:ec350ae05d2e3288a2e398'
+};
+const FIREBASE_SDK_VERSION = '10.14.1';
+const RANK_COLLECTION = 'balljumpProfiles';
+const RANK_FETCH_LIMIT = 20;
+const RANK_SHOW_LIMIT = 10;
+const PENDING_RUN_KEY = 'balljump.pendingRun.v1';
+const AUTH_REDIRECT_KEY = 'balljump.authRedirect.v1';
 
 const DIFFICULTIES = {
   easy: {
@@ -831,8 +1056,21 @@ const ui = {
   themeGrid: $('themeGrid'), soundToggle: $('soundToggle'), settingsStatus: $('settingsStatus'),
   themeColor: $('themeColor'),
   startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'), menuHow: $('menuHowBtn'),
+  menuRanking: $('menuRankingBtn'),
   tutorial: $('tutorialModal'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
-  tutorialPlay: $('tutorialPlayBtn')
+  tutorialPlay: $('tutorialPlayBtn'),
+  deathModal: $('deathModal'), deathKicker: $('deathKicker'), deathTitle: $('deathTitle'),
+  deathSubtitle: $('deathSubtitle'), deathStreakVal: $('deathStreakVal'), deathLevelVal: $('deathLevelVal'),
+  deathAuth: $('deathAuth'), deathAuthHint: $('deathAuthHint'), deathLoginBtn: $('deathLoginBtn'),
+  deathAuthError: $('deathAuthError'), deathProfile: $('deathProfile'), deathAvatar: $('deathAvatar'),
+  deathName: $('deathName'), deathBest: $('deathBest'), deathSignOut: $('deathSignOut'),
+  deathRankBtn: $('deathRankBtn'), deathNote: $('deathNote'), deathRestart: $('deathRestart'),
+  rankModal: $('rankModal'), closeRank: $('closeRank'), rankAuth: $('rankAuth'),
+  rankAuthHint: $('rankAuthHint'), rankLoginBtn: $('rankLoginBtn'), rankError: $('rankError'),
+  rankContent: $('rankContent'), rankProfile: $('rankProfile'), rankAvatar: $('rankAvatar'),
+  rankName: $('rankName'), rankBest: $('rankBest'), rankSignOut: $('rankSignOut'),
+  rankList: $('rankList'), rankEmpty: $('rankEmpty'), rankStatus: $('rankStatus'),
+  rankStreakTab: $('rankStreakTab'), rankLevelTab: $('rankLevelTab')
 };
 const appRoot = document.querySelector('.app');
 
@@ -1222,6 +1460,7 @@ const state = {
   theme: prefs.theme,
   dir: 'h',
   streak: 0,
+  runBestStreak: 0,
   phase: 'playing',   // playing | levelup | gameover | victory
   paused: false,
   filled: 0,
@@ -1240,8 +1479,32 @@ let toastTimer = 0;
 let modalOpen = false;
 let menuOpen = true;
 let tutorialOpen = false;
+let deathOpen = false;
+let rankOpen = false;
 let lastFrame = performance.now();
 let accumulator = 0;
+
+const firebaseRuntime = {
+  app: null,
+  auth: null,
+  db: null,
+  mods: null,
+  promise: null,
+  ready: false,
+  user: null,
+  profile: null,
+  profileUid: null,
+  error: '',
+  syncing: false,
+  signingIn: false,
+  pendingRun: null,
+  syncPromise: null,
+  rankMode: 'streak',
+  rankData: { streak: [], level: [] },
+  rankLoaded: false,
+  rankLoading: false,
+  rankFocus: null
+};
 
 /* =========================================================
    UTILITÁRIOS
@@ -1577,6 +1840,7 @@ function restartGame(fromSettings = false) {
   Sound.stopBuild();
   state.lives = difficulty().lives;
   state.streak = 0;
+  state.runBestStreak = 0;
   updateStreakHUD();
   state.paused = modalOpen;
   beginLevel(1);
@@ -1775,6 +2039,7 @@ function completeBuild() {
   Sound.stopBuild();
   Sound.success();
   state.streak += 1;
+  state.runBestStreak = Math.max(state.runBestStreak, state.streak);
   updateStreakHUD(true);
   Sound.fire(state.streak);
   markSceneDirty();
@@ -1885,29 +2150,17 @@ function triggerGameOver() {
   Sound.stopBuild();
   Sound.gameOver();
   updateHUD();
-  showOverlay(
-    'gameover',
-    'FIM DE JOGO',
-    'GAME OVER',
-    'Você chegou ao nível ' + state.level + ' com ' + Math.floor(state.progress) + '% da área preenchida.',
-    'RECOMEÇAR NO NÍVEL 1',
-    () => { Sound.click(); restartGame(); }
-  );
+  openEndModal(false);
 }
 
 function triggerVictory() {
+  if (state.phase === 'victory') return;
   state.phase = 'victory';
   state.build = null;
   Sound.stopBuild();
   Sound.victory();
-  showOverlay(
-    'victory',
-    '100 NÍVEIS',
-    'LENDA DO LABIRINTO',
-    'Você dominou todas as 100 arenas. As bolinhas se curvam ao seu redor!',
-    'JOGAR NOVAMENTE',
-    () => { Sound.click(); restartGame(); }
-  );
+  updateHUD();
+  openEndModal(true);
 }
 
 /* =========================================================
@@ -2258,15 +2511,547 @@ function onCanvasMove(e) {
 let modalHideTimer = 0;
 let tutorialHideTimer = 0;
 let menuHideTimer = 0;
+let deathHideTimer = 0;
+let rankHideTimer = 0;
 let lastFocused = null;
 
 function syncOverlayLock() {
-  const locked = menuOpen || modalOpen || tutorialOpen;
+  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen;
   if (appRoot && 'inert' in appRoot) appRoot.inert = locked;
-  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen;
+  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen;
+  if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen;
   document.body.style.overflow = locked ? 'hidden' : '';
   document.body.classList.toggle('overlay-open', locked);
 }
+
+/* =========================================================
+   FIREBASE / CONTA / RANKING
+   ========================================================= */
+function clampInt(value, min, max) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return min;
+  return Math.max(min, Math.min(max, Math.trunc(n)));
+}
+
+function displayNameOf(user) {
+  let name = String((user && user.displayName) || '').trim().replace(/\s+/g, ' ');
+  if (!name) name = 'Jogador';
+  return [...name].slice(0, 40).join('');
+}
+
+function initialOf(name) {
+  return ([...String(name || 'J')][0] || 'J').toUpperCase();
+}
+
+function readPendingRun() {
+  try {
+    const raw = sessionStorage.getItem(PENDING_RUN_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      return {
+        bestStreak: clampInt(data.bestStreak, 0, 1000000),
+        bestLevel: clampInt(data.bestLevel, 1, 100)
+      };
+    }
+  } catch (_) {}
+  return firebaseRuntime.pendingRun || null;
+}
+
+function savePendingRun(run) {
+  const data = {
+    bestStreak: clampInt(run && run.bestStreak, 0, 1000000),
+    bestLevel: clampInt(run && run.bestLevel, 1, 100)
+  };
+  firebaseRuntime.pendingRun = data;
+  try { sessionStorage.setItem(PENDING_RUN_KEY, JSON.stringify(data)); } catch (_) {}
+}
+
+function clearPendingRun() {
+  firebaseRuntime.pendingRun = null;
+  try { sessionStorage.removeItem(PENDING_RUN_KEY); } catch (_) {}
+}
+
+function firebaseErrorMessage(error) {
+  const code = error && error.code ? String(error.code) : '';
+  if (code.includes('unauthorized-domain')) return 'Domínio de login não autorizado no Firebase.';
+  if (code.includes('popup-blocked')) return 'O navegador bloqueou a janela de login. Permita pop-ups e tente novamente.';
+  if (code.includes('popup-closed') || code.includes('cancelled-popup')) return '';
+  if (code.includes('permission-denied')) return 'Sem permissão para acessar o ranking. Verifique as regras do Firestore.';
+  if (code.includes('unavailable') || code.includes('network-request-failed') || code.includes('failed-precondition')) {
+    return 'Sem conexão com o Firebase. O jogo continua disponível offline.';
+  }
+  if (code.includes('invalid-api-key')) return 'Configuração do Firebase inválida.';
+  return 'Não foi possível conectar ao Firebase. Tente novamente.';
+}
+
+function updateAuthUI() {
+  const fb = firebaseRuntime;
+  const signed = !!fb.user;
+  const loading = !fb.ready;
+  const busy = loading || fb.signingIn;
+  const label = loading ? 'Conectando…' : fb.signingIn ? 'Entrando…' : fb.error ? 'Tentar novamente' : 'Entrar com Google';
+
+  for (const button of [ui.deathLoginBtn, ui.rankLoginBtn]) {
+    if (!button) continue;
+    button.disabled = busy;
+    button.setAttribute('aria-busy', String(busy));
+    const text = button.querySelector('.google-label');
+    if (text) text.textContent = label;
+  }
+
+  ui.deathAuthError.textContent = signed ? '' : (fb.error || '');
+  ui.rankError.textContent = signed ? '' : (fb.error || '');
+
+  ui.deathAuth.hidden = signed;
+  ui.deathProfile.hidden = !signed;
+  if (signed) {
+    const name = displayNameOf(fb.user);
+    const profile = fb.profile || { bestStreak: 0, bestLevel: 1 };
+    ui.deathName.textContent = name;
+    ui.deathAvatar.textContent = initialOf(name);
+    ui.deathBest.textContent = `🔥 ${profile.bestStreak} · nível ${profile.bestLevel}`;
+    if (fb.error) ui.deathNote.textContent = fb.error;
+    else if (fb.syncing) ui.deathNote.textContent = 'Salvando resultado…';
+    else if (fb.profile) ui.deathNote.textContent = 'Resultado salvo no ranking.';
+    else ui.deathNote.textContent = 'Preparando seu perfil…';
+  } else {
+    ui.deathAuthHint.textContent = loading
+      ? 'Conectando ao Firebase…'
+      : fb.error
+        ? 'Não foi possível conectar. Você ainda pode jogar.'
+        : 'Conecte sua conta Google para salvar o resultado e entrar no ranking.';
+    ui.deathNote.textContent = 'O resultado é salvo ao entrar com Google.';
+  }
+
+  ui.rankAuth.hidden = signed;
+  ui.rankContent.hidden = !signed;
+  ui.rankProfile.hidden = !signed;
+  if (signed) {
+    const name = displayNameOf(fb.user);
+    const profile = fb.profile || { bestStreak: 0, bestLevel: 1 };
+    ui.rankAvatar.textContent = initialOf(name);
+    ui.rankName.textContent = name;
+    ui.rankBest.textContent = `🔥 ${profile.bestStreak} · nível ${profile.bestLevel}`;
+    if (fb.error) {
+      ui.rankStatus.textContent = fb.error;
+      ui.rankStatus.classList.add('is-error');
+    }
+  } else {
+    ui.rankAuthHint.textContent = loading
+      ? 'Conectando ao Firebase…'
+      : fb.error
+        ? 'Não foi possível conectar. Você ainda pode jogar.'
+        : 'Entre com Google para ver o ranking.';
+  }
+}
+
+function ensureFirebase() {
+  const fb = firebaseRuntime;
+  if (fb.auth) return Promise.resolve(fb);
+  if (fb.promise) return fb.promise;
+  fb.error = '';
+  fb.ready = false;
+  updateAuthUI();
+  fb.promise = (async () => {
+    const base = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}`;
+    const [appModule, authModule, firestoreModule] = await Promise.all([
+      import(`${base}/firebase-app.js`),
+      import(`${base}/firebase-auth.js`),
+      import(`${base}/firebase-firestore.js`)
+    ]);
+    if (!fb.app) {
+      fb.app = appModule.initializeApp(FIREBASE_CONFIG);
+      fb.auth = authModule.getAuth(fb.app);
+      fb.db = firestoreModule.getFirestore(fb.app);
+      fb.mods = { appModule, authModule, firestoreModule };
+      authModule.onAuthStateChanged(fb.auth, (user) => {
+        fb.user = user || null;
+        fb.ready = true;
+        fb.signingIn = false;
+        handleAuthChanged();
+      });
+      try {
+        await authModule.getRedirectResult(fb.auth);
+      } catch (error) {
+        if (!String(error && error.code || '').includes('popup-closed')) {
+          fb.error = firebaseErrorMessage(error);
+        }
+      }
+      updateAuthUI();
+      setTimeout(() => {
+        if (!fb.ready) {
+          fb.ready = true;
+          updateAuthUI();
+        }
+      }, 1200);
+    }
+    return fb;
+  })().catch((error) => {
+    fb.error = firebaseErrorMessage(error);
+    fb.ready = true;
+    fb.promise = null;
+    updateAuthUI();
+    throw error;
+  });
+  return fb.promise;
+}
+
+async function syncProfile() {
+  const fb = firebaseRuntime;
+  if (!fb.user || !fb.db || !fb.mods) return;
+  if (fb.syncPromise) return fb.syncPromise;
+  const pending = readPendingRun();
+  if (!pending && fb.profile) return;
+
+  fb.syncing = true;
+  updateAuthUI();
+  fb.syncPromise = (async () => {
+    const fs = fb.mods.firestoreModule;
+    const ref = fs.doc(fb.db, RANK_COLLECTION, fb.user.uid);
+    let values = null;
+    await fs.runTransaction(fb.db, async (tx) => {
+      const snapshot = await tx.get(ref);
+      const old = snapshot.exists() ? snapshot.data() : {};
+      values = {
+        name: displayNameOf(fb.user),
+        bestStreak: clampInt(Math.max(Number(old.bestStreak) || 0, pending ? pending.bestStreak : 0), 0, 1000000),
+        bestLevel: clampInt(Math.max(Number(old.bestLevel) || 1, pending ? pending.bestLevel : 1), 1, 100),
+        updatedAt: fs.serverTimestamp()
+      };
+      tx.set(ref, values);
+    });
+    fb.profile = {
+      name: values.name,
+      bestStreak: values.bestStreak,
+      bestLevel: values.bestLevel
+    };
+    fb.profileUid = fb.user.uid;
+    clearPendingRun();
+  })().finally(() => {
+    fb.syncing = false;
+    fb.syncPromise = null;
+    updateAuthUI();
+  });
+  return fb.syncPromise;
+}
+
+async function handleAuthChanged() {
+  const fb = firebaseRuntime;
+  if (!fb.user) {
+    fb.profile = null;
+    fb.profileUid = null;
+    fb.error = '';
+    fb.syncing = false;
+    updateAuthUI();
+    if (rankOpen) {
+      ui.rankList.replaceChildren();
+      ui.rankEmpty.hidden = true;
+      ui.rankStatus.textContent = '';
+      ui.rankStatus.classList.remove('is-error');
+    }
+    return;
+  }
+  if (fb.profileUid && fb.profileUid !== fb.user.uid) {
+    fb.profile = null;
+    fb.profileUid = null;
+  }
+  fb.error = '';
+  try {
+    await syncProfile();
+  } catch (error) {
+    fb.error = firebaseErrorMessage(error);
+  }
+  updateAuthUI();
+  if (rankOpen) loadRanks();
+}
+
+function startGoogleSignIn() {
+  const fb = firebaseRuntime;
+  if (!fb.auth || !fb.mods || !fb.ready || fb.signingIn) return;
+  fb.error = '';
+  fb.signingIn = true;
+  updateAuthUI();
+  const provider = new fb.mods.authModule.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  fb.mods.authModule.signInWithPopup(fb.auth, provider).then(() => {
+    fb.signingIn = false;
+    updateAuthUI();
+  }).catch(async (error) => {
+    const code = String(error && error.code || '');
+    if (code.includes('popup-closed') || code.includes('cancelled-popup')) {
+      fb.signingIn = false;
+      updateAuthUI();
+      return;
+    }
+    if (code.includes('popup-blocked') || code.includes('operation-not-supported')) {
+      fb.signingIn = false;
+      try {
+        sessionStorage.setItem(AUTH_REDIRECT_KEY, '1');
+        await fb.mods.authModule.signInWithRedirect(fb.auth, provider);
+      } catch (redirectError) {
+        fb.error = firebaseErrorMessage(redirectError);
+        updateAuthUI();
+      }
+      return;
+    }
+    fb.signingIn = false;
+    fb.error = firebaseErrorMessage(error);
+    updateAuthUI();
+  });
+}
+
+function handleGoogleLogin() {
+  const fb = firebaseRuntime;
+  if (fb.auth && fb.ready) {
+    startGoogleSignIn();
+    return;
+  }
+  ensureFirebase().then(() => {
+    if (fb.auth && fb.ready) startGoogleSignIn();
+  }).catch(() => {});
+}
+
+async function signOutGoogle() {
+  const fb = firebaseRuntime;
+  if (!fb.auth || !fb.mods) return;
+  try {
+    await fb.mods.authModule.signOut(fb.auth);
+    fb.profile = null;
+    fb.profileUid = null;
+    fb.error = '';
+    updateAuthUI();
+  } catch (error) {
+    fb.error = firebaseErrorMessage(error);
+    updateAuthUI();
+  }
+}
+
+function maybeBootstrapFirebase() {
+  let redirected = false;
+  try {
+    redirected = !!sessionStorage.getItem(AUTH_REDIRECT_KEY);
+    if (redirected) sessionStorage.removeItem(AUTH_REDIRECT_KEY);
+  } catch (_) {}
+  if (!redirected) return;
+  ensureFirebase().then(() => {
+    if (firebaseRuntime.user && readPendingRun()) syncProfile().catch(() => {});
+  }).catch(() => {});
+}
+
+/* =========================================================
+   TELA DE FIM DE JOGO
+   ========================================================= */
+function openEndModal(victory = false) {
+  hideOverlay();
+  deathOpen = true;
+  state.paused = true;
+  Sound.stopBuild();
+
+  const run = {
+    bestStreak: state.runBestStreak,
+    bestLevel: state.level
+  };
+  savePendingRun(run);
+
+  ui.deathModal.dataset.kind = victory ? 'victory' : 'gameover';
+  ui.deathKicker.textContent = victory ? '100 NÍVEIS' : 'FIM DE JOGO';
+  ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'GAME OVER';
+  ui.deathSubtitle.textContent = victory
+    ? 'Você completou os 100 níveis!'
+    : 'Você chegou ao nível ' + state.level + '.';
+  ui.deathStreakVal.textContent = run.bestStreak;
+  ui.deathLevelVal.textContent = run.bestLevel;
+
+  firebaseRuntime.error = '';
+  updateAuthUI();
+
+  clearTimeout(deathHideTimer);
+  ui.deathModal.hidden = false;
+  requestAnimationFrame(() => {
+    if (deathOpen) ui.deathModal.classList.add('is-open');
+  });
+  syncOverlayLock();
+
+  ensureFirebase().then(() => {
+    if (firebaseRuntime.user) syncProfile().catch(() => {});
+  }).catch(() => {});
+
+  setTimeout(() => {
+    if (!deathOpen) return;
+    try {
+      if (firebaseRuntime.user) ui.deathRankBtn.focus();
+      else if (!ui.deathLoginBtn.disabled) ui.deathLoginBtn.focus();
+      else ui.deathRestart.focus();
+    } catch (_) {}
+  }, 90);
+}
+
+function closeEndModal() {
+  if (!deathOpen) return;
+  deathOpen = false;
+  ui.deathModal.classList.remove('is-open');
+  clearTimeout(deathHideTimer);
+  deathHideTimer = setTimeout(() => { if (!deathOpen) ui.deathModal.hidden = true; }, 220);
+  syncOverlayLock();
+}
+
+function restartFromDeath() {
+  Sound.click();
+  clearPendingRun();
+  closeEndModal();
+  restartGame();
+  state.paused = false;
+  accumulator = 0;
+  lastFrame = performance.now();
+  syncOverlayLock();
+  try { canvas.focus({ preventScroll: true }); } catch (_) {}
+}
+
+/* =========================================================
+   RANKING
+   ========================================================= */
+function openRankModal() {
+  if (rankOpen) return;
+  rankOpen = true;
+  firebaseRuntime.rankFocus = document.activeElement;
+  state.paused = true;
+  Sound.stopBuild();
+  firebaseRuntime.error = '';
+  ui.rankStatus.textContent = '';
+  ui.rankStatus.classList.remove('is-error');
+  updateAuthUI();
+  setRankMode(firebaseRuntime.rankMode);
+  clearTimeout(rankHideTimer);
+  ui.rankModal.hidden = false;
+  requestAnimationFrame(() => {
+    if (rankOpen) ui.rankModal.classList.add('is-open');
+  });
+  syncOverlayLock();
+
+  ensureFirebase().then(() => {
+    if (!firebaseRuntime.user) return;
+    syncProfile().then(() => loadRanks()).catch(() => {});
+  }).catch(() => {});
+
+  setTimeout(() => {
+    if (!rankOpen) return;
+    try {
+      if (!firebaseRuntime.user && !ui.rankLoginBtn.disabled) ui.rankLoginBtn.focus();
+      else ui.closeRank.focus();
+    } catch (_) {}
+  }, 90);
+}
+
+function closeRankModal() {
+  if (!rankOpen) return;
+  rankOpen = false;
+  ui.rankModal.classList.remove('is-open');
+  clearTimeout(rankHideTimer);
+  rankHideTimer = setTimeout(() => { if (!rankOpen) ui.rankModal.hidden = true; }, 220);
+  state.paused = menuOpen || deathOpen || modalOpen || tutorialOpen;
+  accumulator = 0;
+  lastFrame = performance.now();
+  syncOverlayLock();
+  setTimeout(() => {
+    try {
+      if (firebaseRuntime.rankFocus && firebaseRuntime.rankFocus.focus && !firebaseRuntime.rankFocus.hidden) {
+        firebaseRuntime.rankFocus.focus();
+      }
+    } catch (_) {}
+  }, 40);
+}
+
+function setRankMode(mode) {
+  firebaseRuntime.rankMode = mode === 'level' ? 'level' : 'streak';
+  const streakActive = firebaseRuntime.rankMode === 'streak';
+  ui.rankStreakTab.classList.toggle('is-active', streakActive);
+  ui.rankLevelTab.classList.toggle('is-active', !streakActive);
+  ui.rankStreakTab.setAttribute('aria-selected', String(streakActive));
+  ui.rankLevelTab.setAttribute('aria-selected', String(!streakActive));
+  if (firebaseRuntime.user) renderRank();
+}
+
+function rankEntryFromDoc(snapshot) {
+  const data = snapshot.data() || {};
+  return {
+    uid: snapshot.id,
+    name: String(data.name || 'Jogador').trim().slice(0, 40) || 'Jogador',
+    bestStreak: clampInt(data.bestStreak, 0, 1000000),
+    bestLevel: clampInt(data.bestLevel, 1, 100)
+  };
+}
+
+async function loadRanks() {
+  const fb = firebaseRuntime;
+  if (!rankOpen || !fb.user || !fb.db || !fb.mods || fb.rankLoading) return;
+  fb.rankLoading = true;
+  ui.rankStatus.textContent = 'Carregando ranking…';
+  ui.rankStatus.classList.remove('is-error');
+  try {
+    const fs = fb.mods.firestoreModule;
+    const base = fs.collection(fb.db, RANK_COLLECTION);
+    const [streakSnap, levelSnap] = await Promise.all([
+      fs.getDocs(fs.query(base, fs.orderBy('bestStreak', 'desc'), fs.limit(RANK_FETCH_LIMIT))),
+      fs.getDocs(fs.query(base, fs.orderBy('bestLevel', 'desc'), fs.limit(RANK_FETCH_LIMIT)))
+    ]);
+    fb.rankData.streak = streakSnap.docs.map(rankEntryFromDoc);
+    fb.rankData.level = levelSnap.docs.map(rankEntryFromDoc);
+    fb.rankLoaded = true;
+    ui.rankStatus.textContent = '';
+    ui.rankStatus.classList.remove('is-error');
+    renderRank();
+  } catch (error) {
+    ui.rankStatus.textContent = firebaseErrorMessage(error);
+    ui.rankStatus.classList.add('is-error');
+  } finally {
+    fb.rankLoading = false;
+  }
+}
+
+function renderRank() {
+  const fb = firebaseRuntime;
+  if (!fb.user) return;
+  const mode = fb.rankMode;
+  let rows = [...fb.rankData[mode]];
+  rows.sort((a, b) => {
+    if (mode === 'streak') {
+      return (b.bestStreak - a.bestStreak)
+        || (b.bestLevel - a.bestLevel)
+        || a.name.localeCompare(b.name, 'pt-BR');
+    }
+    return (b.bestLevel - a.bestLevel)
+      || (b.bestStreak - a.bestStreak)
+      || a.name.localeCompare(b.name, 'pt-BR');
+  });
+  rows = rows.slice(0, RANK_SHOW_LIMIT);
+
+  ui.rankList.replaceChildren();
+  ui.rankEmpty.hidden = rows.length !== 0;
+  if (rows.length === 0 && fb.rankLoaded) {
+    ui.rankEmpty.hidden = false;
+  }
+
+  rows.forEach((entry, index) => {
+    const item = document.createElement('li');
+    item.className = 'rank-row' + (fb.user && entry.uid === fb.user.uid ? ' is-me' : '');
+    const position = document.createElement('span');
+    position.className = 'rank-pos';
+    position.textContent = String(index + 1);
+    const avatar = document.createElement('span');
+    avatar.className = 'rank-avatar';
+    avatar.setAttribute('aria-hidden', 'true');
+    avatar.textContent = initialOf(entry.name);
+    const name = document.createElement('span');
+    name.className = 'rank-name';
+    name.textContent = entry.name;
+    const value = document.createElement('span');
+    value.className = 'rank-value';
+    value.textContent = mode === 'streak' ? String(entry.bestStreak) : String(entry.bestLevel);
+    item.append(position, avatar, name, value);
+    ui.rankList.appendChild(item);
+  });
+}
+
 
 /* =========================================================
    MENU INICIAL / TUTORIAL
@@ -2397,17 +3182,36 @@ function bindEvents() {
   ui.soundToggle.addEventListener('click', toggleSound);
 
   ui.playBtn.addEventListener('click', startGame);
+  ui.menuRanking.addEventListener('click', openRankModal);
   ui.menuSettings.addEventListener('click', openSettings);
   ui.menuHow.addEventListener('click', openTutorial);
   ui.closeTutorial.addEventListener('click', closeTutorial);
   ui.closeTutorialBtn.addEventListener('click', closeTutorial);
   ui.tutorialPlay.addEventListener('click', () => { closeTutorial(); startGame(); });
 
+  ui.deathLoginBtn.addEventListener('click', handleGoogleLogin);
+  ui.rankLoginBtn.addEventListener('click', handleGoogleLogin);
+  ui.deathSignOut.addEventListener('click', signOutGoogle);
+  ui.rankSignOut.addEventListener('click', signOutGoogle);
+  ui.deathRankBtn.addEventListener('click', openRankModal);
+  ui.deathRestart.addEventListener('click', restartFromDeath);
+  ui.closeRank.addEventListener('click', closeRankModal);
+  ui.rankStreakTab.addEventListener('click', () => setRankMode('streak'));
+  ui.rankLevelTab.addEventListener('click', () => setRankMode('level'));
+  ui.rankModal.addEventListener('click', (e) => {
+    if (e.target === ui.rankModal) closeRankModal();
+  });
+
   ui.tutorial.addEventListener('click', (e) => {
     if (e.target === ui.tutorial) closeTutorial();
   });
 
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && rankOpen) {
+      e.preventDefault();
+      closeRankModal();
+      return;
+    }
     if (e.key === 'Escape' && tutorialOpen) {
       e.preventDefault();
       closeTutorial();
@@ -2418,7 +3222,7 @@ function bindEvents() {
       closeSettings();
       return;
     }
-    if (modalOpen || tutorialOpen || menuOpen) return;
+    if (deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen) return;
     if (e.code === 'Space') {
       const tag = (e.target && e.target.tagName) || '';
       if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
@@ -2483,6 +3287,7 @@ function init() {
   beginLevel(1);
   bindEvents();
   openStartMenu();
+  maybeBootstrapFirebase();
   requestAnimationFrame(loop);
 }
 

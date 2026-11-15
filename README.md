@@ -19,11 +19,12 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - 100 níveis e uma bolinha extra a cada 2 níveis.
 - 4 dificuldades.
 - Sequência 🔥: cada parede concluída aumenta o contador; levar dano zera. Inclui animação e som de fogo sutil.
+- Login com Google no fim da partida, perfil e ranking de **streak** e **níveis**.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.
 - Efeitos sonoros gerados com Web Audio API, com reverb, harmônicos e pan estéreo.
 - Layout responsivo com suporte a toque.
-- Sem dependências ou arquivos externos.
+- Núcleo do jogo em arquivo único; Firebase carregado sob demanda para login/ranking.
 
 ## Contexto e segurança
 
@@ -34,6 +35,7 @@ Este repositório mantém uma camada de engenharia de contexto para humanos e ag
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura técnica.
 - [`docs/CONTEXT_ENGINEERING.md`](docs/CONTEXT_ENGINEERING.md) — como preparar e manter contexto.
 - [`docs/SECURITY.md`](docs/SECURITY.md) — modelo de ameaças e controles.
+- [`docs/FIREBASE.md`](docs/FIREBASE.md) — Auth Google, Firestore, regras e ranking.
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) — decisões arquiteturais.
 - [`docs/TESTING.md`](docs/TESTING.md) — plano de testes.
 - [`SECURITY.md`](SECURITY.md) — como relatar vulnerabilidades.
@@ -59,3 +61,7 @@ npx wrangler pages deploy dist --project-name balljump-game --branch main --comm
 ```
 
 A pasta `dist/` é gerada localmente e ignorada pelo Git. Ela contém apenas `index.html`, `404.html` e `_headers`, mantendo a documentação interna privada.
+
+## Conta e privacidade
+
+O login usa Firebase Authentication (Google) e o ranking usa Cloud Firestore. O perfil armazena somente o nome público do perfil Google, melhor streak e melhor nível; não armazenamos e-mail, foto ou telefone. O ranking é visível apenas para usuários autenticados.

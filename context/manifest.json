@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "project": {
     "name": "Balljump-game",
-    "type": "browser-game",
+    "type": "browser-game-with-firebase-auth-and-leaderboard",
     "runtime": "single-file",
     "entrypoint": "index.html",
     "language": "pt-BR",
@@ -16,6 +16,7 @@
     "docs/PROJECT_CONTEXT.md",
     "docs/ARCHITECTURE.md",
     "docs/SECURITY.md",
+    "docs/FIREBASE.md",
     "docs/DECISIONS.md",
     "docs/TESTING.md",
     "context/current-state.md"
@@ -50,6 +51,12 @@
       "purpose": "Modelo de ameaças, controles e resposta a incidentes.",
       "sensitivity": "internal",
       "loadWhen": "HTML, headers, deploy, dependências ou credenciais"
+    },
+    {
+      "path": "docs/FIREBASE.md",
+      "purpose": "Projeto Firebase, Auth Google, Firestore, regras e ranking.",
+      "sensitivity": "internal",
+      "loadWhen": "login, perfil, ranking, regras ou Firestore"
     },
     {
       "path": "docs/DECISIONS.md",
@@ -108,7 +115,8 @@
     "serve": "python -m http.server 8765 --directory .",
     "check": "node scripts/check-context.mjs",
     "prepareDeploy": "node scripts/prepare-deploy.mjs",
-    "deploy": "npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true"
+    "deploy": "npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true",
+    "firebaseRules": "cd ../Botanica Studio/botanicstudio; npx firebase-tools deploy --only firestore:rules --project botanicstudio"
   },
   "deployment": {
     "provider": "cloudflare-pages",
@@ -121,11 +129,24 @@
     "headersFile": "_headers"
   },
   "security": {
-    "runtimeNetwork": "none",
-    "runtimeDependencies": "none",
-    "csp": "default-src 'none' with inline script/style; see _headers",
-    "secretsPolicy": "never commit or include secrets in context",
+    "runtimeNetwork": "none for core gameplay; Firebase SDK/APIs loaded on demand for auth/ranking",
+    "runtimeDependencies": "none for the game; Firebase JS SDK 10.14.1 loaded on demand",
+    "csp": "default-src 'none'; allowlisted inline assets, gstatic Firebase SDK and Firebase APIs; see _headers",
+    "secretsPolicy": "Firebase apiKey is public; never commit service accounts, private keys, tokens or cookies",
     "sensitivityLevels": ["public", "internal", "restricted"]
+  },
+  "firebase": {
+    "projectId": "botanicstudio",
+    "sharedWith": "Botanica Studio",
+    "auth": "Google",
+    "firestoreDatabase": "(default)",
+    "collection": "balljumpProfiles",
+    "authorizedDomain": "balljump-game.pages.dev",
+    "sdkVersion": "10.14.1",
+    "rulesLocation": "../Botanica Studio/botanicstudio/firebase/firestore.rules",
+    "profileFields": ["name", "bestStreak", "bestLevel", "updatedAt"],
+    "readPolicy": "authenticated users only",
+    "writes": "owner only; monotonic scores; server timestamp"
   },
   "visual": {
     "dark": "black and orange",
@@ -138,13 +159,15 @@
     "effects": ["build", "wallComplete", "lifeLost", "levelUp", "victory", "bounce", "click", "deny"]
   },
   "invariants": [
-    "index.html works offline via file://",
-    "no external runtime resources or network calls",
+    "index.html works offline via file:// for core gameplay",
+    "external network is limited to the pinned Firebase SDK and Firebase auth/firestore APIs",
     "goal is 75 percent",
     "player gains one life per completed level",
     "share button remains removed",
-    "menu, tutorial and settings remain available",
-    "security headers must stay compatible with the game",
+    "menu, tutorial, settings, death screen and ranking remain available",
+    "ranking documents store only name, bestStreak, bestLevel and server updatedAt",
+    "ranking reads require authentication and writes require owner UID with monotonic scores",
+    "security headers must stay compatible with the game and the OAuth popup",
     "context docs must be updated with behavior changes"
   ],
   "excludeFromContext": [

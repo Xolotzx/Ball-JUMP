@@ -2,20 +2,24 @@
 
 ## 1. Visão geral
 
-O projeto é um aplicativo estático de arquivo único. O navegador baixa `index.html`, que contém markup, CSS e JavaScript. Não há servidor de aplicação, banco de dados, API ou dependências externas em runtime.
+O núcleo do projeto é um aplicativo estático de arquivo único. O navegador baixa `index.html`, que contém markup, CSS e JavaScript. Não há servidor de aplicação nem banco de dados próprio. Firebase Authentication e Firestore são usados apenas para login, perfil e ranking, carregados sob demanda; o jogo principal funciona offline.
 
 ```text
 Navegador
   └── index.html
         ├── CSS (tokens de tema, layout, liquid glass)
-        ├── HTML (HUD, menu, tutorial, modais, canvas)
+        ├── HTML (HUD, menu, tutorial, modais, death/rank, canvas)
         └── JavaScript
               ├── constantes e estado
               ├── áudio (Web Audio API)
               ├── lógica do jogo
               ├── renderização 2D (Canvas)
               ├── interface e overlays
-              └── persistência local (localStorage)
+              ├── persistência local (localStorage)
+              └── Firebase sob demanda
+                    ├── Auth Google
+                    └── Firestore (balljumpProfiles)
+                    ↑ SDK modular 10.14.1 via gstatic
 ```
 
 ## 2. Mapa de arquivos
@@ -25,7 +29,7 @@ Navegador
 | `index.html` | Aplicação completa: UI, estilos, lógica, renderização e áudio. |
 | `_headers` | Headers HTTP de segurança para o Cloudflare Pages. |
 | `AGENTS.md` | Ponto de entrada de contexto e regras para agentes. |
-| `docs/` | Contexto, arquitetura, segurança, decisões e testes. |
+| `docs/` | Contexto, arquitetura, segurança, Firebase, decisões e testes. |
 | `context/manifest.json` | Mapa do contexto legível por máquina. |
 | `scripts/check-context.mjs` | Verificação local de invariantes e sinais de segredo. |
 | `README.md` | Apresentação e links. |
@@ -55,7 +59,7 @@ Valores do grid:
 O estado global `state` contém:
 
 - `grid`, `balls`, `build`;
-- `level`, `lives`, `streak`, `difficulty`, `theme`, `dir`;
+- `level`, `lives`, `streak`, `runBestStreak`, `difficulty`, `theme`, `dir`;
 - `phase` (`playing`, `levelup`, `gameover`, `victory`);
 - `paused`, `transition`, `filled`, `progress`;
 - efeitos visuais (`fills`, `particles`, `shake`, `flash`);
@@ -141,7 +145,9 @@ Componentes de UI:
 - configurações: `#settingsModal`;
 - overlay de nível/game over/vitória: `#overlay`;
 - HUD, toast e meta-informações;
-- chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero.
+- chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero;
+- tela de fim de jogo: `#deathModal` com estatísticas, login Google, perfil e acesso ao ranking;
+- ranking: `#rankModal` com abas de streak/níveis e top 10.
 
 Controle de sobreposição:
 
@@ -189,7 +195,20 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - O deploy atual não é conectado ao GitHub; o push não publica automaticamente.
 - O repositório é privado.
 
-## 14. Extensibilidade
+## 14. Firebase, perfil e ranking
+
+- Projeto compartilhado: `botanicstudio` (mesmo Firebase do Botanica Studio).
+- SDK modular **10.14.1** importado dinamicamente de `https://www.gstatic.com/firebasejs/10.14.1/` somente ao abrir a tela de morte/ranking ou iniciar login.
+- Auth: Google via `signInWithPopup`, com fallback para `signInWithRedirect`.
+- Firestore: banco `(default)`, coleção `balljumpProfiles/{uid}` com `name`, `bestStreak`, `bestLevel`, `updatedAt`.
+- No game over/vitória, a corrida é salva em `sessionStorage` até o login/submissão; depois é enviada com `runTransaction`.
+- Melhores scores são monotônicos (`max`) e `updatedAt` usa `serverTimestamp`.
+- Ranking: consultas `orderBy('bestStreak', desc)` e `orderBy('bestLevel', desc)`, limite 20; interface mostra top 10.
+- Leitura exige autenticação; escrita apenas pelo UID do usuário. Regras publicadas no projeto compartilhado.
+- CSP permite somente gstatic/Firebase/Google Auth; COOP `same-origin-allow-popups` para o popup OAuth.
+- O jogo principal não depende de Firebase. Falha de rede não bloqueia o reinício.
+
+## 15. Extensibilidade
 
 Se o projeto crescer além de um arquivo:
 

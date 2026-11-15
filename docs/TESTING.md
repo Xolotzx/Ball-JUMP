@@ -86,7 +86,8 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] `node scripts/check-context.mjs` retorna sucesso.
 - [ ] `node scripts/prepare-deploy.mjs` gera `dist/` com apenas `index.html`, `404.html` e `_headers`.
 - [ ] Nenhum segredo no `git diff`.
-- [ ] `_headers` contém CSP e headers de proteção.
+- [ ] `_headers` contém CSP e headers de proteção, incluindo Firebase/Google Auth.
+- [ ] Regras do Firestore publicadas sem remover as regras do Botanica.
 - [ ] Deploy feito de `dist/`, não da raiz do repositório.
 - [ ] Caminhos internos (ex.: `/AGENTS.md`) retornam 404 e não expõem documentação.
 - [ ] URL de produção carrega a versão nova.
@@ -95,14 +96,44 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Menu, jogo, tutorial e configurações funcionam em produção.
 - [ ] Repositório permanece privado.
 
-## 8. Navegadores recomendados
+## 8. Firebase, login e ranking
+
+- [ ] A tela de morte abre ao perder todas as vidas e mostra sequência/nível da corrida.
+- [ ] A tela de vitória no nível 100 usa o mesmo fluxo.
+- [ ] O botão **Entrar com Google** fica habilitado após o SDK carregar.
+- [ ] Login com conta Google real cria `balljumpProfiles/{uid}` e mostra o perfil.
+- [ ] O perfil exibe nome, melhor streak e melhor nível sem e-mail/foto.
+- [ ] O botão **Ver ranking completo** abre as abas **Streak** e **Níveis**.
+- [ ] O top 10 é ordenado corretamente; a linha do próprio jogador é destacada.
+- [ ] Trocar de aba não quebra a lista.
+- [ ] **Sair** volta ao estado de login.
+- [ ] O menu **Ranking** abre o ranking mesmo antes de morrer.
+- [ ] O nome do jogador é exibido como texto (testar um nome com `<b>`; não deve virar HTML).
+- [ ] Sem rede, o jogo continua e a tela final não bloqueia **Jogar novamente**.
+- [ ] Popup bloqueado cai no fallback de redirect e preserva a corrida pendente.
+- [ ] Recarregar a página mantém a sessão Firebase quando já autenticado.
+
+### Regras e configuração do Firebase
+
+- [ ] Regras do Firestore publicadas com as regras do Botanica preservadas.
+- [ ] Leitura sem autenticação é negada.
+- [ ] Escrita com UID diferente é negada.
+- [ ] `bestStreak`/`bestLevel` não podem diminuir.
+- [ ] Schema inválido, nome vazio/longo ou timestamp incorreto é negado.
+- [ ] `balljump-game.pages.dev` está em Authorized domains.
+- [ ] Provedor Google está habilitado.
+- [ ] API key aceita o domínio de produção.
+- [ ] CSP permite gstatic/Firebase/Google Auth e COOP é `same-origin-allow-popups`.
+- [ ] Console sem erros de CSP ao abrir login/ranking.
+
+## 9. Navegadores recomendados
 
 - Chrome/Edge desktop (últimas versões).
 - Firefox desktop.
 - Safari iOS.
 - Chrome Android.
 
-## 9. Riscos de regressão
+## 10. Riscos de regressão
 
 - Colisão de bolinhas com paredes em construção.
 - Flood fill preenchendo região com bolinha.
@@ -113,7 +144,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - Coordenadas de toque em telas redimensionadas.
 - Desempenho em níveis altos.
 
-## 10. Automação futura
+## 11. Automação futura
 
 Não há suíte automatizada de gameplay no momento. Se adicionada, priorizar:
 

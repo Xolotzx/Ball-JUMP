@@ -7,7 +7,7 @@
 
 Balljump-game é um jogo casual de estratégia para navegador, inspirado no clássico JezzBall. O jogador constrói paredes para dividir a arena e isolar bolinhas. Áreas fechadas sem bolinhas são preenchidas automaticamente. O objetivo é preencher **75%** da área interna antes de perder todas as vidas.
 
-O projeto tem uma restrição deliberada: **todo o runtime fica em um único `index.html`**, sem dependências, sem back-end e sem chamadas de rede. A documentação de contexto e segurança é externa ao runtime.
+O projeto tem uma restrição deliberada: **o núcleo do jogo fica em um único `index.html`** e funciona offline. A única dependência externa é o SDK modular do Firebase, carregado sob demanda para login Google e ranking; não há back-end próprio. A documentação de contexto e segurança é externa ao runtime.
 
 ## 2. Público e experiência
 
@@ -90,7 +90,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 
 ### Interface
 
-- Tela de menu ao entrar, com **Jogar**, **Configurações** e **Como jogar**.
+- Tela de menu ao entrar, com **Jogar**, **Ranking**, **Configurações** e **Como jogar**.
 - Tutorial em modal, com regras e controles para PC e celular.
 - HUD: sequência, nível, vidas, área, direção, configurações.
 - Botão de compartilhar removido por decisão de produto.
@@ -99,14 +99,25 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Fundo ambiente em SVG inline: ondas desfocadas à direita no tema escuro e fita laranja desfocada sobre creme no tema claro.
 - Estética “liquid glass”, com brilho reduzido.
 - Configurações pausam o jogo; fechar retorna ao jogo ou ao menu, conforme a origem.
+- Tela de fim de jogo com estatísticas da corrida, **Entrar com Google**, perfil e acesso ao ranking.
+- Ranking com abas **🔥 Streak** e **🏆 Níveis**, top 10, acessível pelo menu e pela tela de morte.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).
+
+### Conta e ranking
+
+- Login via Firebase Authentication com Google.
+- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `bestStreak`, `bestLevel` e `updatedAt`.
+- O perfil é criado no primeiro login e entra no ranking.
+- Leitura do ranking exige autenticação; escrita só pelo próprio UID, com validação de schema e scores monotônicos.
+- Não armazenamos e-mail, foto, telefone ou analytics.
+- O SDK é carregado sob demanda; sem rede, o jogo continua jogável e a tela final mostra erro de conexão sem bloquear o reinício.
 
 ## 4. Fora de escopo
 
-- Back-end, contas de usuário, ranking online, analytics ou publicidade.
+- Back-end próprio, analytics ou publicidade.
 - Multijogador.
-- Dependências de runtime, CDNs, fontes externas ou arquivos de mídia.
-- Coleta de dados pessoais.
+- Dependências de runtime no núcleo do jogo; a exceção é o SDK Firebase 10.14.1 sob demanda.
+- Coleta de e-mail, foto, telefone ou outros dados pessoais no perfil do ranking.
 - Aplicativo nativo.
 - Sistema de compartilhamento.
 
@@ -118,6 +129,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Deploy atual: **upload direto** pelo Wrangler a partir de `dist/` (allowlist: jogo, página 404 e headers); `git push` não dispara deploy automático.
 - Documentação interna (`docs/`, `AGENTS.md`, `context/`) não é publicada no site.
 - Headers de segurança declarados em `_headers`.
+- Firebase projeto compartilhado `botanicstudio`: Auth Google, Firestore default, domínio autorizado e coleção `balljumpProfiles`.
+- Ranking e login Google implementados; regras do Firestore publicadas junto das regras do Botanica.
 - Sem CI/CD e sem suíte automatizada de navegador.
 
 ## 6. Limitações e riscos conhecidos
@@ -128,14 +141,21 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Não há testes automatizados de gameplay; a validação é manual (ver `docs/TESTING.md`).
 - Cloudflare não está conectado ao repositório; publicações são manuais.
 - Níveis altos podem gerar muitas bolinhas (até 51 no nível 100); monitorar desempenho em dispositivos modestos.
+- Login e ranking exigem conexão; o jogo principal continua offline.
+- O Firebase é compartilhado com o Botanica Studio; alterações nas regras precisam preservar os dois conjuntos.
+- O nome público do perfil Google é visível para outros usuários autenticados; e-mail/foto não são armazenados.
+- Não há App Check nem suíte automatizada de login; o fluxo Google precisa de validação manual com uma conta real.
+- O ranking exibe o top 10 por métrica; não calcula a posição global de quem está fora do topo.
 
 ## 7. Próximos passos sugeridos
 
-1. Adicionar testes de navegador (Playwright ou similar) para menu, jogo e mobile.
-2. Conectar o Cloudflare Pages ao GitHub para deploy automático com revisão.
-3. Avaliar CSP com hash/nonce caso o runtime deixe de ser single-file.
-4. Adicionar verificação de acessibilidade automatizada.
-5. Medir performance em hardware móvel modesto.
+1. Validar o login Google completo (popup e fallback de redirect) em desktop e mobile.
+2. Adicionar testes de navegador (Playwright ou similar) para menu, jogo, ranking e mobile.
+3. Conectar o Cloudflare Pages ao GitHub para deploy automático com revisão.
+4. Avaliar Firebase App Check e alertas de uso.
+5. Avaliar CSP com hash/nonce caso o runtime deixe de ser single-file.
+6. Adicionar verificação de acessibilidade automatizada.
+7. Medir performance em hardware móvel modesto.
 
 ## 8. Como usar este documento
 

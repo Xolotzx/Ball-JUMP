@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~87 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~132 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -26,6 +26,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - CSP mais restritiva;
   - funcionalidades que dependam de serviço externo exigem nova decisão;
   - ferramentas de desenvolvimento (Node, Wrangler) não entram no runtime.
+  - **Exceção posterior:** Firebase SDK sob demanda para login/ranking (ADR-014).
 
 ## ADR-003 — Canvas 2D + Web Audio API
 
@@ -109,6 +110,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - `'unsafe-inline'` enfraquece a defesa contra XSS;
   - mitigação: nenhuma entrada de usuário no DOM;
   - se houver entrada externa, migrar para hashes/nonces e separar arquivos.
+  - **Revisão posterior:** hosts allowlisted do Firebase/Google Auth adicionados em ADR-014.
 
 ## ADR-010 — Engenharia de contexto versionada
 
@@ -157,3 +159,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - reinício/dano limpam a sequência;
   - a sequência persiste entre níveis;
   - não concede vantagem mecânica além do feedback.
+
+## ADR-014 — Firebase Auth Google, perfil e ranking
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** ranking global de streak/níveis e perfil de jogador, com login na tela de morte.
+- **Decisão:** usar o projeto Firebase compartilhado `botanicstudio` com Auth Google e Firestore `(default)`, coleção `balljumpProfiles`, SDK modular 10.14.1 carregado sob demanda, regras validadas por UID e CSP/COOP allowlisted.
+- **Consequências:**
+  - jogo principal continua offline; login/rank exigem rede;
+  - perfil mínimo (nome público, scores, timestamp), sem e-mail/foto;
+  - regras são compartilhadas com o Botanica e devem ser deployadas juntas;
+  - COOP `same-origin-allow-popups` necessário para OAuth;
+  - API key é pública; segurança depende das regras e domínios autorizados;
+  - login Google real precisa de teste manual.
