@@ -19,7 +19,7 @@
     --glass-border:rgba(255,170,90,.18); --glass-top:rgba(255,214,170,.10);
     --glass-bottom:rgba(255,122,24,.028); --glass-highlight:rgba(255,224,190,.30);
     --shadow:rgba(0,0,0,.55); --backdrop:rgba(0,0,0,.30); --dot:rgba(255,170,90,.055);
-    --wave-opacity:.88; --page-glow:rgba(255,92,0,.34);
+    --wave-opacity:.75; --page-glow:rgba(255,92,0,.26);
     --dir-h:#ff7a18; --dir-v:#ffe5cf;
     --font:"Segoe UI",system-ui,-apple-system,"Trebuchet MS",Roboto,sans-serif;
     --mono:ui-monospace,"Cascadia Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
@@ -48,7 +48,7 @@
   .wave-bg{
     position:fixed; inset:-8% -8% -2%; z-index:0; pointer-events:none; overflow:hidden;
     opacity:var(--wave-opacity);
-    filter:blur(34px) saturate(145%);
+    filter:blur(34px) saturate(135%);
     transform:translateZ(0);
     transition:opacity .4s,visibility .4s;
   }
@@ -56,12 +56,12 @@
   .ribbon-bg{
     position:fixed; inset:-4%; z-index:0; pointer-events:none; overflow:hidden;
     opacity:0; visibility:hidden;
-    filter:blur(18px) saturate(115%);
+    filter:blur(18px) saturate(110%);
     transition:opacity .5s,visibility .5s;
   }
   .ribbon-bg svg{display:block;width:100%;height:100%}
   [data-theme="light"] .wave-bg{opacity:0;visibility:hidden}
-  [data-theme="light"] .ribbon-bg{opacity:1;visibility:visible}
+  [data-theme="light"] .ribbon-bg{opacity:.80;visibility:visible}
   button{font:inherit;color:inherit}
   button:focus-visible,a:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .app{position:relative;z-index:1;width:min(100%,780px);margin:0 auto;padding:clamp(12px,2.6vw,26px) clamp(12px,3vw,22px) 10px;display:flex;flex-direction:column;flex:1}
@@ -749,7 +749,7 @@ const THEMES = {
       'glass-border': 'rgba(255,170,90,.18)', 'glass-top': 'rgba(255,214,170,.10)',
       'glass-bottom': 'rgba(255,122,24,.028)', 'glass-highlight': 'rgba(255,224,190,.30)',
       shadow: 'rgba(0,0,0,.55)', backdrop: 'rgba(0,0,0,.30)', dot: 'rgba(255,170,90,.055)',
-      'wave-opacity': '.88', 'page-glow': 'rgba(255,92,0,.34)', 'dir-h': '#ff7a18', 'dir-v': '#ffe5cf'
+      'wave-opacity': '.75', 'page-glow': 'rgba(255,92,0,.26)', 'dir-h': '#ff7a18', 'dir-v': '#ffe5cf'
     },
     c: {
       bgTop: '#090604', bgBottom: '#050403', grid: 'rgba(255,150,70,.055)',
@@ -773,7 +773,7 @@ const THEMES = {
       'glass-border': 'rgba(255,255,255,.82)', 'glass-top': 'rgba(255,255,255,.90)',
       'glass-bottom': 'rgba(255,232,212,.55)', 'glass-highlight': 'rgba(255,255,255,.98)',
       shadow: 'rgba(120,60,20,.16)', backdrop: 'rgba(86,42,12,.18)', dot: 'rgba(120,60,20,.05)',
-      'wave-opacity': '.30', 'page-glow': 'rgba(255,170,90,.10)', 'dir-h': '#ea580c', 'dir-v': '#ffffff'
+      'wave-opacity': '.30', 'page-glow': 'rgba(255,170,90,.08)', 'dir-h': '#ea580c', 'dir-v': '#ffffff'
     },
     c: {
       bgTop: '#fffaf5', bgBottom: '#ffeddc', grid: 'rgba(120,60,20,.06)',
