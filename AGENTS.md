@@ -9,7 +9,7 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 - **Tamanho atual:** ~152 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
 - **Deploy:** Cloudflare Pages, projeto `balljump-game`.
 - **URL:** https://balljump-game.pages.dev
-- **Repositório:** privado em GitHub (`Xolotzx/Balljump-game`).
+- **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
 - **Idioma da interface:** português do Brasil (pt-BR).
 
 ## Ordem de leitura do contexto
