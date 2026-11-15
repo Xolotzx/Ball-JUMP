@@ -88,7 +88,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Botão de compartilhar removido por decisão de produto.
 - Modo **Escuro**: preto e laranja.
 - Modo **Claro**: laranja e branco.
-- Fundo ambiente em SVG inline: ondas desfocadas no tema escuro e fita laranja sobre creme no tema claro.
+- Fundo ambiente em SVG inline: ondas desfocadas à direita no tema escuro e fita laranja desfocada sobre creme no tema claro.
 - Estética “liquid glass”, com brilho reduzido.
 - Configurações pausam o jogo; fechar retorna ao jogo ou ao menu, conforme a origem.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).

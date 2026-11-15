@@ -41,7 +41,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Ao zerar vidas, aparece Game Over e o reinício volta ao nível 1.
 - [ ] Nível 100 exibe vitória (pode ser validado por simulação/estado).
 - [ ] Modo escuro usa preto e laranja; modo claro usa laranja e branco.
-- [ ] Fundo SVG aparece corretamente: ondas desfocadas no escuro e fita laranja no claro, sem prejudicar a leitura.
+- [ ] Fundo SVG aparece corretamente: ondas desfocadas à direita no escuro e fita laranja desfocada no claro, sem prejudicar a leitura.
 - [ ] Painéis de texto mantêm contraste sobre o fundo.
 
 ## 4. Dificuldades e persistência
