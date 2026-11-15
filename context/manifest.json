@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": {
-    "name": "Balljump-game",
+    "name": "ted-io",
     "type": "browser-game-with-firebase-auth-and-leaderboard",
     "runtime": "single-file",
     "entrypoint": "index.html",
@@ -90,6 +90,8 @@
     }
   ],
   "runtimeFacts": {
+    "siteName": "ted-io",
+    "menuBackground": "theme ambient waves in dark, ribbon in light; app hidden while menu is open",
     "arena": "600x400",
     "tile": 20,
     "grid": "30x20",
@@ -186,6 +188,9 @@
     "player gains one life per completed level",
     "share button remains removed",
     "menu, tutorial, settings, death screen, profile editor and ranking remain available",
+    "site name is ted-io in the document title and main menu card",
+    "main menu uses the theme ambient background and hides the classic app while open",
+    "candy screen has a settings gear that pauses the timer and hides the difficulty section",
     "Jogar opens a mode chooser with classic and candy; no duplicate mode button in the menu",
     "settings include a 0-100 volume slider persisted in localStorage",
     "tutorial can be opened from settings and returns to settings when closed",

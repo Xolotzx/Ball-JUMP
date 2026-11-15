@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~195 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~197 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -272,3 +272,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - o fundo não duplica SVGs nem imagens;
   - a animação/score de explosão precisa de playtest para balancear;
   - a CSP não muda, pois tudo é CSS/DOM/Web Audio.
+
+## ADR-022 — Configurações no modo doce, menu temático e marca ted-io
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** o modo doce não tinha acesso às configurações; o menu principal usava um overlay genérico e o nome visível ainda era Balljump-game.
+- **Decisão:** adicionar uma engrenagem no cabeçalho do modo doce que abre o mesmo `#settingsModal`. No doce, a seção de dificuldade é ocultada, o timer pausa ao abrir e retoma ao fechar; o tutorial aberto pelas configurações retorna a elas. O menu principal passa a usar o fundo ambiente do tema (`body.menu-active` oculta o app) e a marca visível/título passa a ser **ted-io**.
+- **Consequências:**
+  - o modo doce pausa de verdade enquanto o jogador ajusta tema/som/volume;
+  - dificuldade não aparece onde não se aplica;
+  - o menu mostra ondas no escuro e fita laranja no claro, sem novo asset;
+  - `settingsTitle`, `settingsSubtitle` e a dica mudam conforme o modo;
+  - o título da aba e o cartão do menu exibem **ted-io**;
+  - o projeto/repositório continuam com os nomes internos existentes.

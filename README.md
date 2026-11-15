@@ -1,6 +1,6 @@
-# Balljump-game
+# ted-io
 
-Jogo web inspirado no clássico JezzBall, feito em um único arquivo HTML com Canvas, CSS e JavaScript puro.
+Jogo web com dois modos: **Clássico** (inspirado no JezzBall) e **Doce** (match-3), feito em um único arquivo HTML com Canvas, CSS e JavaScript puro.
 
 ## Jogar
 

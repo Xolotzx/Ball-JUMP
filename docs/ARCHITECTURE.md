@@ -143,7 +143,8 @@ Componentes de UI:
 - menu inicial: `#startMenu`;
 - seletor de modo: `#modeModal` (Clássico ou Doce);
 - tutorial: `#tutorialModal`;
-- configurações: `#settingsModal`;
+- configurações: `#settingsModal` (acessível no HUD clássico e pela engrenagem do modo doce);
+- menu principal sobre o fundo ambiente do tema; `body.menu-active` oculta o `.app` clássico e `body.candy-active` oculta no modo doce.
 - overlay de nível/game over/vitória: `#overlay`;
 - HUD, toast e meta-informações;
 - chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero;
@@ -269,6 +270,9 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - O modal de fim de jogo reutiliza `#deathModal`, mostrando a estatística de
   pontos apenas no modo doce; **Menu** sai para o menu e **Jogar novamente**
   reinicia o modo doce.
+- A engrenagem do cabeçalho abre `#settingsModal` sobre o modo doce: a seção de
+  dificuldade fica oculta, o timer pausa e, ao fechar (ou voltar do tutorial),
+  o timer retoma. Tema, som, volume e **Como jogar** continuam disponíveis.
 
 ## 16. Extensibilidade
 

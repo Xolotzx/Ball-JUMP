@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~195 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~197 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://balljump-game.pages.dev
 - **Projeto Cloudflare:** `balljump-game`
 - **Repositório:** privado, branch `main`
@@ -21,6 +21,8 @@
 - 100 níveis; +1 bolinha a cada 2 níveis.
 - 4 dificuldades.
 - Menus: Jogar, Ranking, Configurações; **Jogar** abre a escolha entre Clássico e Doce; tutorial acessível pelas configurações.
+- Menu principal com fundo ambiente do tema (ondas no escuro, fita no claro) e marca **ted-io**.
+- Configurações disponíveis no clássico e no modo doce (engrenagem); no doce a dificuldade é ocultada e o timer pausa.
 - Modos escuro/claro; sem botão de compartilhamento.
 - Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
@@ -57,6 +59,9 @@
 - Botão **Jogar** agora abre um seletor com **Modo Clássico** e **Modo Doce**; o menu não tem mais botão duplicado.
 - Bombas aparecem no modo doce e explodem a área 3×3 ao serem trocadas com qualquer doce; cadeias, faíscas, texto de pontos, tremida e som próprio.
 - O modo doce usa o mesmo fundo ambiente do clássico (ondas/fita); o `.app` clássico fica oculto durante o modo doce.
+- Configurações adicionadas ao modo doce (engrenagem), com timer pausado e dificuldade oculta.
+- Menu principal passou a usar o fundo do tema e o app clássico fica oculto enquanto o menu está aberto.
+- Site renomeado para **ted-io** no título da aba e no cartão do menu.
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.

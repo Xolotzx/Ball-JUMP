@@ -1,11 +1,11 @@
-# Contexto do projeto — Balljump-game
+# Contexto do projeto — ted-io
 
 > Última revisão: 2026-11-15
 > Fonte de verdade do comportamento: `index.html`. Este documento descreve a intenção, as regras e o estado esperado.
 
 ## 1. Visão
 
-Balljump-game é um jogo casual de estratégia para navegador, inspirado no clássico JezzBall. O jogador constrói paredes para dividir a arena e isolar bolinhas. Áreas fechadas sem bolinhas são preenchidas automaticamente. O objetivo é preencher **75%** da área interna antes de perder todas as vidas.
+**ted-io** é um site de jogos casuais para navegador com dois modos. No **Clássico**, inspirado no JezzBall, o jogador constrói paredes para dividir a arena e isolar bolinhas; áreas fechadas sem bolinhas são preenchidas automaticamente e o objetivo é preencher **75%** da área antes de perder todas as vidas. No **Doce**, um match-3 de 100 fases, o jogador troca doces, cumpre metas e administra o tempo.
 
 O projeto tem uma restrição deliberada: **o núcleo do jogo fica em um único `index.html`** e funciona offline. A única dependência externa é o SDK modular do Firebase, carregado sob demanda para login Google e ranking; não há back-end próprio. A documentação de contexto e segurança é externa ao runtime.
 
@@ -92,7 +92,9 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 ### Interface
 
 - Tela de menu ao entrar, com **Jogar**, **Ranking** e **Configurações**.
+- O menu principal usa o fundo ambiente do tema (ondas no escuro, fita laranja no claro) e oculta o app clássico atrás.
 - **Jogar** abre um seletor com **Modo Clássico** e **Modo Doce**.
+- **Configurações** ficam disponíveis no clássico e também no modo doce (engrenagem no cabeçalho); no doce a seção de dificuldade é ocultada e o timer pausa.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente a cada 10 fases.
 - Bombas aparecem no tabuleiro doce e explodem a área 3×3 ao serem trocadas com qualquer doce; bombas vizinhas entram em cadeia.
 - Explosões usam som próprio, faísca, texto de pontos e tremida; o fundo ambiente é o mesmo do modo clássico (ondas/fita).

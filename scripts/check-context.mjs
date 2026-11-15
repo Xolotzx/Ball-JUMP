@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Verificação local de contexto e segurança do Balljump-game.
+ * Verificação local de contexto e segurança do ted-io.
  * Sem dependências. Requer Node.js 18+ e Git no PATH.
  *
  * Uso: node scripts/check-context.mjs
@@ -45,7 +45,7 @@ function read(rel) {
   return fs.readFileSync(path.join(root, rel), 'utf8');
 }
 
-console.log('Balljump-game — verificação de contexto e segurança\n');
+console.log('ted-io — verificação de contexto e segurança\n');
 
 // 1. Arquivos obrigatórios
 console.log('Contexto e documentação:');
@@ -128,7 +128,8 @@ check(agents.includes('Nunca'), 'AGENTS.md contém proibições explícitas');
 // 2. Invariantes do jogo
 console.log('\nInvariantes do jogo:');
 const index = exists('index.html') ? read('index.html') : '';
-check(index.includes('<title>Balljump-game'), 'título Balljump-game presente');
+check(index.includes('<title>ted-io'), 'título ted-io presente');
+check(index.includes('<h1 id="menuTitle">ted-io</h1>'), 'marca ted-io no menu presente');
 check(index.includes('const GOAL_PCT = 75'), 'GOAL_PCT definido como 75');
 check(index.includes('state.lives++'), 'incremento de vida por fase presente');
 check(!/id=["']shareBtn["']/.test(index), 'botão de compartilhar removido');
@@ -185,6 +186,9 @@ check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade pre
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
 check(index.includes('CANDY_MAX_LEVEL = 100') && index.includes('function startCandyMode'), 'modo doce presente');
 check(index.includes('CANDY_BOMB') && index.includes('function candyExplodeBombs'), 'bombas e explosões presentes');
+check(index.includes('id="candySettings"') && index.includes("ui.candySettings.addEventListener('click', openSettings)"), 'configurações no modo doce presentes');
+check(index.includes('settingsDifficultySection.hidden = inCandy'), 'dificuldade oculta nas configurações do doce');
+check(index.includes('body.menu-active .app') && index.includes("classList.add('menu-active')"), 'menu principal com fundo temático');
 check(index.includes('function explosion') && index.includes('function candyPop'), 'sons do modo doce presentes');
 check(index.includes('body.candy-active .app') && index.includes("classList.add('candy-active')"), 'fundo compartilhado do modo doce');
 check(index.includes('candy.bestScore'), 'ranking doce presente');

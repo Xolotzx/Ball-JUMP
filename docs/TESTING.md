@@ -16,7 +16,8 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 
 ## 2. Smoke test de interface
 
-- [ ] Menu inicial aparece ao entrar.
+- [ ] Menu inicial aparece ao entrar com o nome **ted-io** no título da aba e no cartão.
+- [ ] O fundo do menu usa ondas no tema escuro e fita laranja no claro; o app clássico fica oculto atrás.
 - [ ] Existem os botões **Jogar**, **Ranking** e **Configurações**; não há **Como jogar** nem **Modo Doce** duplicado no menu.
 - [ ] **Jogar** abre o seletor com **Modo Clássico** e **Modo Doce**.
 - [ ] Escolher **Modo Clássico** fecha o menu e inicia a partida clássica.
@@ -142,6 +143,10 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Bombas vizinhas explodem em cadeia.
 - [ ] A explosão mostra faísca, células explodindo, texto de pontos e tremida no tabuleiro.
 - [ ] O som de explosão é audível e o volume respeita o slider.
+- [ ] A engrenagem do cabeçalho do modo doce abre as configurações.
+- [ ] A seção de dificuldade fica oculta no modo doce e o timer pausa enquanto as configurações estão abertas.
+- [ ] Fechar as configurações retoma o timer e o foco volta à engrenagem.
+- [ ] **Como jogar** aberto pelas configurações do modo doce volta para elas; **Voltar ao jogo** fecha tudo e retoma o timer.
 - [ ] O fundo do modo doce é o mesmo do clássico (ondas/fita), sem imagem nova.
 - [ ] Ao esgotar o tempo, abre **FIM DO TEMPO** com streak, fase e pontos.
 - [ ] A tela final mostra o botão **Menu** e **Jogar novamente** reinicia o modo doce.
