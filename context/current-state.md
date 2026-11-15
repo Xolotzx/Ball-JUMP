@@ -42,6 +42,7 @@
 - Logo oficial do Google e botão de login branco suave no tema claro / preto suave no escuro.
 - `syncProfile` preserva nick/foto existentes; ranking renderiza avatares com fallback.
 - Corrigido `footer` global que aplicava `opacity:.38` aos rodapés dos modais.
+- Corrigido o carregamento de fotos em produção: a CSP bloqueava `blob:`; agora o arquivo é decodificado com `createImageBitmap`/`FileReader` (data URL), sem blob.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.
 - Ranking com abas de streak/níveis e top 10.

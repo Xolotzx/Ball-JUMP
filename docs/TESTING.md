@@ -117,7 +117,9 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Um nick vazio mostra erro e não salva.
 - [ ] O nick é normalizado (espaços repetidos) e limitado a 30 caracteres.
 - [ ] Escolher JPG/PNG/WebP gera uma prévia quadrada e salva em data URL JPEG.
-- [ ] Uma imagem grande é recusada com mensagem clara.
+- [ ] Uma imagem grande (>15 MB) é recusada com mensagem clara.
+- [ ] Uma foto HEIC do iPhone mostra a orientação para converter para JPG.
+- [ ] O processamento funciona em produção sob a CSP `img-src data:` (sem blob URL).
 - [ ] **Remover foto** volta para a inicial do nick.
 - [ ] **Salvar** atualiza a tela de morte e o ranking sem recarregar.
 - [ ] Recarregar a página mantém nick e foto.

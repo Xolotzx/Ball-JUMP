@@ -135,6 +135,11 @@ Também foi validado:
   ranking (**Editar**). Ele permite trocar o nick e escolher/remover a foto.
 - A imagem escolhida é recortada em 160×160, comprimida em JPEG (qualidade
   decrescente) e rejeitada se passar de 90.000 caracteres.
+- O arquivo é decodificado com `createImageBitmap` (sem URL) e, como fallback,
+  com `FileReader` + data URL. Não usamos `blob:` porque a CSP permite apenas
+  `img-src data:`.
+- Fotos HEIC de iPhone não são decodificadas pelo navegador; a UI orienta a
+  converter para JPG/PNG/WebP. O limite de entrada é 15 MB.
 - A gravação usa `runTransaction`, preserva `bestStreak`/`bestLevel` atuais e
   atualiza `updatedAt` com `serverTimestamp()`.
 

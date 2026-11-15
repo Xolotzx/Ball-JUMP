@@ -205,8 +205,9 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Melhores scores são monotônicos (`max`) e `updatedAt` usa `serverTimestamp`.
 - Perfil editável em `#profileModal`:
   - nick de 1 a 30 caracteres, normalizado e renderizado com `textContent`;
-  - foto opcional processada em canvas 160×160, JPEG com qualidade decrescente,
-    limitada a 90.000 caracteres e validada como data URL;
+  - foto opcional processada em canvas 160×160 via `createImageBitmap` (fallback
+    `FileReader` + data URL), JPEG com qualidade decrescente, limitada a 90.000
+    caracteres e validada como data URL; sem blob URL por causa da CSP;
   - `saveProfileEdits` usa transação, preserva scores e atualiza o cache `fb.profile`.
 - `syncProfile` preserva `name`/`photo` existentes; só usa o nome do Google na
   criação do perfil.

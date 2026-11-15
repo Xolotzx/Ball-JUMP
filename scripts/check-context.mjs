@@ -165,6 +165,8 @@ check(index.includes("RANK_COLLECTION = 'balljumpProfiles'"), 'coleção do rank
 check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
 check(index.includes('function isPhotoDataURL'), 'validação de foto presente');
 check(index.includes('90000'), 'limite de foto presente no cliente');
+check(index.includes('createImageBitmap') && index.includes('FileReader'), 'foto decodificada sem blob URL');
+check(!index.includes('createObjectURL'), 'sem blob URL na foto (compatível com CSP)');
 check(index.includes('function processPhotoFile') && index.includes('function saveProfileEdits'), 'edição de perfil presente');
 check(!index.includes('firebase-storage'), 'sem Firebase Storage no cliente');
 check(headers.includes('img-src data:'), 'CSP permite fotos em data URL');
