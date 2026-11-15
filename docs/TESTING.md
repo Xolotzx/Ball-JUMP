@@ -1,4 +1,4 @@
-# Testes — Balljump-game
+# Testes — ted-io
 
 ## 1. Antes de testar
 
@@ -100,7 +100,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Deploy feito de `dist/`, não da raiz do repositório.
 - [ ] Caminhos internos (ex.: `/AGENTS.md`) retornam 404 e não expõem documentação.
 - [ ] URL de produção carrega a versão nova.
-- [ ] `curl.exe -I https://balljump-game.pages.dev/` mostra os headers esperados.
+- [ ] `curl.exe -I https://ted-io.pages.dev/` mostra os headers esperados.
 - [ ] Console do navegador sem erros de CSP.
 - [ ] Menu, jogo, tutorial e configurações funcionam em produção.
 - [ ] Repositório permanece privado.
@@ -198,7 +198,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Criar/atualizar reserva com UID diferente do autenticado é negado.
 - [ ] Apagar reserva de outro UID é negado.
 - [ ] Nome vazio/longo ou timestamp incorreto na reserva é negado.
-- [ ] `balljump-game.pages.dev` está em Authorized domains.
+- [ ] `ted-io.pages.dev` está em Authorized domains.
 - [ ] Provedor Google está habilitado.
 - [ ] API key aceita o domínio de produção.
 - [ ] CSP permite gstatic/Firebase/Google Auth, `img-src data:` e COOP é `same-origin-allow-popups`.

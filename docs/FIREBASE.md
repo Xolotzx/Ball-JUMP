@@ -9,7 +9,8 @@
 - **Projeto:** `botanicstudio`
 - **App Web:** `Botanica Studio Web` (configuração pública reutilizada)
 - **Auth:** Google habilitado
-- **Domínio autorizado:** `balljump-game.pages.dev`
+- **Domínio autorizado:** `ted-io.pages.dev`
+- **Domínio legado:** `balljump-game.pages.dev` (mantido autorizado durante a transição)
 - **Firestore:** banco `(default)`
 - **Coleção do jogo:** `balljumpProfiles`
 - **SDK:** Firebase JS modular **10.14.1**, carregado sob demanda do gstatic
@@ -212,13 +213,13 @@ npx --yes firebase-tools deploy --only firestore:rules --project botanicstudio
 
 ## 5. Autorização do domínio
 
-O domínio `balljump-game.pages.dev` está em **Authentication → Settings →
+O domínio `ted-io.pages.dev` está em **Authentication → Settings →
 Authorized domains**. Sem ele, o login retorna `auth/unauthorized-domain`.
 
 Também foi validado:
 
 - provedor Google habilitado;
-- `apiKey` aceita requisições com referer `https://balljump-game.pages.dev/`;
+- `apiKey` aceita requisições com referer `https://ted-io.pages.dev/`;
 - CSP permite os domínios do Firebase;
 - COOP usa `same-origin-allow-popups` para o popup OAuth funcionar.
 
@@ -292,7 +293,7 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 
 ## 8. Teste manual recomendado
 
-1. Abra https://balljump-game.pages.dev.
+1. Abra https://ted-io.pages.dev.
 2. Jogue até perder as vidas.
 3. Na tela de morte, clique em **Entrar com Google**.
 4. Autorize a conta; verifique se o perfil aparece e se o botão de ranking

@@ -7,8 +7,8 @@ Guia de contexto para agentes de IA, mantenedores e revisores. Leia este arquivo
 - **Produto:** site de jogos casuais **ted-io**, com Modo Clássico (JezzBall) e Modo Doce (match-3).
 - **Arquivo de runtime:** `index.html` (HTML + CSS + JavaScript em um único arquivo).
 - **Tamanho atual:** ~197 KB; o jogo em si não tem dependências, mas o Firebase SDK é carregado sob demanda para login/ranking.
-- **Deploy:** Cloudflare Pages, projeto `balljump-game`.
-- **URL:** https://balljump-game.pages.dev
+- **Deploy:** Cloudflare Pages, projeto `ted-io`.
+- **URL:** https://ted-io.pages.dev
 - **Repositório:** privado em GitHub (`Xolotzx/Ball-JUMP`).
 - **Idioma da interface:** português do Brasil (pt-BR).
 
@@ -45,7 +45,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - Áudio: Web Audio API sintetizada; sem arquivos de mídia.
 - Persistência: apenas `localStorage` (`kbounce.settings.v1`) para tema, dificuldade, som e volume (0–100).
 - Deploy atual: **upload direto** no Cloudflare Pages; `git push` **não** publica automaticamente.
-- **Firebase:** projeto compartilhado `botanicstudio`; Auth Google habilitado; Firestore `(default)`; coleções `balljumpProfiles` e `balljumpNicknames`; domínio `balljump-game.pages.dev` autorizado.
+- **Firebase:** projeto compartilhado `botanicstudio`; Auth Google habilitado; Firestore `(default)`; coleções `balljumpProfiles` e `balljumpNicknames`; domínio `ted-io.pages.dev` autorizado.
 - **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `candy`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
 - **Ranking por dificuldade:** `scores.easy/normal/hard/hardcore` guardam `{ bestStreak, bestLevel }` por modo; o ranking consulta `scores.<modo>.bestStreak` e `.bestLevel`; o ranking geral usa `bestStreak`/`bestLevel`.
 - **Modo Doce:** match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio em `candy` (`bestStreak`, `bestLevel`, `bestScore`); categorias Streak, Níveis e Pontos. Bombas explodem a área 3×3 ao serem trocadas com um doce; o fundo é o mesmo do clássico.
@@ -99,10 +99,10 @@ npx --yes firebase-tools deploy --only firestore:rules --project botanicstudio
 
 # Deploy manual no Cloudflare Pages (somente dist/)
 node scripts/prepare-deploy.mjs
-npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true
+npx wrangler pages deploy dist --project-name ted-io --branch main --commit-dirty=true
 
 # Conferir headers em produção
-curl.exe -I https://balljump-game.pages.dev/
+curl.exe -I https://ted-io.pages.dev/
 ```
 
 ## Segurança — regras obrigatórias

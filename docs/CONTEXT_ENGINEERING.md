@@ -1,4 +1,4 @@
-# Engenharia de contexto — Balljump-game
+# Engenharia de contexto — ted-io
 
 > Este documento define como o contexto do projeto é organizado, carregado, atualizado e protegido. O objetivo é permitir que humanos e agentes de IA trabalhem com precisão, sem sobrecarga de contexto e sem vazar informações sensíveis.
 

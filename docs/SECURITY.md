@@ -1,4 +1,4 @@
-# Segurança — Balljump-game
+# Segurança — ted-io
 
 ## 1. Objetivos
 
@@ -147,13 +147,13 @@ Antes de cada deploy:
 ```powershell
 node scripts/check-context.mjs
 node scripts/prepare-deploy.mjs
-npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true
+npx wrangler pages deploy dist --project-name ted-io --branch main --commit-dirty=true
 ```
 
 Depois do deploy:
 
 ```powershell
-curl.exe -I https://balljump-game.pages.dev/
+curl.exe -I https://ted-io.pages.dev/
 ```
 
 Conferir:

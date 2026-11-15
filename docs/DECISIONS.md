@@ -1,4 +1,4 @@
-# Decisões arquiteturais — Balljump-game
+# Decisões arquiteturais — ted-io
 
 Formato: contexto → decisão → consequências. Mudanças de decisão exigem nova ADR.
 
@@ -92,7 +92,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Data:** 2026-11-15
 - **Status:** aceita (revisar se automação for necessária)
 - **Contexto:** publicação rápida e versionamento privado.
-- **Decisão:** publicar no Cloudflare Pages (`balljump-game`) por upload direto a partir de `dist/`, com allowlist de `index.html` + `404.html` + `_headers`, e manter o código no GitHub privado.
+- **Decisão:** publicar no Cloudflare Pages (`ted-io`) por upload direto a partir de `dist/`, com allowlist de `index.html` + `404.html` + `_headers`, e manter o código no GitHub privado.
 - **Consequências:**
   - deploy manual em duas etapas (`prepare-deploy` + `pages deploy`);
   - documentação interna e contexto não vão para produção;

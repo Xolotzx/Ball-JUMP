@@ -1,4 +1,4 @@
-# Arquitetura — Balljump-game
+# Arquitetura — ted-io
 
 ## 1. Visão geral
 
@@ -188,13 +188,13 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 
 ## 13. Deploy e segurança de entrega
 
-- Cloudflare Pages, projeto `balljump-game`.
+- Cloudflare Pages, projeto `ted-io`.
 - Diretório publicado: `dist/`, gerado por `scripts/prepare-deploy.mjs`.
 - O staging usa allowlist: apenas `index.html`, `404.html` e `_headers`. Documentação e contexto não são publicados.
 - Deploy manual:
   ```powershell
   node scripts/prepare-deploy.mjs
-  npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true
+  npx wrangler pages deploy dist --project-name ted-io --branch main --commit-dirty=true
   ```
 - `_headers` define CSP e headers de proteção. Ver `docs/SECURITY.md`.
 - O deploy atual não é conectado ao GitHub; o push não publica automaticamente.

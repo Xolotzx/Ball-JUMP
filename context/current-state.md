@@ -1,4 +1,4 @@
-# Estado atual — Balljump-game
+# Estado atual — ted-io
 
 > Atualizar este arquivo a cada release ou mudança relevante.
 
@@ -7,8 +7,8 @@
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
 - **Jogo local:** `index.html` (~197 KB, núcleo single-file; Firebase SDK sob demanda)
-- **Deploy:** https://balljump-game.pages.dev
-- **Projeto Cloudflare:** `balljump-game`
+- **Deploy:** https://ted-io.pages.dev
+- **Projeto Cloudflare:** `ted-io`
 - **Repositório:** privado, branch `main`
 - **Firebase:** projeto compartilhado `botanicstudio` (Auth Google + Firestore default; `balljumpProfiles`)
 - **Modo de deploy:** upload manual direto a partir de `dist/` (allowlist: `index.html` + `404.html` + `_headers`).
@@ -39,7 +39,7 @@
 - Caminhos internos como `/AGENTS.md` retornam 404 com página própria.
 - Núcleo offline; Firebase SDK/APIs carregados apenas para login/ranking.
 - Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; `scores` validado por modo; `candy` validado para o modo doce; `balljumpNicknames` legível por autenticados e gravável só pelo dono; regras preservam o Botanica.
-- Domínio `balljump-game.pages.dev` autorizado; provedor Google habilitado.
+- Domínio `ted-io.pages.dev` autorizado; provedor Google habilitado.
 - Repositório privado; sem segredos no Git (apiKey Firebase é pública por design).
 
 ## Últimas mudanças

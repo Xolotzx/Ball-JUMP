@@ -4,7 +4,7 @@ Jogo web com dois modos: **Clássico** (inspirado no JezzBall) e **Doce** (match
 
 ## Jogar
 
-- **Online:** https://balljump-game.pages.dev
+- **Online:** https://ted-io.pages.dev
 - **Local:** abra o arquivo `index.html` no navegador.
 
 ## Como funciona
@@ -66,7 +66,7 @@ python -m http.server 8765 --directory .
 node scripts/prepare-deploy.mjs
 
 # Publicar (Cloudflare Pages)
-npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true
+npx wrangler pages deploy dist --project-name ted-io --branch main --commit-dirty=true
 ```
 
 A pasta `dist/` é gerada localmente e ignorada pelo Git. Ela contém apenas `index.html`, `404.html` e `_headers`, mantendo a documentação interna privada.

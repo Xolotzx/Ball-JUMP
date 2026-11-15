@@ -41,4 +41,4 @@ for (const file of staged) {
   const bytes = fs.statSync(path.join(outDir, file)).size;
   console.log(` - ${file} (${bytes} bytes)`);
 }
-console.log('Próximo passo: npx wrangler pages deploy dist --project-name balljump-game --branch main --commit-dirty=true');
+console.log('Próximo passo: npx wrangler pages deploy dist --project-name ted-io --branch main --commit-dirty=true');
