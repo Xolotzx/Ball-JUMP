@@ -16,7 +16,8 @@
 - Credenciais de deploy e tokens de acesso.
 - Disponibilidade e reputação do site.
 - Projeto Firebase compartilhado, Auth Google, Firestore e regras.
-- Perfis públicos de ranking (nome + scores).
+- Perfis públicos de ranking (nick, foto opcional e scores).
+- Reservas de nick em `balljumpNicknames` (uid, nome, timestamp).
 - Preferências locais do jogador (`localStorage`).
 - Documentação de contexto que orienta agentes.
 
@@ -50,6 +51,7 @@
 | Escrita indevida no ranking | Fraude no leaderboard | Baixa | Regras exigem UID do dono, schema válido, scores monotônicos e server timestamp. |
 | XSS via nome do jogador | Execução de script | Baixa | Nome validado nas regras; renderização com `textContent`. |
 | XSS/abuso via foto de perfil | Execução de script ou documento gigante | Baixa | Apenas data URL JPEG/PNG/WebP validada, limite de 90.000 chars e uso via `background-image`; sem `innerHTML`. |
+| Nick duplicado ou squatting | Confusão no ranking | Média | Reserva transacional em `balljumpNicknames/{key}`; escrita só pelo dono; normalização de caixa/acentos; sufixo automático para nomes ocupados. |
 | Abuso da API key pública | Quotas/abuso de Auth | Baixa | Restrições/domain authorization, regras, monitoramento de quotas. |
 | Regras compartilhadas sobrescritas | Perda do ranking ou do Botanica | Média | Regras mescladas e deploy revisado; nunca publicar só um conjunto. |
 | Popup OAuth bloqueado | Falha de login | Média | Fallback de redirect + preservação da corrida pendente. |
@@ -93,6 +95,7 @@
 - Auth Google via Firebase Authentication; domínio de produção explicitamente autorizado.
 - Firestore em modo produção; regras exigem autenticação para leitura.
 - Escrita somente pelo próprio UID; schema, tipos, limites, timestamps e monotonicidade validados.
+- Nicks únicos: reserva em `balljumpNicknames/{key}` com chave normalizada; leitura autenticada; create/update/delete só pelo UID dono; conflito resolvido por transação no cliente.
 - Perfil mínimo: nick público, foto opcional em data URL, melhor streak, melhor nível e `updatedAt`; sem e-mail ou telefone.
 - A foto é validada no cliente e nas regras (`data:image/(jpeg|png|webp);base64,`, até 90.000 caracteres) e aplicada apenas via `background-image`; valores inválidos caem para a inicial.
 - Não há upload em Firebase Storage; a imagem não passa por servidor próprio.
@@ -196,5 +199,7 @@ Conferir:
 - O projeto Firebase é compartilhado com o Botanica; regras e domínios afetam os dois.
 - Nicks e fotos de perfil são visíveis para usuários autenticados.
 - Fotos em data URL aumentam o custo de leitura do ranking; o limite de 90.000 caracteres reduz, mas não elimina, esse custo.
+- A unicidade de nick é transacional no cliente; um cliente malicioso pode criar reservas de nomes sem usá-los, mas não consegue confirmar o mesmo nick pela UI.
+- Nicks antigos duplicados permanecem visíveis até cada conta fazer login e receber a reserva/sufixo.
 - App Check não está habilitado; a API key pública pode ser abusada dentro de quotas.
 - O login Google, a edição de perfil e o fallback de redirect exigem validação manual com conta real.

@@ -11,7 +11,7 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - deploy e distribuição triviais;
   - funciona via `file://`;
-  - arquivo grande (~132 KB) e maior custo de leitura por agentes;
+  - arquivo grande (~149 KB) e maior custo de leitura por agentes;
   - CSP precisa permitir inline;
   - buscar por símbolos em vez de ler o arquivo inteiro.
 
@@ -188,3 +188,17 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - documentos com foto aumentam o custo de leitura do ranking;
   - nicks e fotos continuam visíveis apenas para usuários autenticados;
   - fallback para a inicial do nick quando não há foto ou o valor é inválido.
+
+## ADR-016 — Unicidade de nick por reserva transacional
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** impedir duas contas com o mesmo nick sem adicionar back-end próprio.
+- **Decisão:** criar `balljumpNicknames/{key}` com `uid`, `name` e `updatedAt`. A chave é o nick normalizado (minúsculas, sem acentos, separadores colapsados em `-`). O cliente reserva/libera o nick dentro da mesma transação que grava o perfil. Conflitos retornam `nickname-taken`; no primeiro login, nomes do Google ocupados recebem sufixo automático.
+- **Consequências:**
+  - duas contas não confirmam o mesmo nick ao mesmo tempo;
+  - renomear libera o nick antigo;
+  - perfis antigos duplicados são corrigidos no próximo login;
+  - reservas são legíveis por usuários autenticados e graváveis apenas pelo dono;
+  - a unicidade é garantida pelo fluxo do cliente e pela transação; um cliente malicioso ainda pode criar reservas sem uso, mas não duplicar nicks pela UI;
+  - a coleção de reservas é compartilhada no mesmo projeto Firebase do Botanica.

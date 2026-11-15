@@ -26,13 +26,18 @@ administrativo ou `.env` no repositório.
    **Entrar com Google**.
 3. Ao entrar:
    - um perfil `balljumpProfiles/{uid}` é criado/atualizado;
+   - o nick é reservado em `balljumpNicknames/{key}` para garantir unicidade;
    - o melhor streak e o maior nível da corrida são enviados;
    - o perfil entra no ranking.
 4. O jogador pode personalizar o perfil (nick e foto) pela tela de morte ou
    pelo ranking. A foto é opcional e fica salva no próprio documento.
-5. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
+5. Nicks são únicos por chave normalizada: minúsculas, sem acentos e com
+   separadores colapsados. `Lucas`, `lucas` e `LUCAS!` são o mesmo nick.
+6. Se o nome do Google já estiver em uso, o primeiro login cria uma variante
+   automática (`Lucas 2`, `Lucas 3`, ...). O jogador pode trocar depois.
+7. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
    **Ver ranking** na tela de fim de jogo.
-6. O ranking tem abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10.
+8. O ranking tem abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10.
 
 ## 3. Modelo de dados
 
@@ -44,10 +49,23 @@ balljumpProfiles/{uid} {
   bestLevel: int        // 1..100, maior nível alcançado
   updatedAt: timestamp  // serverTimestamp()
 }
+
+balljumpNicknames/{key} {
+  uid: string           // dono da reserva
+  name: string          // nick na grafia original
+  updatedAt: timestamp  // serverTimestamp()
+}
 ```
 
 - O nick começa como o `displayName` do Google, mas pode ser alterado; nas
   sincronizações seguintes o nick e a foto já salvos são preservados.
+- A reserva de nick é criada e liberada dentro da mesma transação do perfil.
+  Ao renomear, o cliente apaga a reserva antiga e cria a nova.
+- Conflitos de nome simultâneos são resolvidos pela transação: um jogador fica
+  com o nick e o outro recebe `nickname-taken` (ou uma variante automática no
+  primeiro login).
+- Perfis antigos com nomes duplicados são corrigidos no próximo login: quem
+  chegar depois recebe um sufixo automático.
 - A foto é opcional, recortada em 160×160 e comprimida no navegador para JPEG
   (data URL). Não usamos Firebase Storage.
 - Não armazenamos e-mail, telefone ou qualquer dado além de nick, foto opcional
@@ -67,7 +85,7 @@ As regras vivem no projeto compartilhado, no arquivo:
 Botanica Studio/botanicstudio/firebase/firestore.rules
 ```
 
-O bloco do ranking é:
+O bloco do ranking e dos nicks é:
 
 ```javascript
 function isBalljumpOwner(uid) {
@@ -92,6 +110,29 @@ match /balljumpProfiles/{uid} {
     && request.resource.data.bestStreak >= resource.data.bestStreak
     && request.resource.data.bestLevel >= resource.data.bestLevel;
   allow delete: if false;
+}
+
+function isBalljumpNickname(n) {
+  return n.keys().hasOnly(['uid', 'name', 'updatedAt'])
+    && n.uid is string && n.uid.size() >= 1 && n.uid.size() <= 128
+    && n.name is string && n.name.size() >= 1 && n.name.size() <= 40
+    && n.updatedAt == request.time;
+}
+
+match /balljumpNicknames/{key} {
+  allow read: if request.auth != null;
+  allow create: if request.auth != null
+    && key.size() >= 1 && key.size() <= 80
+    && request.resource.data.uid == request.auth.uid
+    && isBalljumpNickname(request.resource.data);
+  allow update: if request.auth != null
+    && key.size() >= 1 && key.size() <= 80
+    && resource.data.uid == request.auth.uid
+    && request.resource.data.uid == request.auth.uid
+    && isBalljumpNickname(request.resource.data);
+  allow delete: if request.auth != null
+    && key.size() >= 1 && key.size() <= 80
+    && resource.data.uid == request.auth.uid;
 }
 ```
 
@@ -142,6 +183,16 @@ Também foi validado:
   converter para JPG/PNG/WebP. O limite de entrada é 15 MB.
 - A gravação usa `runTransaction`, preserva `bestStreak`/`bestLevel` atuais e
   atualiza `updatedAt` com `serverTimestamp()`.
+- Unicidade de nick:
+  - `nicknameKeyFor()` normaliza o nick (minúsculas, sem acentos, separadores
+    colapsados em `-`) e usa essa chave em `balljumpNicknames/{key}`.
+  - `claimNickname()` lê a reserva e, se a chave já pertence a outro UID, o
+    salvamento falha com `nickname-taken` ("Esse nick já está em uso").
+  - No primeiro login/sincronização, se o nome do Google estiver ocupado, o app
+    tenta sufixos `2..40` e, em último caso, um sufixo derivado do UID.
+  - Ao renomear, a reserva antiga é apagada e a nova é gravada na mesma
+    transação. Duas pessoas não conseguem confirmar o mesmo nick ao mesmo tempo
+    porque as transações conflitam na mesma reserva.
 
 ## 7. CSP e rede
 
@@ -167,10 +218,15 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 6. Confirme que o nick e a foto aparecem na tela de morte, no ranking e na
    linha do jogador; recarregue a página e confira que persistiram.
 7. Remova a foto, salve e confirme o fallback para a inicial do nick.
-8. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
-9. Confira no console do Firebase → Firestore → `balljumpProfiles`.
-10. Teste o botão **Sair** e o login novamente.
-11. Teste com popups bloqueados para validar o fallback de redirecionamento.
+8. Com outra conta Google, tente salvar o mesmo nick: deve aparecer
+   **"Esse nick já está em uso"**. Confirme que o primeiro jogador mantém o nick.
+9. Altere o nick da segunda conta para um nome livre e confirme que o antigo
+   volta a ficar disponível.
+10. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
+11. Confira no console do Firebase → Firestore → `balljumpProfiles` e
+    `balljumpNicknames`.
+12. Teste o botão **Sair** e o login novamente.
+13. Teste com popups bloqueados para validar o fallback de redirecionamento.
 
 ## 9. Troubleshooting
 
@@ -184,6 +240,9 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 | Perfil não aparece | transação falhou | ver console/rede e regras |
 | Foto não salva | imagem acima de 90.000 chars ou campo `photo` fora das regras | usar imagem menor; publicar as regras mescladas |
 | Nick volta ao nome do Google | sincronização sobrescreveu o perfil | confirmar que a regra e o cliente preservam `name`/`photo` |
+| Nick duplicado em perfis antigos | perfis criados antes da reserva | fazer login com cada conta; o app cria a reserva e aplica sufixo se necessário |
+| Nick recusado mesmo livre | reserva antiga ainda existe | verificar `balljumpNicknames/{key}`; o dono precisa renomear/liberar |
+| `permission-denied` ao salvar nick | regras de `balljumpNicknames` não publicadas | publicar as regras mescladas |
 | Ranking vazio | nenhum perfil criado ainda | entrar com Google para criar o primeiro |
 
 Não registre tokens, cookies ou credenciais nos logs de suporte.

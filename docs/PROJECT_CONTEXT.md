@@ -110,6 +110,9 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel` e `updatedAt`.
 - O perfil é criado no primeiro login e entra no ranking.
 - O nick começa como o nome do Google, mas pode ser alterado; sincronizações preservam o nick/foto salvos.
+- Nicks são únicos: uma reserva em `balljumpNicknames/{key}` usa a versão normalizada (minúscula, sem acentos) e impede duas contas com o mesmo nome.
+- Se o nome do Google já estiver ocupado, o primeiro login cria uma variante automática (`Lucas 2`, `Lucas 3`, ...).
+- Perfis antigos com nomes iguais são corrigidos no próximo login, quando a reserva é criada.
 - A foto é opcional, recortada em 160×160, comprimida para JPEG em data URL e limitada a 90.000 caracteres; não usamos Firebase Storage.
 - Leitura do ranking exige autenticação; escrita só pelo próprio UID, com validação de schema e scores monotônicos.
 - Não armazenamos e-mail, telefone ou analytics.
@@ -148,6 +151,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Login e ranking exigem conexão; o jogo principal continua offline.
 - O Firebase é compartilhado com o Botanica Studio; alterações nas regras precisam preservar os dois conjuntos.
 - Nick e foto do perfil são visíveis para outros usuários autenticados; e-mail/telefone não são armazenados.
+- A unicidade de nick é garantida pela transação do cliente e pela coleção `balljumpNicknames`; a coleção é legível por usuários autenticados e gravável apenas pelo dono da reserva.
+- Nicks antigos duplicados só são corrigidos quando cada conta faz login novamente.
 - A foto em data URL aumenta o tamanho do documento no Firestore; o limite de 90.000 caracteres evita abuso, mas ainda é um custo de leitura do ranking.
 - Não há App Check nem suíte automatizada de login; o fluxo Google e o upload de foto precisam de validação manual com uma conta real.
 - O ranking exibe o top 10 por métrica; não calcula a posição global de quem está fora do topo.

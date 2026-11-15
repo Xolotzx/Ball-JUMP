@@ -20,7 +20,7 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - 4 dificuldades.
 - Sequência 🔥: cada parede concluída aumenta o contador; levar dano zera. Inclui animação e som de fogo sutil.
 - Login com Google no fim da partida, perfil e ranking de **streak** e **níveis**.
-- Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador).
+- Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.
 - Efeitos sonoros gerados com Web Audio API, com reverb, harmônicos e pan estéreo.
@@ -65,4 +65,4 @@ A pasta `dist/` é gerada localmente e ignorada pelo Git. Ela contém apenas `in
 
 ## Conta e privacidade
 
-O login usa Firebase Authentication (Google) e o ranking usa Cloud Firestore. O perfil armazena um nick público editável (inicialmente o nome do Google), uma foto opcional em data URL, melhor streak e melhor nível; não armazenamos e-mail ou telefone. A foto é recortada e comprimida no navegador, sem Firebase Storage. O ranking é visível apenas para usuários autenticados.
+O login usa Firebase Authentication (Google) e o ranking usa Cloud Firestore. O perfil armazena um nick público editável (inicialmente o nome do Google), uma foto opcional em data URL, melhor streak e melhor nível; não armazenamos e-mail ou telefone. O nick é reservado em `balljumpNicknames` para evitar duplicidade. A foto é recortada e comprimida no navegador, sem Firebase Storage. O ranking é visível apenas para usuários autenticados.

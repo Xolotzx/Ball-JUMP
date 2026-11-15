@@ -6,7 +6,7 @@
 
 - **Data:** 2026-11-15
 - **Status:** publicado e funcional
-- **Jogo local:** `index.html` (~132 KB, núcleo single-file; Firebase SDK sob demanda)
+- **Jogo local:** `index.html` (~149 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://balljump-game.pages.dev
 - **Projeto Cloudflare:** `balljump-game`
 - **Repositório:** privado, branch `main`
@@ -24,6 +24,7 @@
 - Modos escuro/claro; sem botão de compartilhamento.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
+- Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
 
 ## Segurança em vigor
 
@@ -31,7 +32,7 @@
 - Deploy por allowlist em `dist/` (`index.html`, `404.html`, `_headers`); documentação interna não é publicada.
 - Caminhos internos como `/AGENTS.md` retornam 404 com página própria.
 - Núcleo offline; Firebase SDK/APIs carregados apenas para login/ranking.
-- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; regras preservam o Botanica.
+- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; `balljumpNicknames` legível por autenticados e gravável só pelo dono; regras preservam o Botanica.
 - Domínio `balljump-game.pages.dev` autorizado; provedor Google habilitado.
 - Repositório privado; sem segredos no Git (apiKey Firebase é pública por design).
 
@@ -43,6 +44,7 @@
 - `syncProfile` preserva nick/foto existentes; ranking renderiza avatares com fallback.
 - Corrigido `footer` global que aplicava `opacity:.38` aos rodapés dos modais.
 - Corrigido o carregamento de fotos em produção: a CSP bloqueava `blob:`; agora o arquivo é decodificado com `createImageBitmap`/`FileReader` (data URL), sem blob.
+- Nicks únicos implementados com `balljumpNicknames` e transação; regras publicadas preservando Botanica e Balljump.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.
 - Ranking com abas de streak/níveis e top 10.

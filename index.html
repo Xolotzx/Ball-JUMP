@@ -980,7 +980,7 @@
         <label for="profileNameInput">Nick</label>
         <input id="profileNameInput" class="profile-input" type="text" maxlength="30" autocomplete="nickname" placeholder="Seu nick">
       </div>
-      <p class="field-hint">De 1 a 30 caracteres. Visível para jogadores autenticados no ranking.</p>
+      <p class="field-hint">De 1 a 30 caracteres. O nick precisa ser único no ranking.</p>
       <p class="profile-error" id="profileError" role="alert"></p>
     </div>
     <footer class="tutorial-foot profile-foot">
@@ -1016,6 +1016,7 @@ const FIREBASE_CONFIG = {
 };
 const FIREBASE_SDK_VERSION = '10.14.1';
 const RANK_COLLECTION = 'balljumpProfiles';
+const NICK_COLLECTION = 'balljumpNicknames';
 const RANK_FETCH_LIMIT = 20;
 const RANK_SHOW_LIMIT = 10;
 const PENDING_RUN_KEY = 'balljump.pendingRun.v1';
@@ -2626,10 +2627,64 @@ function clampInt(value, min, max) {
   return Math.max(min, Math.min(max, Math.trunc(n)));
 }
 
+function sanitizeNickname(value, maxLength = 30) {
+  const clean = String(value || '').trim().replace(/\s+/g, ' ');
+  return [...clean].slice(0, maxLength).join('');
+}
+
+function nicknameKeyFor(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60);
+}
+
 function displayNameOf(user) {
-  let name = String((user && user.displayName) || '').trim().replace(/\s+/g, ' ');
-  if (!name) name = 'Jogador';
-  return [...name].slice(0, 40).join('');
+  const name = sanitizeNickname((user && user.displayName) || '', 30);
+  return name && nicknameKeyFor(name) ? name : 'Jogador';
+}
+
+function nicknameTakenError() {
+  const error = new Error('nickname-taken');
+  error.code = 'nickname-taken';
+  return error;
+}
+
+async function claimNickname(tx, fs, uid, desiredName, autoSuffix) {
+  const fb = firebaseRuntime;
+  let base = sanitizeNickname(desiredName, 30) || 'Jogador';
+  if (!nicknameKeyFor(base)) base = 'Jogador';
+  let candidate = base;
+  let key = nicknameKeyFor(candidate);
+  let snapshot = await tx.get(fs.doc(fb.db, NICK_COLLECTION, key));
+
+  if (snapshot.exists() && snapshot.data().uid !== uid) {
+    if (!autoSuffix) throw nicknameTakenError();
+    let found = false;
+    for (let n = 2; n <= 40; n += 1) {
+      const suffix = ' ' + n;
+      const trimmed = [...base].slice(0, Math.max(1, 30 - suffix.length)).join('');
+      candidate = trimmed + suffix;
+      key = nicknameKeyFor(candidate);
+      snapshot = await tx.get(fs.doc(fb.db, NICK_COLLECTION, key));
+      if (!snapshot.exists() || snapshot.data().uid === uid) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      const suffix = ' ' + uid.slice(0, 6);
+      candidate = [...base].slice(0, Math.max(1, 30 - suffix.length)).join('') + suffix;
+      key = nicknameKeyFor(candidate);
+      snapshot = await tx.get(fs.doc(fb.db, NICK_COLLECTION, key));
+      if (snapshot.exists() && snapshot.data().uid !== uid) throw nicknameTakenError();
+    }
+  }
+
+  return { name: candidate, key };
 }
 
 function initialOf(name) {
@@ -2686,6 +2741,7 @@ function clearPendingRun() {
 
 function firebaseErrorMessage(error) {
   const code = error && error.code ? String(error.code) : '';
+  if (code.includes('nickname-taken')) return 'Esse nick já está em uso. Escolha outro.';
   if (code.includes('unauthorized-domain')) return 'Domínio de login não autorizado no Firebase.';
   if (code.includes('popup-blocked')) return 'O navegador bloqueou a janela de login. Permita pop-ups e tente novamente.';
   if (code.includes('popup-closed') || code.includes('cancelled-popup')) return '';
@@ -2832,10 +2888,25 @@ async function syncProfile() {
     await fs.runTransaction(fb.db, async (tx) => {
       const snapshot = await tx.get(ref);
       const old = snapshot.exists() ? snapshot.data() : {};
-      const preservedName = typeof old.name === 'string' ? old.name.trim().slice(0, 40) : '';
+      const preservedName = sanitizeNickname(old.name || '', 30);
+      const desiredName = preservedName || displayNameOf(fb.user);
+      const claimed = await claimNickname(tx, fs, fb.user.uid, desiredName, true);
+      const oldKey = nicknameKeyFor(preservedName);
+      let oldNick = null;
+      if (oldKey && oldKey !== claimed.key) {
+        oldNick = await tx.get(fs.doc(fb.db, NICK_COLLECTION, oldKey));
+      }
       const preservedPhoto = isPhotoDataURL(old.photo) ? old.photo : '';
+      if (oldNick && oldNick.exists() && oldNick.data().uid === fb.user.uid) {
+        tx.delete(fs.doc(fb.db, NICK_COLLECTION, oldKey));
+      }
+      tx.set(fs.doc(fb.db, NICK_COLLECTION, claimed.key), {
+        uid: fb.user.uid,
+        name: claimed.name,
+        updatedAt: fs.serverTimestamp()
+      });
       values = {
-        name: preservedName || displayNameOf(fb.user),
+        name: claimed.name,
         photo: preservedPhoto,
         bestStreak: clampInt(Math.max(Number(old.bestStreak) || 0, pending ? pending.bestStreak : 0), 0, 1000000),
         bestLevel: clampInt(Math.max(Number(old.bestLevel) || 1, pending ? pending.bestLevel : 1), 1, 100),
@@ -3196,7 +3267,7 @@ function openProfileEditor() {
   state.paused = true;
   Sound.stopBuild();
   pendingPhoto = isPhotoDataURL(profile.photo) ? profile.photo : '';
-  ui.profileNameInput.value = profile.name || displayNameOf(fb.user);
+  ui.profileNameInput.value = sanitizeNickname(profile.name || displayNameOf(fb.user), 30);
   setProfileError('');
   setAvatar(ui.editAvatar, ui.profileNameInput.value, pendingPhoto);
   clearTimeout(profileHideTimer);
@@ -3305,9 +3376,14 @@ function processPhotoFile(file) {
 async function saveProfileEdits() {
   const fb = firebaseRuntime;
   if (!fb.user || !fb.db || !fb.mods) return;
-  const name = [...ui.profileNameInput.value.trim().replace(/\s+/g, ' ')].slice(0, 30).join('');
+  const name = sanitizeNickname(ui.profileNameInput.value, 30);
   if (!name) {
     setProfileError('O nick não pode ficar vazio.');
+    ui.profileNameInput.focus();
+    return;
+  }
+  if (!nicknameKeyFor(name)) {
+    setProfileError('Use ao menos uma letra ou número no nick.');
     ui.profileNameInput.focus();
     return;
   }
@@ -3322,8 +3398,23 @@ async function saveProfileEdits() {
     await fs.runTransaction(fb.db, async (tx) => {
       const snapshot = await tx.get(ref);
       const old = snapshot.exists() ? snapshot.data() : {};
+      const claimed = await claimNickname(tx, fs, fb.user.uid, name, false);
+      const oldName = sanitizeNickname(old.name || '', 30);
+      const oldKey = nicknameKeyFor(oldName);
+      let oldNick = null;
+      if (oldKey && oldKey !== claimed.key) {
+        oldNick = await tx.get(fs.doc(fb.db, NICK_COLLECTION, oldKey));
+      }
+      if (oldNick && oldNick.exists() && oldNick.data().uid === fb.user.uid) {
+        tx.delete(fs.doc(fb.db, NICK_COLLECTION, oldKey));
+      }
+      tx.set(fs.doc(fb.db, NICK_COLLECTION, claimed.key), {
+        uid: fb.user.uid,
+        name: claimed.name,
+        updatedAt: fs.serverTimestamp()
+      });
       values = {
-        name,
+        name: claimed.name,
         photo,
         bestStreak: clampInt(old.bestStreak, 0, 1000000),
         bestLevel: clampInt(old.bestLevel, 1, 100),

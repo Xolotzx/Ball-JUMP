@@ -141,6 +141,7 @@
     "auth": "Google",
     "firestoreDatabase": "(default)",
     "collection": "balljumpProfiles",
+    "nicknameCollection": "balljumpNicknames",
     "authorizedDomain": "balljump-game.pages.dev",
     "sdkVersion": "10.14.1",
     "rulesLocation": "../Botanica Studio/botanicstudio/firebase/firestore.rules",
@@ -149,6 +150,8 @@
       "editable": ["name", "photo"],
       "nameMaxLengthUI": 30,
       "nameMaxLengthRules": 40,
+      "nicknameUnique": true,
+      "nicknameNormalization": "lowercase, diacritics removed, non-alphanumerics collapsed to hyphen",
       "photo": "optional 160x160 JPEG data URL, max 90000 chars, no Firebase Storage",
       "avatarFallback": "first letter of the nick"
     },
@@ -174,6 +177,7 @@
     "menu, tutorial, settings, death screen, profile editor and ranking remain available",
     "ranking documents store only name, optional photo, bestStreak, bestLevel and server updatedAt",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
+    "nicknames are unique via balljumpNicknames reservation; rename releases the old key in the same transaction",
     "ranking reads require authentication and writes require owner UID with monotonic scores",
     "security headers must stay compatible with the game and the OAuth popup",
     "context docs must be updated with behavior changes"

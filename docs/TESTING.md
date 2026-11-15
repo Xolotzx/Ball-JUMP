@@ -116,6 +116,12 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] O modal inicia com o nick e a foto atuais.
 - [ ] Um nick vazio mostra erro e não salva.
 - [ ] O nick é normalizado (espaços repetidos) e limitado a 30 caracteres.
+- [ ] Um nick já usado por outra conta mostra **"Esse nick já está em uso"** e mantém o modal aberto.
+- [ ] Nicks equivalentes (`Lucas`, `lucas`, `LUCAS!`, `João`/`Joao`) são tratados como iguais.
+- [ ] Duas contas tentando salvar o mesmo nick ao mesmo tempo: apenas uma consegue.
+- [ ] Renomear libera o nick antigo para outra conta.
+- [ ] No primeiro login com nome do Google ocupado, o app cria `Nome 2`/`Nome 3` automaticamente.
+- [ ] Perfil antigo duplicado recebe sufixo no próximo login.
 - [ ] Escolher JPG/PNG/WebP gera uma prévia quadrada e salva em data URL JPEG.
 - [ ] Uma imagem grande (>15 MB) é recusada com mensagem clara.
 - [ ] Uma foto HEIC do iPhone mostra a orientação para converter para JPG.
@@ -141,6 +147,10 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] `bestStreak`/`bestLevel` não podem diminuir.
 - [ ] Schema inválido, nome vazio/longo ou timestamp incorreto é negado.
 - [ ] `photo` ausente, fora do prefixo permitido ou acima de 90.000 caracteres é negado.
+- [ ] `balljumpNicknames` exige autenticação para leitura e só permite escrita ao UID dono.
+- [ ] Criar/atualizar reserva com UID diferente do autenticado é negado.
+- [ ] Apagar reserva de outro UID é negado.
+- [ ] Nome vazio/longo ou timestamp incorreto na reserva é negado.
 - [ ] `balljump-game.pages.dev` está em Authorized domains.
 - [ ] Provedor Google está habilitado.
 - [ ] API key aceita o domínio de produção.

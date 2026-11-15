@@ -211,6 +211,13 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
   - `saveProfileEdits` usa transação, preserva scores e atualiza o cache `fb.profile`.
 - `syncProfile` preserva `name`/`photo` existentes; só usa o nome do Google na
   criação do perfil.
+- Unicidade de nick:
+  - `nicknameKeyFor()` normaliza o nick (minúsculas, sem acentos, separadores
+    colapsados) e `claimNickname()` reserva a chave em `balljumpNicknames/{key}`;
+  - o salvamento e a sincronização usam transação, então duas contas não
+    conseguem confirmar o mesmo nick;
+  - nomes do Google já ocupados recebem sufixo automático no primeiro login;
+  - ao renomear, a reserva antiga é apagada na mesma transação.
 - Avatares (perfil e linhas do ranking) usam `background-image` com data URL
   validada; sem foto, mostram a inicial do nick.
 - Ranking: consultas `orderBy('bestStreak', desc)` e `orderBy('bestLevel', desc)`, limite 20; interface mostra top 10.
