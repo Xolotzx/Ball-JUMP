@@ -89,12 +89,21 @@ try {
 
 check(manifest?.runtimeFacts?.goalPercent === 75, 'manifesto declara meta de 75%');
 check(manifest?.firebase?.collection === 'balljumpProfiles', 'manifesto declara coleção do ranking');
+check(manifest?.firebase?.profileFields?.includes('photo'), 'manifesto declara foto no perfil');
+check(String(manifest?.firebase?.profileCustomization?.photo || '').includes('90000'), 'manifesto declara limite da foto');
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
 const projectContext = exists('docs/PROJECT_CONTEXT.md') ? read('docs/PROJECT_CONTEXT.md') : '';
 check(projectContext.includes('75%'), 'contexto do projeto menciona 75%');
 check(projectContext.includes('+1 vida'), 'contexto do projeto menciona +1 vida por fase');
+
+const firebaseDocs = exists('docs/FIREBASE.md') ? read('docs/FIREBASE.md') : '';
+check(firebaseDocs.includes('photo'), 'docs/FIREBASE.md documenta a foto');
+check(firebaseDocs.includes('90000'), 'docs/FIREBASE.md documenta o limite da foto');
+
+const securityDocs = exists('docs/SECURITY.md') ? read('docs/SECURITY.md') : '';
+check(/data URL|data:image/.test(securityDocs), 'docs/SECURITY.md cobre a foto de perfil');
 
 const agents = exists('AGENTS.md') ? read('AGENTS.md') : '';
 check(agents.includes('Segurança') || agents.includes('segurança'), 'AGENTS.md contém regras de segurança');
@@ -154,6 +163,11 @@ check(index.includes('https://www.gstatic.com/firebasejs/'), 'Firebase SDK via g
 check(index.includes("FIREBASE_SDK_VERSION = '10.14.1'"), 'versão do Firebase fixada');
 check(index.includes("RANK_COLLECTION = 'balljumpProfiles'"), 'coleção do ranking definida');
 check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
+check(index.includes('function isPhotoDataURL'), 'validação de foto presente');
+check(index.includes('90000'), 'limite de foto presente no cliente');
+check(index.includes('function processPhotoFile') && index.includes('function saveProfileEdits'), 'edição de perfil presente');
+check(!index.includes('firebase-storage'), 'sem Firebase Storage no cliente');
+check(headers.includes('img-src data:'), 'CSP permite fotos em data URL');
 
 // 5. Repositório e segredos
 console.log('\nRepositório e segredos:');

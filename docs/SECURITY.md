@@ -37,7 +37,7 @@
 
 | Ameaça | Impacto | Probabilidade | Controles |
 |---|---|---|---|
-| XSS via HTML dinâmico | Execução de script no navegador | Baixa | Sem entrada de usuário; `innerHTML` só com constantes; CSP. |
+| XSS via HTML dinâmico | Execução de script no navegador | Baixa | Nick renderizado com `textContent`; `innerHTML` só com constantes; CSP. |
 | Injeção de prompt em conteúdo externo | Ações indevidas do agente | Média | Conteúdo externo é dado; proibição de seguir instruções; revisão humana. |
 | Vazamento de token no Git/prompt/log | Comprometimento de conta/deploy | Média | `.gitignore`, credenciais fora do repo, verificação de padrões, rotação. |
 | Dependência maliciosa | Supply chain | Baixa | Núcleo sem dependências; SDK Firebase oficial, versão fixada e CSP allowlisted. |
@@ -49,6 +49,7 @@
 | CSP mal configurada | Quebra do jogo/login ou proteção fraca | Média | Testar headers e OAuth em produção; revisar `_headers`. |
 | Escrita indevida no ranking | Fraude no leaderboard | Baixa | Regras exigem UID do dono, schema válido, scores monotônicos e server timestamp. |
 | XSS via nome do jogador | Execução de script | Baixa | Nome validado nas regras; renderização com `textContent`. |
+| XSS/abuso via foto de perfil | Execução de script ou documento gigante | Baixa | Apenas data URL JPEG/PNG/WebP validada, limite de 90.000 chars e uso via `background-image`; sem `innerHTML`. |
 | Abuso da API key pública | Quotas/abuso de Auth | Baixa | Restrições/domain authorization, regras, monitoramento de quotas. |
 | Regras compartilhadas sobrescritas | Perda do ranking ou do Botanica | Média | Regras mescladas e deploy revisado; nunca publicar só um conjunto. |
 | Popup OAuth bloqueado | Falha de login | Média | Fallback de redirect + preservação da corrida pendente. |
@@ -61,10 +62,11 @@
 - O SDK modular do Firebase 10.14.1 é a única dependência externa, carregada sob demanda para login/ranking.
 - Nenhuma chamada `fetch`, XHR, WebSocket ou recurso remoto no código do jogo; o SDK cuida da rede Firebase.
 - Nenhum `eval`/`new Function`.
-- `innerHTML` usado apenas com dados constantes do próprio código (dificuldades e temas); nomes do ranking usam `textContent`.
+- `innerHTML` usado apenas com dados constantes do próprio código (dificuldades e temas); nicks do ranking usam `textContent`.
+- Fotos de perfil são data URLs validadas e aplicadas via `background-image`, nunca via `innerHTML`.
 - Canvas 2D e Web Audio API nativos.
 - `localStorage` limitado a tema, dificuldade e som, com fallback.
-- Sem analytics, cookies de rastreamento ou coleta de dados além do perfil mínimo do ranking.
+- Sem analytics, cookies de rastreamento ou coleta de dados além do perfil mínimo do ranking (nick, foto opcional e scores).
 
 ### Headers HTTP (`_headers`)
 
@@ -72,7 +74,7 @@
   - `default-src 'none'`;
   - scripts/estilos inline do próprio arquivo;
   - exceções allowlisted: gstatic (SDK Firebase), Google Auth e APIs Firebase;
-  - imagens apenas `data:`;
+  - imagens apenas `data:` (ícones inline e fotos de perfil);
   - frames apenas para o domínio de autenticação e Google;
   - sem objetos, mídia ou workers externos;
   - `frame-ancestors 'none'`, `base-uri 'none'`, `form-action 'none'`.
@@ -84,14 +86,16 @@
 - `Permissions-Policy` desabilita recursos sensíveis.
 - `Strict-Transport-Security`.
 
-> **Trade-off:** a CSP usa `'unsafe-inline'` para script/style porque o runtime é single-file e permite apenas os hosts do Firebase/Google necessários. Isso reduz a defesa contra XSS em comparação com hashes/nonces. A mitigação atual é não aceitar conteúdo de usuário no DOM (rank usa `textContent`) e manter os hosts estritamente allowlisted.
+> **Trade-off:** a CSP usa `'unsafe-inline'` para script/style porque o runtime é single-file e permite apenas os hosts do Firebase/Google necessários. Isso reduz a defesa contra XSS em comparação com hashes/nonces. A mitigação é renderizar o nick com `textContent`, validar a foto como data URL e manter os hosts estritamente allowlisted.
 
 ### Firebase / ranking
 
 - Auth Google via Firebase Authentication; domínio de produção explicitamente autorizado.
 - Firestore em modo produção; regras exigem autenticação para leitura.
 - Escrita somente pelo próprio UID; schema, tipos, limites, timestamps e monotonicidade validados.
-- Perfil mínimo: nome público, melhor streak, melhor nível e `updatedAt`; sem e-mail, foto ou telefone.
+- Perfil mínimo: nick público, foto opcional em data URL, melhor streak, melhor nível e `updatedAt`; sem e-mail ou telefone.
+- A foto é validada no cliente e nas regras (`data:image/(jpeg|png|webp);base64,`, até 90.000 caracteres) e aplicada apenas via `background-image`; valores inválidos caem para a inicial.
+- Não há upload em Firebase Storage; a imagem não passa por servidor próprio.
 - SDK oficial fixado em `10.14.1`, carregado por import dinâmico do gstatic e allowlisted na CSP.
 - COOP `same-origin-allow-popups` necessário para o popup OAuth.
 - API key do Firebase é pública por design; não é um segredo. O que protege os dados são as regras e a autorização de domínio.
@@ -162,7 +166,8 @@ Conferir:
 
 - Desativar CSP para corrigir um erro sem analisar a causa.
 - Adicionar CDN, analytics, pixel, fonte externa ou script de terceiros fora do allowlist.
-- Inserir HTML de usuário via `innerHTML` (nomes do rank usam `textContent`).
+- Inserir HTML de usuário via `innerHTML` (nicks do rank usam `textContent`).
+- Exibir foto de perfil sem validar o prefixo `data:image/(jpeg|png|webp);base64,` e o limite de tamanho.
 - Publicar Firestore em test mode ou com `allow read, write: if true`.
 - Remover a validação de UID/schema/monotonicidade das regras.
 - Sobrescrever as regras compartilhadas sem incluir as regras do Botanica.
@@ -189,6 +194,7 @@ Conferir:
 - Conta e e-mail do mantenedor são pontos de recuperação; proteger com 2FA.
 - O SDK Firebase vem do gstatic (versão fixada, mas ainda é dependência de terceiro).
 - O projeto Firebase é compartilhado com o Botanica; regras e domínios afetam os dois.
-- Nomes públicos de perfil são visíveis para usuários autenticados.
+- Nicks e fotos de perfil são visíveis para usuários autenticados.
+- Fotos em data URL aumentam o custo de leitura do ranking; o limite de 90.000 caracteres reduz, mas não elimina, esse custo.
 - App Check não está habilitado; a API key pública pode ser abusada dentro de quotas.
-- O login Google e o fallback de redirect exigem validação manual com conta real.
+- O login Google, a edição de perfil e o fallback de redirect exigem validação manual com conta real.

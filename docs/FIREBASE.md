@@ -28,23 +28,30 @@ administrativo ou `.env` no repositório.
    - um perfil `balljumpProfiles/{uid}` é criado/atualizado;
    - o melhor streak e o maior nível da corrida são enviados;
    - o perfil entra no ranking.
-4. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
-   **Ver ranking completo** na tela de fim de jogo.
-5. O ranking tem abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10.
+4. O jogador pode personalizar o perfil (nick e foto) pela tela de morte ou
+   pelo ranking. A foto é opcional e fica salva no próprio documento.
+5. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
+   **Ver ranking** na tela de fim de jogo.
+6. O ranking tem abas **🔥 Streak** e **🏆 Níveis**, mostrando o top 10.
 
 ## 3. Modelo de dados
 
 ```text
 balljumpProfiles/{uid} {
-  name: string          // displayName do Google, 1..40 caracteres
+  name: string          // nick público, 1..40 caracteres (UI limita a 30)
+  photo: string         // opcional: data URL JPEG/PNG/WebP, até 90.000 chars
   bestStreak: int       // 0..1.000.000, máximo histórico
   bestLevel: int        // 1..100, maior nível alcançado
   updatedAt: timestamp  // serverTimestamp()
 }
 ```
 
-- Não armazenamos e-mail, foto, telefone ou qualquer dado além do nome público
-  escolhido no perfil Google e dos scores.
+- O nick começa como o `displayName` do Google, mas pode ser alterado; nas
+  sincronizações seguintes o nick e a foto já salvos são preservados.
+- A foto é opcional, recortada em 160×160 e comprimida no navegador para JPEG
+  (data URL). Não usamos Firebase Storage.
+- Não armazenamos e-mail, telefone ou qualquer dado além de nick, foto opcional
+  e scores.
 - O perfil é criado no primeiro login, mesmo com scores 0/1, para que o jogador
   já tenha uma entrada no ranking.
 - Atualizações são monotônicas: os scores nunca podem diminuir.
@@ -68,8 +75,10 @@ function isBalljumpOwner(uid) {
 }
 
 function isBalljumpProfile(p) {
-  return p.keys().hasOnly(['name', 'bestStreak', 'bestLevel', 'updatedAt'])
+  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'updatedAt'])
     && p.name is string && p.name.size() >= 1 && p.name.size() <= 40
+    && p.photo is string && p.photo.size() <= 90000
+    && (p.photo.size() == 0 || p.photo.matches('^data:image/(jpeg|png|webp);base64,.*'))
     && p.bestStreak is int && p.bestStreak >= 0 && p.bestStreak <= 1000000
     && p.bestLevel is int && p.bestLevel >= 1 && p.bestLevel <= 100
     && p.updatedAt == request.time;
@@ -120,6 +129,14 @@ Também foi validado:
 - `signOut` limpa o perfil da sessão na interface; o documento permanece no
   ranking.
 - O nome do jogador é renderizado sempre com `textContent` (nunca `innerHTML`).
+- A foto é validada (`data:image/(jpeg|png|webp);base64,`) antes de virar
+  `background-image`; valores inválidos caem para a inicial do nick.
+- O editor de perfil abre pela tela de morte (**Editar perfil**) ou pelo
+  ranking (**Editar**). Ele permite trocar o nick e escolher/remover a foto.
+- A imagem escolhida é recortada em 160×160, comprimida em JPEG (qualidade
+  decrescente) e rejeitada se passar de 90.000 caracteres.
+- A gravação usa `runTransaction`, preserva `bestStreak`/`bestLevel` atuais e
+  atualiza `updatedAt` com `serverTimestamp()`.
 
 ## 7. CSP e rede
 
@@ -129,7 +146,7 @@ Também foi validado:
 - `connect-src` para Firestore, Identity Toolkit, Secure Token, Google APIs e
   o domínio de autenticação;
 - `frame-src` para o domínio de autenticação e Google;
-- `img-src data:` (não usamos fotos de perfil).
+- `img-src data:` (necessário para as fotos de perfil em data URL).
 
 O jogo em si continua sem chamadas de rede. Se o SDK falhar, a tela de fim de
 jogo mostra o erro e o botão **Jogar novamente** continua disponível.
@@ -141,10 +158,14 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 3. Na tela de morte, clique em **Entrar com Google**.
 4. Autorize a conta; verifique se o perfil aparece e se o botão de ranking
    carrega as duas abas.
-5. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
-6. Confira no console do Firebase → Firestore → `balljumpProfiles`.
-7. Teste o botão **Sair** e o login novamente.
-8. Teste com popups bloqueados para validar o fallback de redirecionamento.
+5. Clique em **Editar perfil**, troque o nick, escolha uma foto e salve.
+6. Confirme que o nick e a foto aparecem na tela de morte, no ranking e na
+   linha do jogador; recarregue a página e confira que persistiram.
+7. Remova a foto, salve e confirme o fallback para a inicial do nick.
+8. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
+9. Confira no console do Firebase → Firestore → `balljumpProfiles`.
+10. Teste o botão **Sair** e o login novamente.
+11. Teste com popups bloqueados para validar o fallback de redirecionamento.
 
 ## 9. Troubleshooting
 
@@ -156,6 +177,8 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 | `unavailable` | rede/offline | o jogo segue local; tentar novamente |
 | `api-key-not-valid` / referrer | restrição de API key | revisar restrições no Google Cloud |
 | Perfil não aparece | transação falhou | ver console/rede e regras |
+| Foto não salva | imagem acima de 90.000 chars ou campo `photo` fora das regras | usar imagem menor; publicar as regras mescladas |
+| Nick volta ao nome do Google | sincronização sobrescreveu o perfil | confirmar que a regra e o cliente preservam `name`/`photo` |
 | Ranking vazio | nenhum perfil criado ainda | entrar com Google para criar o primeiro |
 
 Não registre tokens, cookies ou credenciais nos logs de suporte.

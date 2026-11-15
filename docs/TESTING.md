@@ -96,19 +96,37 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Menu, jogo, tutorial e configurações funcionam em produção.
 - [ ] Repositório permanece privado.
 
-## 8. Firebase, login e ranking
+## 8. Firebase, login, perfil e ranking
 
 - [ ] A tela de morte abre ao perder todas as vidas e mostra sequência/nível da corrida.
 - [ ] A tela de vitória no nível 100 usa o mesmo fluxo.
 - [ ] O botão **Entrar com Google** fica habilitado após o SDK carregar.
 - [ ] Login com conta Google real cria `balljumpProfiles/{uid}` e mostra o perfil.
-- [ ] O perfil exibe nome, melhor streak e melhor nível sem e-mail/foto.
-- [ ] O botão **Ver ranking completo** abre as abas **Streak** e **Níveis**.
+- [ ] O perfil exibe nick, melhor streak e melhor nível, com foto quando houver.
+- [ ] O botão **Ver ranking** abre as abas **Streak** e **Níveis**.
 - [ ] O top 10 é ordenado corretamente; a linha do próprio jogador é destacada.
 - [ ] Trocar de aba não quebra a lista.
 - [ ] **Sair** volta ao estado de login.
 - [ ] O menu **Ranking** abre o ranking mesmo antes de morrer.
 - [ ] O nome do jogador é exibido como texto (testar um nome com `<b>`; não deve virar HTML).
+
+### Edição de perfil
+
+- [ ] **Editar perfil** (tela de morte) e **Editar** (ranking) abrem o mesmo modal.
+- [ ] O modal inicia com o nick e a foto atuais.
+- [ ] Um nick vazio mostra erro e não salva.
+- [ ] O nick é normalizado (espaços repetidos) e limitado a 30 caracteres.
+- [ ] Escolher JPG/PNG/WebP gera uma prévia quadrada e salva em data URL JPEG.
+- [ ] Uma imagem grande é recusada com mensagem clara.
+- [ ] **Remover foto** volta para a inicial do nick.
+- [ ] **Salvar** atualiza a tela de morte e o ranking sem recarregar.
+- [ ] Recarregar a página mantém nick e foto.
+- [ ] O ranking mostra fotos e iniciais corretamente.
+- [ ] Foto inválida ou acima do limite cai para a inicial (fallback).
+- [ ] O modal fecha com X, Cancelar, clique fora e Esc.
+
+### Firebase, ranking e rede
+
 - [ ] Sem rede, o jogo continua e a tela final não bloqueia **Jogar novamente**.
 - [ ] Popup bloqueado cai no fallback de redirect e preserva a corrida pendente.
 - [ ] Recarregar a página mantém a sessão Firebase quando já autenticado.
@@ -120,11 +138,12 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Escrita com UID diferente é negada.
 - [ ] `bestStreak`/`bestLevel` não podem diminuir.
 - [ ] Schema inválido, nome vazio/longo ou timestamp incorreto é negado.
+- [ ] `photo` ausente, fora do prefixo permitido ou acima de 90.000 caracteres é negado.
 - [ ] `balljump-game.pages.dev` está em Authorized domains.
 - [ ] Provedor Google está habilitado.
 - [ ] API key aceita o domínio de produção.
-- [ ] CSP permite gstatic/Firebase/Google Auth e COOP é `same-origin-allow-popups`.
-- [ ] Console sem erros de CSP ao abrir login/ranking.
+- [ ] CSP permite gstatic/Firebase/Google Auth, `img-src data:` e COOP é `same-origin-allow-popups`.
+- [ ] Console sem erros de CSP ao abrir login/ranking e ao renderizar uma foto.
 
 ## 9. Navegadores recomendados
 
@@ -140,7 +159,8 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - Contagem de 75% (`GOAL_CELLS`).
 - +1 vida por fase e transição de nível.
 - Pausa/retomada com menu, tutorial e configurações.
-- CSP bloqueando script/style/favicon.
+- Edição de perfil: nick/foto preservados na sincronização, limites de tamanho e fallback de avatar.
+- CSP bloqueando script/style/favicon ou a foto em data URL.
 - Coordenadas de toque em telas redimensionadas.
 - Desempenho em níveis altos.
 

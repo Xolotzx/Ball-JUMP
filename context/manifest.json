@@ -144,7 +144,14 @@
     "authorizedDomain": "balljump-game.pages.dev",
     "sdkVersion": "10.14.1",
     "rulesLocation": "../Botanica Studio/botanicstudio/firebase/firestore.rules",
-    "profileFields": ["name", "bestStreak", "bestLevel", "updatedAt"],
+    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "updatedAt"],
+    "profileCustomization": {
+      "editable": ["name", "photo"],
+      "nameMaxLengthUI": 30,
+      "nameMaxLengthRules": 40,
+      "photo": "optional 160x160 JPEG data URL, max 90000 chars, no Firebase Storage",
+      "avatarFallback": "first letter of the nick"
+    },
     "readPolicy": "authenticated users only",
     "writes": "owner only; monotonic scores; server timestamp"
   },
@@ -164,8 +171,9 @@
     "goal is 75 percent",
     "player gains one life per completed level",
     "share button remains removed",
-    "menu, tutorial, settings, death screen and ranking remain available",
-    "ranking documents store only name, bestStreak, bestLevel and server updatedAt",
+    "menu, tutorial, settings, death screen, profile editor and ranking remain available",
+    "ranking documents store only name, optional photo, bestStreak, bestLevel and server updatedAt",
+    "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
     "ranking reads require authentication and writes require owner UID with monotonic scores",
     "security headers must stay compatible with the game and the OAuth popup",
     "context docs must be updated with behavior changes"

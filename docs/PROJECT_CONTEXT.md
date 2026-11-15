@@ -101,15 +101,18 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Configurações pausam o jogo; fechar retorna ao jogo ou ao menu, conforme a origem.
 - Tela de fim de jogo com estatísticas da corrida, **Entrar com Google**, perfil e acesso ao ranking.
 - Ranking com abas **🔥 Streak** e **🏆 Níveis**, top 10, acessível pelo menu e pela tela de morte.
+- Perfil personalizável: nick (até 30 caracteres na UI) e foto opcional.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).
 
 ### Conta e ranking
 
 - Login via Firebase Authentication com Google.
-- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `bestStreak`, `bestLevel` e `updatedAt`.
+- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel` e `updatedAt`.
 - O perfil é criado no primeiro login e entra no ranking.
+- O nick começa como o nome do Google, mas pode ser alterado; sincronizações preservam o nick/foto salvos.
+- A foto é opcional, recortada em 160×160, comprimida para JPEG em data URL e limitada a 90.000 caracteres; não usamos Firebase Storage.
 - Leitura do ranking exige autenticação; escrita só pelo próprio UID, com validação de schema e scores monotônicos.
-- Não armazenamos e-mail, foto, telefone ou analytics.
+- Não armazenamos e-mail, telefone ou analytics.
 - O SDK é carregado sob demanda; sem rede, o jogo continua jogável e a tela final mostra erro de conexão sem bloquear o reinício.
 
 ## 4. Fora de escopo
@@ -117,7 +120,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Back-end próprio, analytics ou publicidade.
 - Multijogador.
 - Dependências de runtime no núcleo do jogo; a exceção é o SDK Firebase 10.14.1 sob demanda.
-- Coleta de e-mail, foto, telefone ou outros dados pessoais no perfil do ranking.
+- Coleta de e-mail, telefone ou outros dados pessoais além de nick, foto opcional e scores.
+- Upload de imagens em Firebase Storage ou arquivos externos.
 - Aplicativo nativo.
 - Sistema de compartilhamento.
 
@@ -143,8 +147,9 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Níveis altos podem gerar muitas bolinhas (até 51 no nível 100); monitorar desempenho em dispositivos modestos.
 - Login e ranking exigem conexão; o jogo principal continua offline.
 - O Firebase é compartilhado com o Botanica Studio; alterações nas regras precisam preservar os dois conjuntos.
-- O nome público do perfil Google é visível para outros usuários autenticados; e-mail/foto não são armazenados.
-- Não há App Check nem suíte automatizada de login; o fluxo Google precisa de validação manual com uma conta real.
+- Nick e foto do perfil são visíveis para outros usuários autenticados; e-mail/telefone não são armazenados.
+- A foto em data URL aumenta o tamanho do documento no Firestore; o limite de 90.000 caracteres evita abuso, mas ainda é um custo de leitura do ranking.
+- Não há App Check nem suíte automatizada de login; o fluxo Google e o upload de foto precisam de validação manual com uma conta real.
 - O ranking exibe o top 10 por métrica; não calcula a posição global de quem está fora do topo.
 
 ## 7. Próximos passos sugeridos

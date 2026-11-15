@@ -227,11 +227,11 @@
   [data-theme="light"] .toast.is-bad{color:#9f1d1d;border-color:rgba(170,35,35,.28)}
   .toast.is-good{border-color:color-mix(in srgb,var(--accent) 38%,var(--glass-border));color:var(--text)}
 
-  footer{
+  .app > footer{
     margin-top:12px;padding:8px 4px 2px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
     color:var(--muted);font-size:8px;line-height:1.5;letter-spacing:.02em;opacity:.38;
   }
-  footer b{color:inherit;font-weight:600}
+  .app > footer b{color:inherit;font-weight:600}
 
   /* ===== menu inicial ===== */
   .menu-screen{
@@ -381,19 +381,20 @@
   .auth-hint{margin:0 auto 11px;max-width:330px;font-size:11px;line-height:1.5;color:var(--muted)}
   .google-btn{
     display:flex;align-items:center;justify-content:center;gap:9px;width:min(100%,330px);min-height:47px;
-    margin:0 auto;padding:0 16px;border:1px solid rgba(0,0,0,.14);border-radius:13px;cursor:pointer;
-    background:#fff;color:#1f1f1f;font-weight:800;font-size:12px;letter-spacing:.01em;
-    box-shadow:0 10px 24px -20px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.7);
-    transition:transform .12s,box-shadow .2s,opacity .2s;
+    margin:0 auto;padding:0 16px;border:1px solid rgba(255,170,90,.22);border-radius:13px;cursor:pointer;
+    background:linear-gradient(155deg,#1b1612,#120e0b);color:#fff1e1;font-weight:800;font-size:12px;letter-spacing:.01em;
+    box-shadow:0 10px 24px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,224,190,.16);
+    transition:transform .12s,box-shadow .2s,opacity .2s,filter .2s;
   }
-  .google-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 13px 28px -18px rgba(0,0,0,.4),inset 0 1px 0 #fff}
+  [data-theme="light"] .google-btn{
+    background:linear-gradient(155deg,#fffdf9,#f4ebdf);color:#2a1407;
+    border-color:rgba(255,255,255,.9);
+    box-shadow:0 10px 24px -20px rgba(120,60,20,.32),inset 0 1px 0 #fff;
+  }
+  .google-btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 13px 28px -18px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.3)}
   .google-btn:active:not(:disabled){transform:scale(.99)}
   .google-btn:disabled{opacity:.58;cursor:wait;transform:none}
-  .google-g{
-    width:23px;height:23px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
-    background:#fff;color:#4285f4;font-family:Arial,sans-serif;font-weight:900;font-size:16px;line-height:1;
-    border:1px solid #dadce0;
-  }
+  .google-g{width:20px;height:20px;flex:0 0 auto;display:block}
   .auth-error{min-height:14px;margin:8px 0 0;font-size:10px;line-height:1.4;color:#ffb4b4}
   [data-theme="light"] .auth-error{color:#9f1d1d}
   .death-profile{display:flex;flex-direction:column;gap:8px}
@@ -405,6 +406,7 @@
   .avatar{
     width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
     background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 76%,#fff),var(--accent));
+    background-size:cover;background-position:center;overflow:hidden;
     color:#1d0d02;font-family:var(--mono);font-size:16px;font-weight:900;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
   }
@@ -423,6 +425,9 @@
     border:1px solid color-mix(in srgb,var(--accent) 22%,var(--glass-border));
   }
   .death-profile .secondary-btn{width:100%}
+  .profile-actions{display:flex;gap:8px}
+  .profile-actions .secondary-btn{width:auto;flex:1;min-width:0;padding-left:10px;padding-right:10px}
+  .profile-links{display:flex;align-items:center;gap:0;flex:0 0 auto}
   .death-note{margin:0;text-align:center;font-size:9.5px;line-height:1.45;color:var(--muted)}
   .death-foot{justify-content:stretch}
   .death-foot .primary-btn{width:100%}
@@ -454,6 +459,7 @@
   .rank-avatar{
     width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
     background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 65%,#fff),var(--accent));
+    background-size:cover;background-position:center;overflow:hidden;
     color:#1d0d02;font-family:var(--mono);font-size:11px;font-weight:900;
   }
   .rank-name{font-size:11.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -461,6 +467,33 @@
   .rank-empty,.rank-status{margin:0;text-align:center;font-size:10px;line-height:1.45;color:var(--muted)}
   .rank-status.is-error{color:#ffb4b4}
   [data-theme="light"] .rank-status.is-error{color:#9f1d1d}
+
+  /* ===== editar perfil ===== */
+  .modal-backdrop.profile-backdrop{z-index:65}
+  .modal.profile-modal{width:min(100%,430px)}
+  .profile-modal .modal-body{gap:16px}
+  .profile-editor{display:flex;align-items:center;gap:14px}
+  .avatar-large{width:76px;height:76px;font-size:24px;background-size:cover;background-position:center}
+  .photo-actions{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+  .photo-actions .secondary-btn{min-height:38px;padding:8px 13px}
+  .photo-actions .link-btn{padding:4px 0;text-align:left}
+  .profile-field{display:flex;flex-direction:column;gap:6px}
+  .profile-field label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+  .profile-input{
+    width:100%;min-height:46px;padding:0 12px;border-radius:12px;
+    background:var(--surface);border:1px solid var(--glass-border);color:var(--text);
+    font-family:var(--font);font-size:14px;font-weight:600;outline:none;
+    box-shadow:inset 0 1px 0 var(--glass-highlight);
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .profile-input::placeholder{color:var(--muted);opacity:.75}
+  .profile-input:focus{border-color:color-mix(in srgb,var(--accent) 60%,var(--glass-border));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent),inset 0 1px 0 var(--glass-highlight)}
+  .field-hint{margin:-8px 0 0;font-size:10px;line-height:1.45;color:var(--muted)}
+  .profile-error{min-height:14px;margin:0;font-size:10px;line-height:1.45;color:#ffb4b4}
+  [data-theme="light"] .profile-error{color:#9f1d1d}
+  .profile-foot{justify-content:stretch}
+  .profile-foot .secondary-btn,.profile-foot .primary-btn{flex:1;min-width:0;width:auto}
+
 
   /* ===== modal ===== */
   .modal-backdrop{
@@ -839,7 +872,12 @@
       <div class="death-auth" id="deathAuth">
         <p class="auth-hint" id="deathAuthHint">Conecte sua conta Google para salvar o resultado e entrar no ranking.</p>
         <button id="deathLoginBtn" class="google-btn" type="button" disabled>
-          <span class="google-g" aria-hidden="true">G</span>
+          <svg class="google-g" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
           <span class="google-label">Conectando…</span>
         </button>
         <p class="auth-error" id="deathAuthError" role="alert"></p>
@@ -855,7 +893,10 @@
           <button id="deathSignOut" class="link-btn" type="button">Sair</button>
         </div>
         <p class="profile-best" id="deathBest">🔥 0 · nível 1</p>
-        <button id="deathRankBtn" class="secondary-btn" type="button">Ver ranking completo</button>
+        <div class="profile-actions">
+          <button id="deathEditProfile" class="secondary-btn" type="button">Editar perfil</button>
+          <button id="deathRankBtn" class="secondary-btn" type="button">Ver ranking</button>
+        </div>
       </div>
 
       <p class="death-note" id="deathNote">O resultado é salvo ao entrar com Google.</p>
@@ -885,7 +926,12 @@
       <div class="rank-auth" id="rankAuth">
         <p class="auth-hint" id="rankAuthHint">Entre com Google para ver o ranking.</p>
         <button id="rankLoginBtn" class="google-btn" type="button" disabled>
-          <span class="google-g" aria-hidden="true">G</span>
+          <svg class="google-g" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
           <span class="google-label">Conectando…</span>
         </button>
         <p class="auth-error" id="rankError" role="alert"></p>
@@ -898,13 +944,49 @@
             <strong id="rankName">Jogador</strong>
             <span class="profile-sub" id="rankBest">🔥 0 · nível 1</span>
           </div>
-          <button id="rankSignOut" class="link-btn" type="button">Sair</button>
+          <div class="profile-links">
+            <button id="rankEditProfile" class="link-btn" type="button">Editar</button>
+            <button id="rankSignOut" class="link-btn" type="button">Sair</button>
+          </div>
         </div>
         <ol class="rank-list" id="rankList"></ol>
         <p class="rank-empty" id="rankEmpty" hidden>Nenhum jogador no ranking ainda.</p>
         <p class="rank-status" id="rankStatus" role="status"></p>
       </div>
     </div>
+  </section>
+</div>
+
+<!-- ===== editar perfil ===== -->
+<div class="modal-backdrop profile-backdrop" id="profileModal" hidden>
+  <section class="modal profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <header class="modal-head">
+      <div>
+        <h2 id="profileTitle">Editar perfil</h2>
+        <p>Nick e foto exibidos no ranking.</p>
+      </div>
+      <button id="closeProfile" class="close-btn" type="button" aria-label="Fechar edição de perfil">✕</button>
+    </header>
+    <div class="modal-body profile-body">
+      <div class="profile-editor">
+        <span class="avatar avatar-large" id="editAvatar" aria-hidden="true">J</span>
+        <div class="photo-actions">
+          <button id="pickPhoto" class="secondary-btn" type="button">Trocar foto</button>
+          <input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          <button id="removePhoto" class="link-btn" type="button">Remover foto</button>
+        </div>
+      </div>
+      <div class="profile-field">
+        <label for="profileNameInput">Nick</label>
+        <input id="profileNameInput" class="profile-input" type="text" maxlength="30" autocomplete="nickname" placeholder="Seu nick">
+      </div>
+      <p class="field-hint">De 1 a 30 caracteres. Visível para jogadores autenticados no ranking.</p>
+      <p class="profile-error" id="profileError" role="alert"></p>
+    </div>
+    <footer class="tutorial-foot profile-foot">
+      <button id="cancelProfile" class="secondary-btn" type="button">Cancelar</button>
+      <button id="saveProfile" class="primary-btn" type="button">Salvar</button>
+    </footer>
   </section>
 </div>
 
@@ -1065,12 +1147,18 @@ const ui = {
   deathAuthError: $('deathAuthError'), deathProfile: $('deathProfile'), deathAvatar: $('deathAvatar'),
   deathName: $('deathName'), deathBest: $('deathBest'), deathSignOut: $('deathSignOut'),
   deathRankBtn: $('deathRankBtn'), deathNote: $('deathNote'), deathRestart: $('deathRestart'),
+  deathEditProfile: $('deathEditProfile'),
   rankModal: $('rankModal'), closeRank: $('closeRank'), rankAuth: $('rankAuth'),
   rankAuthHint: $('rankAuthHint'), rankLoginBtn: $('rankLoginBtn'), rankError: $('rankError'),
   rankContent: $('rankContent'), rankProfile: $('rankProfile'), rankAvatar: $('rankAvatar'),
   rankName: $('rankName'), rankBest: $('rankBest'), rankSignOut: $('rankSignOut'),
+  rankEditProfile: $('rankEditProfile'),
   rankList: $('rankList'), rankEmpty: $('rankEmpty'), rankStatus: $('rankStatus'),
-  rankStreakTab: $('rankStreakTab'), rankLevelTab: $('rankLevelTab')
+  rankStreakTab: $('rankStreakTab'), rankLevelTab: $('rankLevelTab'),
+  profileModal: $('profileModal'), closeProfile: $('closeProfile'), editAvatar: $('editAvatar'),
+  pickPhoto: $('pickPhoto'), photoInput: $('photoInput'), removePhoto: $('removePhoto'),
+  profileNameInput: $('profileNameInput'), profileError: $('profileError'),
+  cancelProfile: $('cancelProfile'), saveProfile: $('saveProfile')
 };
 const appRoot = document.querySelector('.app');
 
@@ -1481,6 +1569,8 @@ let menuOpen = true;
 let tutorialOpen = false;
 let deathOpen = false;
 let rankOpen = false;
+let profileOpen = false;
+let pendingPhoto = '';
 let lastFrame = performance.now();
 let accumulator = 0;
 
@@ -1503,7 +1593,8 @@ const firebaseRuntime = {
   rankData: { streak: [], level: [] },
   rankLoaded: false,
   rankLoading: false,
-  rankFocus: null
+  rankFocus: null,
+  profileFocus: null
 };
 
 /* =========================================================
@@ -2513,13 +2604,15 @@ let tutorialHideTimer = 0;
 let menuHideTimer = 0;
 let deathHideTimer = 0;
 let rankHideTimer = 0;
+let profileHideTimer = 0;
 let lastFocused = null;
 
 function syncOverlayLock() {
-  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen;
+  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen;
   if (appRoot && 'inert' in appRoot) appRoot.inert = locked;
-  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen;
-  if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen;
+  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen;
+  if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen || profileOpen;
+  if (ui.rankModal && 'inert' in ui.rankModal) ui.rankModal.inert = profileOpen;
   document.body.style.overflow = locked ? 'hidden' : '';
   document.body.classList.toggle('overlay-open', locked);
 }
@@ -2541,6 +2634,26 @@ function displayNameOf(user) {
 
 function initialOf(name) {
   return ([...String(name || 'J')][0] || 'J').toUpperCase();
+}
+
+function isPhotoDataURL(value) {
+  return typeof value === 'string'
+    && value.length > 0
+    && value.length <= 90000
+    && /^data:image\/(jpeg|png|webp);base64,/.test(value);
+}
+
+function setAvatar(element, name, photo) {
+  if (!element) return;
+  if (isPhotoDataURL(photo)) {
+    element.textContent = '';
+    element.style.backgroundImage = 'url("' + photo + '")';
+    element.classList.add('has-photo');
+  } else {
+    element.style.backgroundImage = '';
+    element.textContent = initialOf(name);
+    element.classList.remove('has-photo');
+  }
 }
 
 function readPendingRun() {
@@ -2576,7 +2689,9 @@ function firebaseErrorMessage(error) {
   if (code.includes('unauthorized-domain')) return 'Domínio de login não autorizado no Firebase.';
   if (code.includes('popup-blocked')) return 'O navegador bloqueou a janela de login. Permita pop-ups e tente novamente.';
   if (code.includes('popup-closed') || code.includes('cancelled-popup')) return '';
-  if (code.includes('permission-denied')) return 'Sem permissão para acessar o ranking. Verifique as regras do Firestore.';
+  if (code.includes('permission-denied')) return 'Sem permissão para acessar o Firebase. Verifique as regras publicadas.';
+  if (code.includes('invalid-argument')) return 'Nick ou foto inválidos. Verifique os limites e tente novamente.';
+  if (code.includes('resource-exhausted')) return 'Limite de uso do Firebase atingido. Tente novamente mais tarde.';
   if (code.includes('unavailable') || code.includes('network-request-failed') || code.includes('failed-precondition')) {
     return 'Sem conexão com o Firebase. O jogo continua disponível offline.';
   }
@@ -2605,10 +2720,11 @@ function updateAuthUI() {
   ui.deathAuth.hidden = signed;
   ui.deathProfile.hidden = !signed;
   if (signed) {
-    const name = displayNameOf(fb.user);
-    const profile = fb.profile || { bestStreak: 0, bestLevel: 1 };
+    const fallbackName = displayNameOf(fb.user);
+    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1 };
+    const name = profile.name || fallbackName;
     ui.deathName.textContent = name;
-    ui.deathAvatar.textContent = initialOf(name);
+    setAvatar(ui.deathAvatar, name, profile.photo);
     ui.deathBest.textContent = `🔥 ${profile.bestStreak} · nível ${profile.bestLevel}`;
     if (fb.error) ui.deathNote.textContent = fb.error;
     else if (fb.syncing) ui.deathNote.textContent = 'Salvando resultado…';
@@ -2627,14 +2743,18 @@ function updateAuthUI() {
   ui.rankContent.hidden = !signed;
   ui.rankProfile.hidden = !signed;
   if (signed) {
-    const name = displayNameOf(fb.user);
-    const profile = fb.profile || { bestStreak: 0, bestLevel: 1 };
-    ui.rankAvatar.textContent = initialOf(name);
+    const fallbackName = displayNameOf(fb.user);
+    const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1 };
+    const name = profile.name || fallbackName;
+    setAvatar(ui.rankAvatar, name, profile.photo);
     ui.rankName.textContent = name;
     ui.rankBest.textContent = `🔥 ${profile.bestStreak} · nível ${profile.bestLevel}`;
     if (fb.error) {
       ui.rankStatus.textContent = fb.error;
       ui.rankStatus.classList.add('is-error');
+    } else {
+      ui.rankStatus.textContent = '';
+      ui.rankStatus.classList.remove('is-error');
     }
   } else {
     ui.rankAuthHint.textContent = loading
@@ -2712,8 +2832,11 @@ async function syncProfile() {
     await fs.runTransaction(fb.db, async (tx) => {
       const snapshot = await tx.get(ref);
       const old = snapshot.exists() ? snapshot.data() : {};
+      const preservedName = typeof old.name === 'string' ? old.name.trim().slice(0, 40) : '';
+      const preservedPhoto = isPhotoDataURL(old.photo) ? old.photo : '';
       values = {
-        name: displayNameOf(fb.user),
+        name: preservedName || displayNameOf(fb.user),
+        photo: preservedPhoto,
         bestStreak: clampInt(Math.max(Number(old.bestStreak) || 0, pending ? pending.bestStreak : 0), 0, 1000000),
         bestLevel: clampInt(Math.max(Number(old.bestLevel) || 1, pending ? pending.bestLevel : 1), 1, 100),
         updatedAt: fs.serverTimestamp()
@@ -2722,6 +2845,7 @@ async function syncProfile() {
     });
     fb.profile = {
       name: values.name,
+      photo: values.photo,
       bestStreak: values.bestStreak,
       bestLevel: values.bestLevel
     };
@@ -2976,6 +3100,7 @@ function rankEntryFromDoc(snapshot) {
   return {
     uid: snapshot.id,
     name: String(data.name || 'Jogador').trim().slice(0, 40) || 'Jogador',
+    photo: isPhotoDataURL(data.photo) ? data.photo : '',
     bestStreak: clampInt(data.bestStreak, 0, 1000000),
     bestLevel: clampInt(data.bestLevel, 1, 100)
   };
@@ -3040,7 +3165,7 @@ function renderRank() {
     const avatar = document.createElement('span');
     avatar.className = 'rank-avatar';
     avatar.setAttribute('aria-hidden', 'true');
-    avatar.textContent = initialOf(entry.name);
+    setAvatar(avatar, entry.name, entry.photo);
     const name = document.createElement('span');
     name.className = 'rank-name';
     name.textContent = entry.name;
@@ -3053,9 +3178,151 @@ function renderRank() {
 }
 
 
-/* =========================================================
-   MENU INICIAL / TUTORIAL
-   ========================================================= */
+function setProfileError(message) {
+  ui.profileError.textContent = message || '';
+}
+
+function openProfileEditor() {
+  const fb = firebaseRuntime;
+  if (!fb.user) return;
+  const profile = fb.profile || {
+    name: displayNameOf(fb.user),
+    photo: '',
+    bestStreak: 0,
+    bestLevel: 1
+  };
+  firebaseRuntime.profileFocus = document.activeElement;
+  profileOpen = true;
+  state.paused = true;
+  Sound.stopBuild();
+  pendingPhoto = isPhotoDataURL(profile.photo) ? profile.photo : '';
+  ui.profileNameInput.value = profile.name || displayNameOf(fb.user);
+  setProfileError('');
+  setAvatar(ui.editAvatar, ui.profileNameInput.value, pendingPhoto);
+  clearTimeout(profileHideTimer);
+  ui.profileModal.hidden = false;
+  requestAnimationFrame(() => {
+    if (profileOpen) ui.profileModal.classList.add('is-open');
+  });
+  syncOverlayLock();
+  setTimeout(() => {
+    if (!profileOpen) return;
+    try { ui.profileNameInput.focus(); ui.profileNameInput.select(); } catch (_) {}
+  }, 80);
+}
+
+function closeProfileEditor() {
+  if (!profileOpen) return;
+  profileOpen = false;
+  ui.profileModal.classList.remove('is-open');
+  clearTimeout(profileHideTimer);
+  profileHideTimer = setTimeout(() => { if (!profileOpen) ui.profileModal.hidden = true; }, 220);
+  state.paused = menuOpen || deathOpen || rankOpen || modalOpen || tutorialOpen;
+  accumulator = 0;
+  lastFrame = performance.now();
+  syncOverlayLock();
+  setTimeout(() => {
+    try {
+      if (firebaseRuntime.profileFocus && firebaseRuntime.profileFocus.focus && !firebaseRuntime.profileFocus.hidden) {
+        firebaseRuntime.profileFocus.focus();
+      }
+    } catch (_) {}
+  }, 40);
+}
+
+function processPhotoFile(file) {
+  if (!file) return;
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    setProfileError('Escolha uma imagem JPG, PNG ou WebP.');
+    return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    setProfileError('A imagem é muito grande (máximo 8 MB).');
+    return;
+  }
+  setProfileError('');
+  const url = URL.createObjectURL(file);
+  const image = new Image();
+  image.onload = () => {
+    URL.revokeObjectURL(url);
+    try {
+      const size = 160;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const g = canvas.getContext('2d');
+      const scale = Math.max(size / image.width, size / image.height);
+      const w = image.width * scale;
+      const h = image.height * scale;
+      g.fillStyle = '#f3e9df';
+      g.fillRect(0, 0, size, size);
+      g.drawImage(image, (size - w) / 2, (size - h) / 2, w, h);
+      let data = canvas.toDataURL('image/jpeg', 0.82);
+      if (data.length > 90000) data = canvas.toDataURL('image/jpeg', 0.65);
+      if (data.length > 90000) data = canvas.toDataURL('image/jpeg', 0.5);
+      if (!isPhotoDataURL(data) || data.length > 90000) throw new Error('photo-too-large');
+      pendingPhoto = data;
+      setAvatar(ui.editAvatar, ui.profileNameInput.value, pendingPhoto);
+      setProfileError('');
+    } catch (_) {
+      setProfileError('Não foi possível processar a imagem. Tente outra foto.');
+    }
+  };
+  image.onerror = () => {
+    URL.revokeObjectURL(url);
+    setProfileError('Não foi possível abrir a imagem.');
+  };
+  image.src = url;
+}
+
+async function saveProfileEdits() {
+  const fb = firebaseRuntime;
+  if (!fb.user || !fb.db || !fb.mods) return;
+  const name = [...ui.profileNameInput.value.trim().replace(/\s+/g, ' ')].slice(0, 30).join('');
+  if (!name) {
+    setProfileError('O nick não pode ficar vazio.');
+    ui.profileNameInput.focus();
+    return;
+  }
+  const photo = isPhotoDataURL(pendingPhoto) ? pendingPhoto : '';
+  setProfileError('');
+  ui.saveProfile.disabled = true;
+  ui.saveProfile.textContent = 'Salvando…';
+  try {
+    const fs = fb.mods.firestoreModule;
+    const ref = fs.doc(fb.db, RANK_COLLECTION, fb.user.uid);
+    let values = null;
+    await fs.runTransaction(fb.db, async (tx) => {
+      const snapshot = await tx.get(ref);
+      const old = snapshot.exists() ? snapshot.data() : {};
+      values = {
+        name,
+        photo,
+        bestStreak: clampInt(old.bestStreak, 0, 1000000),
+        bestLevel: clampInt(old.bestLevel, 1, 100),
+        updatedAt: fs.serverTimestamp()
+      };
+      tx.set(ref, values);
+    });
+    fb.profile = {
+      name: values.name,
+      photo: values.photo,
+      bestStreak: values.bestStreak,
+      bestLevel: values.bestLevel
+    };
+    fb.profileUid = fb.user.uid;
+    closeProfileEditor();
+    updateAuthUI();
+    if (rankOpen) loadRanks();
+  } catch (error) {
+    setProfileError(firebaseErrorMessage(error) || 'Não foi possível salvar o perfil.');
+  } finally {
+    ui.saveProfile.disabled = false;
+    ui.saveProfile.textContent = 'Salvar';
+  }
+}
+
+
 function openStartMenu() {
   clearTimeout(menuHideTimer);
   menuOpen = true;
@@ -3194,6 +3461,8 @@ function bindEvents() {
   ui.deathSignOut.addEventListener('click', signOutGoogle);
   ui.rankSignOut.addEventListener('click', signOutGoogle);
   ui.deathRankBtn.addEventListener('click', openRankModal);
+  ui.deathEditProfile.addEventListener('click', openProfileEditor);
+  ui.rankEditProfile.addEventListener('click', openProfileEditor);
   ui.deathRestart.addEventListener('click', restartFromDeath);
   ui.closeRank.addEventListener('click', closeRankModal);
   ui.rankStreakTab.addEventListener('click', () => setRankMode('streak'));
@@ -3202,11 +3471,37 @@ function bindEvents() {
     if (e.target === ui.rankModal) closeRankModal();
   });
 
+  ui.closeProfile.addEventListener('click', closeProfileEditor);
+  ui.cancelProfile.addEventListener('click', closeProfileEditor);
+  ui.profileModal.addEventListener('click', (e) => {
+    if (e.target === ui.profileModal) closeProfileEditor();
+  });
+  ui.pickPhoto.addEventListener('click', () => ui.photoInput.click());
+  ui.photoInput.addEventListener('change', () => {
+    const file = ui.photoInput.files && ui.photoInput.files[0];
+    ui.photoInput.value = '';
+    if (file) processPhotoFile(file);
+  });
+  ui.removePhoto.addEventListener('click', () => {
+    pendingPhoto = '';
+    setAvatar(ui.editAvatar, ui.profileNameInput.value, '');
+    setProfileError('');
+  });
+  ui.saveProfile.addEventListener('click', saveProfileEdits);
+  ui.profileNameInput.addEventListener('input', () => {
+    setAvatar(ui.editAvatar, ui.profileNameInput.value, pendingPhoto);
+  });
+
   ui.tutorial.addEventListener('click', (e) => {
     if (e.target === ui.tutorial) closeTutorial();
   });
 
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && profileOpen) {
+      e.preventDefault();
+      closeProfileEditor();
+      return;
+    }
     if (e.key === 'Escape' && rankOpen) {
       e.preventDefault();
       closeRankModal();
@@ -3222,7 +3517,7 @@ function bindEvents() {
       closeSettings();
       return;
     }
-    if (deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen) return;
+    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen) return;
     if (e.code === 'Space') {
       const tag = (e.target && e.target.tagName) || '';
       if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;

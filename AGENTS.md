@@ -46,7 +46,8 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - Persistência: apenas `localStorage` (`kbounce.settings.v1`) para tema, dificuldade e som.
 - Deploy atual: **upload direto** no Cloudflare Pages; `git push` **não** publica automaticamente.
 - **Firebase:** projeto compartilhado `botanicstudio`; Auth Google habilitado; Firestore `(default)`; coleção `balljumpProfiles`; domínio `balljump-game.pages.dev` autorizado.
-- **Ranking:** perfil com `name`, `bestStreak`, `bestLevel`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
+- **Ranking:** perfil com `name`, `photo`, `bestStreak`, `bestLevel`, `updatedAt`; leitura exige autenticação; escrita apenas pelo próprio UID, com scores monotônicos e `serverTimestamp`.
+- **Perfil editável:** nick de 1 a 30 caracteres na UI e foto opcional em data URL (160×160 JPEG, até 90.000 caracteres); sem Firebase Storage; fallback para a inicial do nick.
 - **SDK Firebase:** modular 10.14.1, importado dinamicamente do gstatic somente ao abrir a tela de morte/ranking ou fazer login. O jogo principal continua offline.
 - **Regras do Firestore:** mantidas no projeto compartilhado em `../Botanica Studio/botanicstudio/firebase/firestore.rules`, junto das regras do Botanica.
 
@@ -63,8 +64,9 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 9. Manter a sequência 🔥: +1 por parede concluída, zerada ao levar dano; o chip deve mostrar apenas o ícone e o número.
 10. Manter os headers de segurança em `_headers` e não quebrar a CSP, incluindo as exceções allowlisted do Firebase e o COOP `same-origin-allow-popups`.
 11. Manter Auth Google + Firestore ranking funcionando; ler apenas perfis autenticados e permitir escrita somente ao próprio UID.
-12. Não armazenar e-mail, foto, telefone ou outros dados pessoais no perfil do ranking.
-13. Atualizar a documentação de contexto junto com mudanças de comportamento.
+12. Não armazenar e-mail, telefone ou outros dados pessoais no perfil do ranking; apenas nick, foto opcional e scores.
+13. Manter a foto como data URL validada, limitada a 90.000 caracteres, e nunca inseri-la via `innerHTML`.
+14. Atualizar a documentação de contexto junto com mudanças de comportamento.
 
 ## Comandos
 

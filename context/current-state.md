@@ -23,6 +23,7 @@
 - Menus: Jogar, Ranking, Configurações, Como jogar.
 - Modos escuro/claro; sem botão de compartilhamento.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
+- Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 
 ## Segurança em vigor
 
@@ -30,17 +31,22 @@
 - Deploy por allowlist em `dist/` (`index.html`, `404.html`, `_headers`); documentação interna não é publicada.
 - Caminhos internos como `/AGENTS.md` retornam 404 com página própria.
 - Núcleo offline; Firebase SDK/APIs carregados apenas para login/ranking.
-- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; regras preservam o Botanica.
+- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; regras preservam o Botanica.
 - Domínio `balljump-game.pages.dev` autorizado; provedor Google habilitado.
 - Repositório privado; sem segredos no Git (apiKey Firebase é pública por design).
 
 ## Últimas mudanças
 
+- Perfil editável com nick e foto; modal com prévia, remoção e validação.
+- Foto processada em canvas 160×160 e salva como data URL JPEG, sem Firebase Storage.
+- Logo oficial do Google e botão de login branco suave no tema claro / preto suave no escuro.
+- `syncProfile` preserva nick/foto existentes; ranking renderiza avatares com fallback.
+- Corrigido `footer` global que aplicava `opacity:.38` aos rodapés dos modais.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.
 - Ranking com abas de streak/níveis e top 10.
 - Regras do Firestore publicadas junto das regras do Botanica; domínio autorizado.
-- CSP ampliada para Firebase/Google e COOP ajustado para popup OAuth.
+- CSP ampliada para Firebase/Google, `img-src data:` e COOP ajustado para popup OAuth.
 - Documentação de engenharia de contexto adicionada.
 - Headers de segurança e CSP adicionados ao deploy.
 - Página 404 e allowlist de publicação adicionadas.
@@ -56,6 +62,7 @@
 ## Pendências e próximos passos
 
 - Validar manualmente o login Google real (popup e fallback de redirect) em desktop e mobile.
+- Validar manualmente a edição de perfil (nick, foto JPG/PNG/WebP, remoção e persistência) com conta real.
 - Revalidar headers/CSP no ambiente de produção a cada deploy (validado em 2026-11-15).
 - Conectar Cloudflare Pages ao GitHub para deploy automático (requer autorização do GitHub App).
 - Adicionar testes de navegador automatizados.

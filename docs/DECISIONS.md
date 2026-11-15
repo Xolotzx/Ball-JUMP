@@ -168,8 +168,23 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Decisão:** usar o projeto Firebase compartilhado `botanicstudio` com Auth Google e Firestore `(default)`, coleção `balljumpProfiles`, SDK modular 10.14.1 carregado sob demanda, regras validadas por UID e CSP/COOP allowlisted.
 - **Consequências:**
   - jogo principal continua offline; login/rank exigem rede;
-  - perfil mínimo (nome público, scores, timestamp), sem e-mail/foto;
+  - perfil mínimo (nome público, scores, timestamp), sem e-mail; a foto opcional foi adicionada depois em ADR-015;
   - regras são compartilhadas com o Botanica e devem ser deployadas juntas;
   - COOP `same-origin-allow-popups` necessário para OAuth;
   - API key é pública; segurança depende das regras e domínios autorizados;
   - login Google real precisa de teste manual.
+
+## ADR-015 — Nick e foto de perfil sem Firebase Storage
+
+- **Data:** 2026-11-15
+- **Status:** aceita
+- **Contexto:** jogadores querem personalizar o perfil com nick e foto, mantendo o ranking simples e sem custo de Storage.
+- **Decisão:** permitir editar `name` e `photo` no documento `balljumpProfiles/{uid}`. A foto é opcional, recortada em 160×160 no navegador, comprimida para JPEG em data URL e limitada a 90.000 caracteres. A gravação usa transação e preserva os scores.
+- **Consequências:**
+  - não é necessário Firebase Storage nem upload de arquivos;
+  - a foto trafega e é armazenada no próprio Firestore;
+  - a CSP precisa manter `img-src data:`;
+  - as regras precisam validar o prefixo e o tamanho da foto;
+  - documentos com foto aumentam o custo de leitura do ranking;
+  - nicks e fotos continuam visíveis apenas para usuários autenticados;
+  - fallback para a inicial do nick quando não há foto ou o valor é inválido.
