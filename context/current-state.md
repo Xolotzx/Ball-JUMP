@@ -20,7 +20,7 @@
 - **+1 vida** por fase concluída.
 - 100 níveis; +1 bolinha a cada 2 níveis.
 - 4 dificuldades.
-- Menus: Jogar, Ranking, Configurações, Como jogar.
+- Menus: Jogar, Ranking, Configurações; tutorial acessível pelas configurações.
 - Modos escuro/claro; sem botão de compartilhamento.
 - Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.

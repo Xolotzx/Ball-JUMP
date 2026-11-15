@@ -280,7 +280,6 @@
     font-size:16px;font-weight:800;line-height:1;
   }
   .menu-btn.primary .menu-icon{background:rgba(255,255,255,.26)}
-  .menu-icon-help{font-family:var(--mono);color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
   .menu-label{font-size:14px;font-weight:800;letter-spacing:-.01em}
   .menu-chev{font-size:22px;line-height:1;color:var(--muted);font-weight:600;padding-right:2px}
   .menu-btn.primary .menu-chev{color:color-mix(in srgb,var(--accent-text) 55%,transparent)}
@@ -760,13 +759,8 @@
         <span class="menu-label">Configurações</span>
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
-      <button id="menuHowBtn" class="menu-btn" type="button">
-        <span class="menu-icon menu-icon-help" aria-hidden="true">?</span>
-        <span class="menu-label">Como jogar</span>
-        <span class="menu-chev" aria-hidden="true">›</span>
-      </button>
     </div>
-    <p class="menu-foot">Você pode ajustar dificuldade, aparência e som nas configurações.</p>
+    <p class="menu-foot">Você pode ajustar dificuldade, aparência, som e ver o tutorial nas configurações.</p>
   </div>
 </div>
 
@@ -1182,7 +1176,7 @@ const ui = {
   volumeControl: $('volumeControl'), volumeSlider: $('volumeSlider'), volumeValue: $('volumeValue'),
   settingsHow: $('settingsHowBtn'),
   themeColor: $('themeColor'),
-  startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'), menuHow: $('menuHowBtn'),
+  startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'),
   menuRanking: $('menuRankingBtn'),
   tutorial: $('tutorialModal'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
   tutorialPlay: $('tutorialPlayBtn'),
@@ -3714,7 +3708,7 @@ function closeTutorial() {
       if (returnToSettings && lastFocused && lastFocused.focus && !lastFocused.hidden) {
         lastFocused.focus();
       } else if (menuOpen) {
-        ui.menuHow.focus();
+        ui.playBtn.focus();
       } else if (!modalOpen) {
         canvas.focus({ preventScroll: true });
       }
@@ -3795,7 +3789,6 @@ function bindEvents() {
   ui.playBtn.addEventListener('click', startGame);
   ui.menuRanking.addEventListener('click', openRankModal);
   ui.menuSettings.addEventListener('click', openSettings);
-  ui.menuHow.addEventListener('click', () => openTutorial(false));
   ui.closeTutorial.addEventListener('click', closeTutorial);
   ui.closeTutorialBtn.addEventListener('click', closeTutorial);
   ui.tutorialPlay.addEventListener('click', () => {

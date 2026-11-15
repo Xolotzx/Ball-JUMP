@@ -72,7 +72,8 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
 - **Consequências:**
   - jogo inicia pausado até “Jogar”;
   - overlays precisam de gestão de foco, `inert` e scroll;
-  - tutorial deve ser atualizado quando regras mudarem.
+  - tutorial deve ser atualizado quando regras mudarem;
+  - revisão posterior: o botão **Como jogar** saiu do menu e passou para as configurações (ADR-018).
 
 ## ADR-007 — Liquid glass e dois modos de aparência
 

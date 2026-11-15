@@ -91,8 +91,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 
 ### Interface
 
-- Tela de menu ao entrar, com **Jogar**, **Ranking**, **Configurações** e **Como jogar**.
-- Tutorial em modal, com regras e controles para PC e celular.
+- Tela de menu ao entrar, com **Jogar**, **Ranking** e **Configurações**.
+- Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.
 - HUD: sequência, nível, vidas, área, direção, configurações.
 - Botão de compartilhar removido por decisão de produto.
 - Modo **Escuro**: preto e laranja.

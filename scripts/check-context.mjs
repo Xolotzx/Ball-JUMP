@@ -182,6 +182,7 @@ check(index.includes('function buildRankModeButtons') && index.includes('rank-mo
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');
 check(index.includes('id="settingsHowBtn"') && index.includes('openTutorial(true)'), 'como jogar nas configurações presente');
+check(!index.includes('menuHowBtn'), 'como jogar removido do menu principal');
 check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
 check(index.includes('function isPhotoDataURL'), 'validação de foto presente');
 check(index.includes('90000'), 'limite de foto presente no cliente');

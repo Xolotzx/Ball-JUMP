@@ -17,10 +17,10 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 ## 2. Smoke test de interface
 
 - [ ] Menu inicial aparece ao entrar.
-- [ ] Existem os botões **Jogar**, **Configurações** e **Como jogar**.
+- [ ] Existem os botões **Jogar**, **Ranking** e **Configurações**; não há **Como jogar** no menu.
 - [ ] “Jogar” fecha o menu e inicia a partida.
-- [ ] “Como jogar” abre o tutorial e o botão “Voltar” retorna ao menu.
-- [ ] “Jogar agora” no tutorial inicia a partida.
+- [ ] **Como jogar** dentro das configurações abre o tutorial; “Voltar” retorna às configurações.
+- [ ] “Voltar ao jogo” no tutorial aberto pelas configurações retoma a partida.
 - [ ] “Configurações” abre o modal, pausa o jogo e, ao fechar, retorna ao menu ou ao jogo.
 - [ ] HUD mostra nível, vidas, área (x%/75%), direção e configurações.
 - [ ] Botão de compartilhamento não existe.
