@@ -174,16 +174,6 @@
   .meta-chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;font-weight:800;padding:4px 8px;border-radius:99px;white-space:nowrap}
   .meta-hint{margin-left:auto;letter-spacing:.02em}
   .hint-mobile{display:none}
-  .instructions{
-    font-size:12px;line-height:1.55;color:var(--muted);padding:10px 12px;border-radius:14px;
-    background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom)),color-mix(in srgb,var(--surface-solid) 58%,transparent);
-    border:1px solid var(--glass-border);
-    box-shadow:inset 0 1px 0 var(--glass-highlight);
-    -webkit-backdrop-filter:blur(16px) saturate(150%);
-    backdrop-filter:blur(16px) saturate(150%);
-  }
-  .instructions b{color:var(--text);font-weight:700}
-  .instructions kbd{font-family:var(--mono);font-size:10px;background:var(--surface);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 4px;color:var(--text)}
 
   /* ===== overlay ===== */
   .overlay{
@@ -237,15 +227,10 @@
   .toast.is-good{border-color:color-mix(in srgb,var(--accent) 38%,var(--glass-border));color:var(--text)}
 
   footer{
-    margin-top:12px;padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-    color:var(--muted);font-size:10px;letter-spacing:.03em;border-radius:14px;
-    background:linear-gradient(155deg,var(--glass-top),var(--glass-bottom)),color-mix(in srgb,var(--surface-solid) 58%,transparent);
-    border:1px solid var(--glass-border);
-    box-shadow:inset 0 1px 0 var(--glass-highlight);
-    -webkit-backdrop-filter:blur(16px) saturate(150%);
-    backdrop-filter:blur(16px) saturate(150%);
+    margin-top:12px;padding:8px 4px 2px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    color:var(--muted);font-size:8px;line-height:1.5;letter-spacing:.02em;opacity:.38;
   }
-  footer b{color:var(--text);font-weight:700}
+  footer b{color:inherit;font-weight:600}
 
   /* ===== menu inicial ===== */
   .menu-screen{
@@ -534,6 +519,9 @@
   <header class="topbar">
     <div class="hud" role="group" aria-label="Painel do jogo">
       <div class="hud-stats">
+        <div class="streak-chip" id="streakChip" hidden aria-live="polite" aria-label="Sequência de 0 movimentos sem tomar dano">
+          <span class="streak-flame" aria-hidden="true">🔥</span><b id="streakVal">0</b>
+        </div>
         <div class="stat" title="Nível atual">
           <span class="stat-label">NÍVEL</span>
           <span class="stat-value"><b id="levelVal">1</b><i>/100</i></span>
@@ -541,9 +529,6 @@
         <div class="stat stat-lives" title="Vidas restantes">
           <span class="stat-label">VIDAS</span>
           <span class="stat-value"><span class="heart" aria-hidden="true">♥</span><b id="livesVal">3</b></span>
-        </div>
-        <div class="streak-chip" id="streakChip" hidden aria-live="polite" aria-label="Sequência de 0 movimentos sem tomar dano">
-          <span class="streak-flame" aria-hidden="true">🔥</span><b id="streakVal">0</b>
         </div>
         <div class="stat stat-progress" title="Área preenchida — meta 95%">
           <div class="progress-top"><span class="stat-label">ÁREA</span><span class="progress-num"><b id="pctVal">0%</b><i>/95%</i></span></div>
@@ -579,11 +564,6 @@
         <span class="meta-chip" id="ballChip">2 bolinhas</span>
         <span class="meta-hint"><span class="hint-desktop">Clique esquerdo: parede · direito: girar</span><span class="hint-mobile">Toque: parede · botão: girar</span></span>
       </div>
-      <p class="instructions">
-        <b>Objetivo:</b> preencha <b>95%</b> da arena sem deixar as bolinhas tocarem na parede em construção.
-        <span class="hint-desktop">Use o <b>clique direito</b> ou <kbd>Espaço</kbd> para alternar entre <b>HORIZ</b> e <b>VERT</b>.</span>
-        <span class="hint-mobile">Alterne a direção pelo botão <b>HORIZ / VERT</b> do HUD.</span>
-      </p>
     </div>
   </main>
 

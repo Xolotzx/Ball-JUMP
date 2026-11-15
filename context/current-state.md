@@ -37,6 +37,7 @@
 - Headers de segurança e CSP adicionados ao deploy.
 - Página 404 e allowlist de publicação adicionadas.
 - Paleta alterada para preto/laranja (escuro) e laranja/branco (claro).
+- Segunda iteração do HUD: sequência → nível → vidas, bloco de objetivo removido e rodapé discreto.
 - Sequência 🔥 adicionada: +1 por parede concluída, zera ao levar dano, com som de fogo sutil.
 - Fundo ambiente em SVG adicionado: ondas desfocadas à direita no escuro e fita laranja desfocada no claro.
 - Áudio aprimorado com reverb, harmônicos, compressor e pan estéreo.
