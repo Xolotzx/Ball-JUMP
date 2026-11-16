@@ -145,7 +145,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Uma troca inválida desfaz o movimento e zera a sequência.
 - [ ] Cascatas mostram combo e somam pontos.
 - [ ] O tempo começa em 60 s na fase 1 e diminui a cada 10 fases; não há vidas.
-- [ ] A meta de pontos sobe por fase e a barra de progresso acompanha.
+- [ ] A meta sobe 500 a cada 5 fases: 500 nas fases 1–5, 1.000 nas fases 6–10, 2.500 na fase 21 e 10.000 na fase 100; a barra de progresso acompanha.
 - [ ] Ao atingir a meta, a próxima fase começa com tabuleiro novo.
 - [ ] Na fase 11 entram mais tipos e a mensagem de dificuldade aumentada aparece.
 - [ ] São 5 tipos até a fase 10 e 6 tipos da fase 11 em diante; não há sétimo tipo.

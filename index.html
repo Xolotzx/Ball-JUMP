@@ -1442,7 +1442,7 @@ function candyTimeLimit(level) {
 }
 
 function candyTargetScore(level) {
-  return 500 + (level - 1) * 35 + candyTier(level) * 80;
+  return 500 * (1 + Math.floor((level - 1) / 5));
 }
 
 /* =========================================================

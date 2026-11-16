@@ -313,3 +313,15 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - o alvo do ⚡ é decidido antes da troca, garantindo o tipo correto;
   - efeitos e sons novos: `Sound.lightning()`, `Sound.lockHit()`, flash e células zap;
   - o balanceamento dos cadeados e do tempo de 60 s precisa de playtest.
+
+## ADR-025 — Meta do modo doce sobe 500 a cada 5 fases
+
+- **Data:** 2026-11-16
+- **Status:** aceita
+- **Contexto:** a meta anterior crescia por fase (35 + bônus por faixa), gerando valores pouco previsíveis e quase lineares. O jogador precisava de uma progressão clara e fácil de comunicar.
+- **Decisão:** `candyTargetScore(level)` passa a ser `500 × (1 + floor((level − 1) / 5))`. Ou seja: 500 pontos nas fases 1–5, 1.000 nas fases 6–10, +500 a cada bloco de 5 fases, chegando a 10.000 na fase 100.
+- **Consequências:**
+  - a meta é múltipla de 500 e cada bloco de 5 fases tem o mesmo alvo;
+  - o tempo continua caindo a cada 10 fases (60 s → 33 s), então os blocos finais exigem mais pontos no mesmo tempo;
+  - simulação com bot guloso confirmou que 10.000 pontos são alcançáveis em ~10 jogadas na fase 100 (33 s);
+  - a barra de progresso e as mensagens usam `candyState.target`, sem mudanças adicionais.
