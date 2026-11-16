@@ -349,3 +349,16 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - efeitos novos: `.candy-mega-flash`, `.is-mega-shaking`, blasts `is-mega` maiores e `Sound.megaExplosion()`;
   - a mensagem “💥 Explosão dupla!” pode ser substituída pelo combo da cascata seguinte;
   - cadeados atingidos pela explosão dupla perdem carga normalmente.
+
+## ADR-028 — Modo Flappy com 500 fases e ranking próprio
+
+- **Data:** 2026-11-16
+- **Status:** aceita
+- **Contexto:** o produto já tinha Clássico e Doce; faltava um terceiro modo arcade rápido, com os mesmos conceitos de fase, sequência e ranking, mas com desafio e duração próprios.
+- **Decisão:** adicionar um modo **Flappy** em canvas próprio (480×640 lógicos) com **500 fases**, 3 vidas e progressão por canos. O jogador toca/clica ou usa **Espaço/↑/W** para bater as asas; passar por um cano pontua e completar todos os canos da fase avança de fase e aumenta a sequência. Bater em cano ou chão custa uma vida, zera a sequência e reinicia os canos/progresso da fase. O resultado usa `mode:'flappy'` e grava `flappy.bestStreak`, `flappy.bestLevel` (≤500) e `flappy.bestScore`.
+- **Consequências:**
+  - o seletor de modo passa a listar Clássico, Doce e Flappy;
+  - o ranking ganha a família **Flappy 🐦** com Streak/Níveis/Pontos, sem misturar com `scores.*` ou `candy`;
+  - as regras do Firestore validam `flappy` com `bestLevel` entre 1 e 500;
+  - 500 fases exigem balanceamento de velocidade/vão e um teste de longa duração separado;
+  - a tela de fim reutiliza `#deathModal` com textos de “500 FASES”/“VIDAS ESGOTADAS”.

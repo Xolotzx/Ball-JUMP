@@ -94,16 +94,19 @@ check(manifest?.firebase?.nicknameCollection === 'balljumpNicknames', 'manifesto
 check(manifest?.firebase?.profileFields?.includes('photo'), 'manifesto declara foto no perfil');
 check(manifest?.firebase?.profileFields?.includes('scores'), 'manifesto declara scores por modo');
 check(manifest?.firebase?.profileFields?.includes('candy'), 'manifesto declara dados do modo doce');
+check(manifest?.firebase?.profileFields?.includes('flappy'), 'manifesto declara dados do modo flappy');
 check(String(manifest?.firebase?.profileCustomization?.photo || '').includes('90000'), 'manifesto declara limite da foto');
 check(manifest?.firebase?.profileCustomization?.nicknameUnique === true, 'manifesto declara nick único');
 check(
   Array.isArray(manifest?.firebase?.profileCustomization?.rankScopes)
     && manifest.firebase.profileCustomization.rankScopes.includes('geral')
     && manifest.firebase.profileCustomization.rankScopes.includes('easy')
-    && manifest.firebase.profileCustomization.rankScopes.includes('doce'),
+    && manifest.firebase.profileCustomization.rankScopes.includes('doce')
+    && manifest.firebase.profileCustomization.rankScopes.includes('flappy'),
   'manifesto declara escopos de ranking'
 );
 check(manifest?.firebase?.profileCustomization?.candyMode?.levels === 100, 'manifesto declara 100 fases do modo doce');
+check(manifest?.firebase?.profileCustomization?.flappyMode?.levels === 500, 'manifesto declara 500 fases do modo flappy');
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
@@ -117,6 +120,7 @@ check(firebaseDocs.includes('90000'), 'docs/FIREBASE.md documenta o limite da fo
 check(firebaseDocs.includes('balljumpNicknames'), 'docs/FIREBASE.md documenta nicks únicos');
 check(firebaseDocs.includes('scores'), 'docs/FIREBASE.md documenta scores por modo');
 check(firebaseDocs.includes('candy'), 'docs/FIREBASE.md documenta o modo doce');
+check(firebaseDocs.includes('flappy'), 'docs/FIREBASE.md documenta o modo flappy');
 
 const securityDocs = exists('docs/SECURITY.md') ? read('docs/SECURITY.md') : '';
 check(/data URL|data:image/.test(securityDocs), 'docs/SECURITY.md cobre a foto de perfil');
@@ -134,7 +138,7 @@ check(index.includes('const GOAL_PCT = 75'), 'GOAL_PCT definido como 75');
 check(index.includes('state.lives++'), 'incremento de vida por fase presente');
 check(!/id=["']shareBtn["']/.test(index), 'botão de compartilhar removido');
 check(!/navigator\.share|navigator\.clipboard/.test(index), 'sem Web Share/clipboard no runtime');
-check(index.length < 240_000, 'index.html abaixo de 240 KB', `${index.length} bytes`);
+check(index.length < 280_000, 'index.html abaixo de 280 KB', `${index.length} bytes`);
 check((index.match(/<script\b/gi) || []).length === 1, 'exatamente um bloco de script inline');
 
 // 3. Superfície de rede/execução
@@ -185,8 +189,8 @@ check(index.includes('nickname-taken'), 'erro de nick duplicado presente');
 check(index.includes('scores.${scope}.bestStreak'), 'ranking por dificuldade presente');
 check(index.includes('function buildRankModeButtons') && index.includes('rank-modes'), 'seletor de modo do ranking presente');
 check(index.includes('id="rankFamilies"') && index.includes('function setRankFamily'), 'famílias de ranking presentes');
-check(index.includes('Clássico 🧱') && index.includes('Doce 🍪'), 'rótulos Clássico e Doce presentes');
-check(index.includes('rankScoreTab.hidden = !isCandy'), 'aba Pontos restrita ao Doce');
+check(index.includes('Clássico 🧱') && index.includes('Doce 🍪') && index.includes('Flappy 🐦'), 'rótulos Clássico, Doce e Flappy presentes');
+check(index.includes('rankScoreTab.hidden = !(isCandy || isFlappy)'), 'aba Pontos restrita ao Doce e Flappy');
 check(index.includes('CANDY_MAX_LEVEL = 100') && index.includes('function startCandyMode'), 'modo doce presente');
 check(index.includes('CANDY_BOMB') && index.includes('function candyExplodeBombs'), 'bombas e explosões presentes');
 check(index.includes('CANDY_LIGHTNING') && index.includes('function candyLightningStrike'), 'relâmpago presente');
@@ -206,6 +210,16 @@ check(index.includes('id="modeModal"') && index.includes('id="modeClassicBtn"') 
 check(index.includes('function openModeChooser') && index.includes('function chooseMode'), 'lógica do seletor de modo presente');
 check(!index.includes('menuCandyBtn'), 'sem botão duplicado de modo doce no menu');
 check(index.includes('id="candyBoard"'), 'tabuleiro do modo doce presente');
+check(index.includes('FLAPPY_MAX_LEVEL = 500') && index.includes('function startFlappyMode'), 'modo flappy com 500 fases presente');
+check(index.includes('id="flappyCanvas"') && index.includes('function flappyRender'), 'canvas e renderização do flappy presentes');
+check(index.includes('FLAPPY_LIVES = 3') && index.includes('function flappyLoseLife'), 'vidas e dano do flappy presentes');
+check(index.includes('function flappyPipeCountFor') && index.includes('4 + Math.min(4, Math.floor((level - 1) / 50))'), 'canos por fase do flappy presentes');
+check(index.includes("family === 'flappy'") && index.includes('flappy.bestScore'), 'ranking flappy presente');
+check(index.includes('id="flappySettings"') && index.includes("ui.flappySettings.addEventListener('click', openSettings)"), 'configurações no modo flappy presentes');
+check(index.includes('settingsDifficultySection.hidden = inCandy || inFlappy'), 'dificuldade oculta nas configurações do flappy');
+check(index.includes('body.flappy-active .app') && index.includes("classList.add('flappy-active')"), 'tela do flappy isolada do app clássico');
+check(index.includes('sanitizeFlappy') && index.includes('mergePendingFlappy') && index.includes('flappy: values.flappy'), 'perfil e sync do flappy presentes');
+check(index.includes('function flappyCompletePhase') && index.includes('completou as 500 fases'), 'vitória do flappy em 500 fases presente');
 check(index.includes('id="classicMenuBtn"') && index.includes('function returnClassicToMenu'), 'botão menu do clássico presente');
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');

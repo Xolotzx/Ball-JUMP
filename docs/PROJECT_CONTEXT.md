@@ -5,7 +5,7 @@
 
 ## 1. Visão
 
-**ted-io** é um site de jogos casuais para navegador com dois modos. No **Clássico**, inspirado no JezzBall, o jogador constrói paredes para dividir a arena e isolar bolinhas; áreas fechadas sem bolinhas são preenchidas automaticamente e o objetivo é preencher **75%** da área antes de perder todas as vidas. No **Doce**, um match-3 de 100 fases, o jogador troca doces, cumpre metas e administra o tempo.
+**ted-io** é um site de jogos casuais para navegador com três modos. No **Clássico**, inspirado no JezzBall, o jogador constrói paredes para dividir a arena e isolar bolinhas; áreas fechadas sem bolinhas são preenchidas automaticamente e o objetivo é preencher **75%** da área antes de perder todas as vidas. No **Doce**, um match-3 de 100 fases, o jogador troca doces, cumpre metas e administra o tempo. No **Flappy**, um voo entre canos de 500 fases, o jogador bate as asas para passar pelos canos e sobrevive com 3 vidas.
 
 O projeto tem uma restrição deliberada: **o núcleo do jogo fica em um único `index.html`** e funciona offline. A única dependência externa é o SDK modular do Firebase, carregado sob demanda para login Google e ranking; não há back-end próprio. A documentação de contexto e segurança é externa ao runtime.
 
@@ -93,8 +93,8 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 
 - Tela de menu ao entrar, com **Jogar**, **Ranking** e **Configurações**.
 - O menu principal usa o fundo ambiente do tema (ondas no escuro, fita laranja no claro) e oculta o app clássico atrás.
-- **Jogar** abre um seletor com **Modo Clássico** e **Modo Doce**.
-- **Configurações** ficam disponíveis no clássico e também no modo doce (engrenagem no cabeçalho); no doce a seção de dificuldade é ocultada e o timer pausa.
+- **Jogar** abre um seletor com **Modo Clássico**, **Modo Doce** e **Modo Flappy**.
+- **Configurações** ficam disponíveis no clássico e também nos modos doce e flappy (engrenagem no cabeçalho); nesses modos a seção de dificuldade é ocultada e o jogo pausa.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente.
 - A meta é 750 pontos nas fases 1–5 e sobe **500 a cada 5 fases**, chegando a 10.250 na fase 100.
 - Combinações válidas: 3+ em linha/coluna ou um quadrado 2×2 do mesmo tipo.
@@ -106,6 +106,11 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Explosões usam som próprio, faísca, texto de pontos e tremida; o fundo ambiente é o mesmo do modo clássico (ondas/fita).
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
 - O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.
+- **Modo Flappy**: voo entre canos com 500 fases e 3 vidas. Clique, toque, **Espaço**, **↑** e **W** fazem o pássaro bater as asas.
+- Cada fase tem de 4 a 8 canos; a velocidade sobe e o vão diminui conforme a fase avança.
+- Bater em um cano ou no chão perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase; o teto apenas limita o voo.
+- Passar por um cano soma pontos; completar todos os canos da fase soma um bônus, aumenta a sequência e avança de fase.
+- O modo flappy termina sem vidas ou na vitória da fase 500; o resultado entra no ranking próprio.
 - Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.
 - HUD: sequência, nível, vidas, área, direção, configurações e botão **← Menu**.
 - Botão de compartilhar removido por decisão de produto.
@@ -117,20 +122,22 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Configurações incluem tema, dificuldade, som, volume (0–100%) e atalho **Como jogar**.
 - O tutorial aberto pelas configurações volta para elas ao fechar; **Voltar ao jogo** fecha ambos e retoma a partida.
 - Tela de fim de jogo com estatísticas da corrida, **Entrar com Google**, perfil e acesso ao ranking.
-- Ranking com dois menus principais: **Clássico 🧱** e **Doce 🍪**.
+- Ranking com três menus principais: **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**.
 - Dentro de **Clássico 🧱**: **Geral / Fácil / Normal / Difícil / Hardcore**, com abas **🔥 Streak** e **🏆 Níveis**, top 10.
 - Dentro de **Doce 🍪**: abas **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**, top 10.
-- O título do ranking acompanha a seleção: “Ranking clássico — Fácil”, “Ranking doce”, etc.
+- Dentro de **Flappy 🐦**: abas **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**, top 10.
+- O título do ranking acompanha a seleção: “Ranking clássico — Fácil”, “Ranking doce”, “Ranking flappy”, etc.
 - Perfil personalizável: nick (até 30 caracteres na UI) e foto opcional.
 - Preferências persistidas em `localStorage` (`kbounce.settings.v1`).
 
 ### Conta e ranking
 
 - Login via Firebase Authentication com Google.
-- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores` e `updatedAt`.
+- Perfil em Firestore `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `candy`, `flappy` e `updatedAt`.
 - `scores` guarda `{ bestStreak, bestLevel }` por dificuldade (`easy`, `normal`, `hard`, `hardcore`); os campos globais preservam o melhor histórico geral.
 - `candy` guarda `{ bestStreak, bestLevel, bestScore }` do modo doce, separado do ranking clássico.
-- O ranking Doce tem três categorias: **Streak**, **Níveis** e **Pontos**.
+- `flappy` guarda `{ bestStreak, bestLevel, bestScore }` do modo flappy, com `bestLevel` limitado a 500 e separado do ranking clássico.
+- Os rankings Doce e Flappy têm três categorias: **Streak**, **Níveis** e **Pontos**.
 - O modo da corrida é salvo junto ao resultado pendente e aplicado apenas ao ranking daquela dificuldade.
 - O perfil é criado no primeiro login e entra no ranking geral.
 - O nick começa como o nome do Google, mas pode ser alterado; sincronizações preservam o nick/foto salvos.

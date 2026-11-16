@@ -38,10 +38,12 @@ administrativo ou `.env` no repositório.
    automática (`Lucas 2`, `Lucas 3`, ...). O jogador pode trocar depois.
 7. O jogador pode abrir o ranking pelo botão **Ranking** no menu ou pelo botão
    **Ver ranking** na tela de fim de jogo.
-8. O ranking tem dois menus principais: **Clássico 🧱** e **Doce 🍪**.
+8. O ranking tem três menus principais: **Clássico 🧱**, **Doce 🍪** e
+   **Flappy 🐦**.
    - **Clássico 🧱**: **Geral / Fácil / Normal / Difícil / Hardcore**, com
      **🔥 Streak** e **🏆 Níveis**.
    - **Doce 🍪**: **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**.
+   - **Flappy 🐦**: **🔥 Streak**, **🏆 Níveis** e **⭐ Pontos**.
 9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+
    ou um quadrado 2×2, cumpra a meta antes do tempo e avance. As vidas são
    substituídas por tempo (60 s na fase 1, caindo até 33 s na fase 100).
@@ -51,8 +53,14 @@ administrativo ou `.env` no repositório.
     na fase 6, até 10.250 na fase 100) e o tempo cai a cada 10 fases. Os tipos vão
     de 5 para 6 na fase 11; da fase 21 em diante entram doces com cadeado (2
     detonações para sumir), em vez de um sétimo tipo, até a fase 100.
-11. O título acompanha a seleção: “Ranking clássico — Fácil”,
-    “Ranking doce”, etc.
+11. O modo **Flappy** é um voo entre canos com 500 fases e 3 vidas: toque,
+    clique ou aperte Espaço/↑/W para bater as asas e passar pelos canos. Cada
+    fase tem de 4 a 8 canos, o vão diminui e a velocidade sobe com o avanço.
+    Bater em um cano ou no chão custa uma vida e reinicia os canos, o progresso
+    da fase e a sequência; sem vidas a corrida termina. Completar a fase 500 é a
+    vitória.
+12. O título acompanha a seleção: “Ranking clássico — Fácil”,
+    “Ranking doce”, “Ranking flappy”, etc.
 
 ## 3. Modelo de dados
 
@@ -64,6 +72,7 @@ balljumpProfiles/{uid} {
   bestLevel: int        // 1..100, maior nível histórico geral
   scores: map           // opcional: melhores por dificuldade
   candy: map            // opcional: melhores do modo doce
+  flappy: map           // opcional: melhores do modo flappy
   updatedAt: timestamp  // serverTimestamp()
 }
 
@@ -79,11 +88,21 @@ candy = {
   bestLevel: int,       // 1..100
   bestScore: int        // 0..100.000.000
 }
+
+flappy = {
+  bestStreak: int,      // 0..1.000.000
+  bestLevel: int,       // 1..500
+  bestScore: int        // 0..100.000.000
+}
 ```
 
 - `candy` só existe depois que o jogador conclui uma corrida no modo doce.
 - O ranking Doce consulta `candy.bestStreak`, `candy.bestLevel` e `candy.bestScore`.
-- Uma corrida do modo doce não altera os campos globais do modo clássico.
+- `flappy` só existe depois que o jogador conclui uma corrida no modo flappy e
+  limita `bestLevel` a **500**.
+- O ranking Flappy consulta `flappy.bestStreak`, `flappy.bestLevel` e
+  `flappy.bestScore`.
+- Corridas do modo doce e flappy não alteram os campos globais do modo clássico.
 
 - Cada chave de `scores` só existe depois que o jogador conclui uma corrida naquela
   dificuldade. Perfis antigos sem `scores` continuam válidos e aparecem no ranking
@@ -160,8 +179,16 @@ function isBalljumpCandy(candy) {
     && candy.bestScore is int && candy.bestScore >= 0 && candy.bestScore <= 100000000;
 }
 
+function isBalljumpFlappy(flappy) {
+  return flappy is map
+    && flappy.keys().hasOnly(['bestStreak', 'bestLevel', 'bestScore'])
+    && flappy.bestStreak is int && flappy.bestStreak >= 0 && flappy.bestStreak <= 1000000
+    && flappy.bestLevel is int && flappy.bestLevel >= 1 && flappy.bestLevel <= 500
+    && flappy.bestScore is int && flappy.bestScore >= 0 && flappy.bestScore <= 100000000;
+}
+
 function isBalljumpProfile(p) {
-  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'scores', 'candy', 'updatedAt'])
+  return p.keys().hasOnly(['name', 'photo', 'bestStreak', 'bestLevel', 'scores', 'candy', 'flappy', 'updatedAt'])
     && p.name is string && p.name.size() >= 1 && p.name.size() <= 40
     && p.photo is string && p.photo.size() <= 90000
     && (p.photo.size() == 0 || p.photo.matches('^data:image/(jpeg|png|webp);base64,.*'))
@@ -169,6 +196,7 @@ function isBalljumpProfile(p) {
     && p.bestLevel is int && p.bestLevel >= 1 && p.bestLevel <= 100
     && (!p.keys().hasAny(['scores']) || isBalljumpScores(p.scores))
     && (!p.keys().hasAny(['candy']) || isBalljumpCandy(p.candy))
+    && (!p.keys().hasAny(['flappy']) || isBalljumpFlappy(p.flappy))
     && p.updatedAt == request.time;
 }
 
@@ -271,9 +299,9 @@ Também foi validado:
     `.bestLevel`; o modo **Geral** consulta `bestStreak`/`bestLevel`.
   - O cache é por modo (`rankData[modo]`), com requisições concorrentes
     descartadas por `rankRequest`.
-  - O seletor tem famílias **Clássico 🧱** e **Doce 🍪**; no clássico as
-    dificuldades são Geral/Fácil/Normal/Difícil/Hardcore e o título vira
-    “Ranking clássico — Fácil”.
+  - O seletor tem famílias **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**; no
+    clássico as dificuldades são Geral/Fácil/Normal/Difícil/Hardcore e o título
+    vira “Ranking clássico — Fácil”.
 - Modo Doce (match-3):
   - tabuleiro 8×8; troca de doces adjacentes, detecção de 3+ e cascatas;
   - 100 fases; cada fase tem meta de pontos e tempo próprio (sem vidas);
@@ -284,6 +312,13 @@ Também foi validado:
   - `syncProfile` grava/atualiza apenas `candy`, sem mexer nos scores clássicos;
   - o ranking Doce consulta `candy.bestStreak`, `candy.bestLevel` e
     `candy.bestScore`.
+- Modo Flappy (voo entre canos):
+  - 500 fases, 3 vidas e 4–8 canos por fase, com velocidade e vão progressivos;
+  - o resultado pendente usa `mode:'flappy'` com `bestStreak`, `bestLevel` e
+    `bestScore`; `bestLevel` fica limitado a 500;
+  - `syncProfile` grava/atualiza apenas `flappy`, sem mexer nos scores clássicos;
+  - o ranking Flappy consulta `flappy.bestStreak`, `flappy.bestLevel` e
+    `flappy.bestScore`.
 
 ## 7. CSP e rede
 
@@ -304,7 +339,7 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 2. Jogue até perder as vidas.
 3. Na tela de morte, clique em **Entrar com Google**.
 4. Autorize a conta; verifique se o perfil aparece e se o botão de ranking
-   carrega as duas abas.
+   carrega as três famílias.
 5. Clique em **Editar perfil**, troque o nick, escolha uma foto e salve.
 6. Confirme que o nick e a foto aparecem na tela de morte, no ranking e na
    linha do jogador; recarregue a página e confira que persistiram.
@@ -323,11 +358,17 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
     - entre com Google e confira **Ranking → Doce** nas abas Streak, Níveis e Pontos;
     - avance de fase e confira a meta/tempo; na fase 11 a dificuldade deve aumentar;
     - complete a fase 100 para validar a vitória.
-12. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
-13. Confira no console do Firebase → Firestore → `balljumpProfiles` e
+12. No menu, abra **Modo Flappy**:
+    - voe com clique/toque/Espaço, passe pelos canos e confira pontos e progresso;
+    - bata em um cano e confirme a perda de vida, o reset dos canos e da sequência;
+    - perca as 3 vidas e confira a tela **VIDAS ESGOTADAS** com fase e pontos;
+    - entre com Google e confira **Ranking → Flappy** nas abas Streak, Níveis e Pontos;
+    - complete a fase 500 (ou force `flappyState.level = 500`) para validar a vitória.
+13. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
+14. Confira no console do Firebase → Firestore → `balljumpProfiles` e
     `balljumpNicknames`.
-14. Teste o botão **Sair** e o login novamente.
-15. Teste com popups bloqueados para validar o fallback de redirecionamento.
+15. Teste o botão **Sair** e o login novamente.
+16. Teste com popups bloqueados para validar o fallback de redirecionamento.
 
 ## 9. Troubleshooting
 
@@ -348,6 +389,8 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
 | Ranking por modo não carrega | consulta `orderBy('scores.<modo>...')` inválida | conferir o nome do modo (`easy/normal/hard/hardcore`) e as regras |
 | Ranking Doce vazio | ninguém terminou uma corrida no modo doce | jogar até o tempo acabar e entrar com Google |
 | Pontuação do Doce não salva | campo `candy` fora das regras | conferir `candy.bestScore` e publicar as regras |
+| Ranking Flappy vazio | ninguém terminou uma corrida no modo flappy | perder as 3 vidas e entrar com Google |
+| Pontuação do Flappy não salva | campo `flappy` fora das regras | conferir `flappy.bestScore` e `flappy.bestLevel ≤ 500`; publicar as regras |
 | Ranking vazio | nenhum perfil criado ainda | entrar com Google para criar o primeiro |
 
 Não registre tokens, cookies ou credenciais nos logs de suporte.

@@ -50,6 +50,7 @@
 | CSP mal configurada | Quebra do jogo/login ou proteção fraca | Média | Testar headers e OAuth em produção; revisar `_headers`. |
 | Escrita indevida no ranking | Fraude no leaderboard | Baixa | Regras exigem UID do dono, schema válido, scores monotônicos e server timestamp. |
 | Fraude no ranking Doce | Pontuação/níveis falsos | Baixa | `candy` validado com limites, UID do dono e server timestamp. |
+| Fraude no ranking Flappy | Pontuação/níveis falsos | Baixa | `flappy` validado com limites (nível ≤ 500), UID do dono e server timestamp. |
 | XSS via nome do jogador | Execução de script | Baixa | Nome validado nas regras; renderização com `textContent`. |
 | XSS/abuso via foto de perfil | Execução de script ou documento gigante | Baixa | Apenas data URL JPEG/PNG/WebP validada, limite de 90.000 chars e uso via `background-image`; sem `innerHTML`. |
 | Nick duplicado ou squatting | Confusão no ranking | Média | Reserva transacional em `balljumpNicknames/{key}`; escrita só pelo dono; normalização de caixa/acentos; sufixo automático para nomes ocupados. |
@@ -98,6 +99,7 @@
 - Escrita somente pelo próprio UID; schema, tipos, limites, timestamps e monotonicidade validados.
 - `scores` é validado por modo (`easy`, `normal`, `hard`, `hardcore`), com `bestStreak`/`bestLevel` inteiros e dentro dos limites.
 - `candy` é validado com `bestStreak`, `bestLevel` e `bestScore` inteiros e dentro dos limites; o ranking Doce lê apenas esses campos.
+- `flappy` é validado com `bestStreak`, `bestLevel` (1–500) e `bestScore` inteiros e dentro dos limites; o ranking Flappy lê apenas esses campos.
 - Nicks únicos: reserva em `balljumpNicknames/{key}` com chave normalizada; leitura autenticada; create/update/delete só pelo UID dono; conflito resolvido por transação no cliente.
 - Perfil mínimo: nick público, foto opcional em data URL, scores por modo, melhor streak, melhor nível e `updatedAt`; sem e-mail ou telefone.
 - A foto é validada no cliente e nas regras (`data:image/(jpeg|png|webp);base64,`, até 90.000 caracteres) e aplicada apenas via `background-image`; valores inválidos caem para a inicial.

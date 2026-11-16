@@ -9,7 +9,7 @@
     "repositoryVisibility": "private",
     "license": "not specified"
   },
-  "lastReviewed": "2026-11-15",
+  "lastReviewed": "2026-11-16",
   "contextLoadOrder": [
     "AGENTS.md",
     "context/manifest.json",
@@ -148,7 +148,7 @@
     "authorizedDomain": "ted-io.pages.dev",
     "sdkVersion": "10.14.1",
     "rulesLocation": "../Botanica Studio/botanicstudio/firebase/firestore.rules",
-    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "scores", "candy", "updatedAt"],
+    "profileFields": ["name", "photo", "bestStreak", "bestLevel", "scores", "candy", "flappy", "updatedAt"],
     "profileCustomization": {
       "editable": ["name", "photo"],
       "nameMaxLengthUI": 30,
@@ -156,10 +156,11 @@
       "nicknameUnique": true,
       "nicknameNormalization": "lowercase, diacritics removed, non-alphanumerics collapsed to hyphen",
       "photo": "optional 160x160 JPEG data URL, max 90000 chars, no Firebase Storage",
-      "rankScopes": ["geral", "easy", "normal", "hard", "hardcore", "doce"],
+      "rankScopes": ["geral", "easy", "normal", "hard", "hardcore", "doce", "flappy"],
       "rankFamilies": {
         "classic": ["geral", "easy", "normal", "hard", "hardcore"],
-        "candy": ["doce"]
+        "candy": ["doce"],
+        "flappy": ["flappy"]
       },
       "candyMode": {
         "grid": "8x8",
@@ -177,6 +178,19 @@
         "background": "shared classic ambient waves/ribbon",
         "rankingCategories": ["streak", "level", "score"]
       },
+      "flappyMode": {
+        "canvas": "480x640 logical",
+        "levels": 500,
+        "lives": 3,
+        "controls": ["pointer", "click", "Space", "ArrowUp", "W"],
+        "pipesPerLevel": "4 + min(4, floor((level-1)/50)) = 4 to 8",
+        "speed": "150 to 300 px/s",
+        "gap": "46% to 28% of canvas height",
+        "phaseProgression": "pass all pipes to advance; streak +1 per phase",
+        "damage": "pipe or ground hit costs one life, resets pipes, phase pipe progress and streak; 0 lives ends run",
+        "victory": "complete phase 500",
+        "rankingCategories": ["streak", "level", "score"]
+      },
       "avatarFallback": "first letter of the nick"
     },
     "readPolicy": "authenticated users only",
@@ -190,7 +204,7 @@
   "audio": {
     "engine": "Web Audio API",
     "reverb": "generated impulse response",
-    "effects": ["build", "wallComplete", "lifeLost", "levelUp", "victory", "bounce", "click", "deny"]
+    "effects": ["build", "wallComplete", "lifeLost", "levelUp", "victory", "bounce", "click", "deny", "flap", "pipePoint"]
   },
   "invariants": [
     "index.html works offline via file:// for core gameplay",
@@ -203,17 +217,21 @@
     "main menu uses the theme ambient background and hides the classic app while open",
     "classic HUD has a back-to-menu button that pauses and preserves the run",
     "candy screen has a settings gear that pauses the timer and hides the difficulty section",
-    "Jogar opens a mode chooser with classic and candy; no duplicate mode button in the menu",
+    "flappy screen has a settings gear that pauses the flight and hides the difficulty section",
+    "Jogar opens a mode chooser with classic, candy and flappy; no duplicate mode button in the menu",
     "settings include a 0-100 volume slider persisted in localStorage",
     "tutorial can be opened from settings and returns to settings when closed",
-    "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores and server updatedAt",
+    "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores, optional candy and flappy blocks and server updatedAt",
     "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
-    "ranking menu has classic and candy families; classic lists difficulties, candy lists streak/level/score",
+    "ranking menu has classic, candy and flappy families; classic lists difficulties, candy and flappy list streak/level/score",
     "candy mode is a 8x8 match-3 with 100 levels, timer instead of lives and its own candy ranking",
     "candy matches include lines of 3+ and 2x2 squares; lightning clears a type; locks appear from level 21 with 2 hits",
     "candy time starts at 60 seconds and falls to 33 seconds at level 100",
     "candy bombs explode a 3x3 area on swap and can chain; the candy screen shares the classic ambient background",
     "candy ranking has streak, level and score categories and does not affect classic scores",
+    "flappy mode is a 500-level pipe-flight game with 3 lives, 4-8 pipes per level and its own ranking",
+    "a flappy hit costs one life and resets pipes, phase pipe progress and streak; 0 lives ends the run",
+    "flappy victory requires completing phase 500; its profile field caps bestLevel at 500",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
     "nicknames are unique via balljumpNicknames reservation; rename releases the old key in the same transaction",
     "ranking reads require authentication and writes require owner UID with monotonic scores",

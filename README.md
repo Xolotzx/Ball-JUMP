@@ -1,6 +1,6 @@
 # ted-io
 
-Jogo web com dois modos: **Clássico** (inspirado no JezzBall) e **Doce** (match-3), feito em um único arquivo HTML com Canvas, CSS e JavaScript puro.
+Jogo web com três modos: **Clássico** (inspirado no JezzBall), **Doce** (match-3) e **Flappy** (voo entre canos), feito em um único arquivo HTML com Canvas, CSS e JavaScript puro.
 
 ## Jogar
 
@@ -20,8 +20,8 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - 4 dificuldades.
 - Sequência 🔥: cada parede concluída aumenta o contador; levar dano zera. Inclui animação e som de fogo sutil.
 - Login com Google no fim da partida, perfil e ranking de **streak** e **níveis**.
-- Rankings em famílias: **Clássico 🧱** (Geral/Fácil/Normal/Difícil/Hardcore com Streak e Níveis) e **Doce 🍪** (Streak, Níveis e Pontos).
-- O botão **Jogar** abre a escolha entre **Modo Clássico** e **Modo Doce**.
+- Rankings em famílias: **Clássico 🧱** (Geral/Fácil/Normal/Difícil/Hardcore com Streak e Níveis), **Doce 🍪** (Streak, Níveis e Pontos) e **Flappy 🐦** (Streak, Níveis e Pontos).
+- O botão **Jogar** abre a escolha entre **Modo Clássico**, **Modo Doce** e **Modo Flappy**.
 - O HUD clássico tem **← Menu**, que pausa a partida e permite retomá-la depois.
 - **Modo Doce**: match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio (streak, níveis e pontos).
 - Combine 3+ doces ou um quadrado 2×2.
@@ -32,6 +32,8 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - **Bomba + bomba** vira uma explosão dupla: área 5×5 ao redor de cada bomba, +500 de bônus, flash e som mais fortes.
 - Explosões com som, faíscas, texto flutuante e tremida no tabuleiro.
 - O modo doce usa o mesmo fundo ambiente (ondas/fita) do modo clássico.
+- **Modo Flappy**: voo entre canos com 500 fases, 3 vidas e ranking próprio (streak, níveis e pontos). Clique, toque ou **Espaço/↑/W** para bater as asas.
+- Cada fase tem de 4 a 8 canos; a velocidade sobe e o vão diminui com o avanço. Bater em cano ou chão custa uma vida e reinicia os canos e o progresso da fase.
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.
 - Modo **Preto & laranja** e modo **Laranja & branco**.
 - Fundo ambiente em SVG: ondas laranja desfocadas no tema escuro (concentradas à direita) e fita laranja desfocada no tema claro.

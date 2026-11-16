@@ -141,21 +141,21 @@ Intervalo de crescimento: `difficulty.divisor * 23` ms por bloco; no modo Fácil
 Componentes de UI:
 
 - menu inicial: `#startMenu`;
-- seletor de modo: `#modeModal` (Clássico ou Doce);
+- seletor de modo: `#modeModal` (Clássico, Doce ou Flappy);
 - tutorial: `#tutorialModal`;
-- configurações: `#settingsModal` (acessível no HUD clássico e pela engrenagem do modo doce);
-- menu principal sobre o fundo ambiente do tema; `body.menu-active` oculta o `.app` clássico e `body.candy-active` oculta no modo doce.
+- configurações: `#settingsModal` (acessível no HUD clássico e pela engrenagem dos modos doce e flappy);
+- menu principal sobre o fundo ambiente do tema; `body.menu-active` oculta o `.app` clássico, `body.candy-active` oculta no modo doce e `body.flappy-active` oculta no modo flappy.
 - overlay de nível/game over/vitória: `#overlay`;
 - HUD, toast e meta-informações;
 - HUD clássico inclui **← Menu**, que pausa a partida e abre o menu; **Jogar → Clássico** retoma o estado.
 - chip de sequência `#streakChip` com apenas 🔥 + número, oculto quando a sequência é zero;
 - tela de fim de jogo: `#deathModal` com estatísticas, login Google, perfil e acesso ao ranking;
-- ranking: `#rankModal` com famílias Clássico/Doce, dificuldades no clássico e abas de streak/níveis/pontos; top 10.
+- ranking: `#rankModal` com famílias Clássico/Doce/Flappy, dificuldades no clássico e abas de streak/níveis/pontos; top 10.
 - configurações incluem volume (0–100%) e botão **Como jogar**.
 
 Controle de sobreposição:
 
-- `menuOpen`, `tutorialOpen`, `modalOpen`, `deathOpen`, `rankOpen`, `profileOpen`, `candyOpen`, `modeOpen`;
+- `menuOpen`, `tutorialOpen`, `modalOpen`, `deathOpen`, `rankOpen`, `profileOpen`, `candyOpen`, `flappyOpen`, `modeOpen`;
 - `syncOverlayLock()` aplica `inert` no conteúdo de fundo, bloqueia scroll do body e libera ao fechar;
 - foco é enviado para o overlay ativo;
 - o tutorial aberto pelas configurações fica por cima delas; ao fechar, as configurações continuam abertas (exceto em **Voltar ao jogo**);
@@ -172,6 +172,7 @@ O módulo `Sound` encapsula:
 - tons com harmônicos, envelopes suaves e pan estéreo;
 - bipe contínuo de construção;
 - efeitos de sucesso, perda de vida, fanfarra, vitória e quique;
+- efeitos do modo flappy: `flap` e `pipePoint`;
 - volume mestre 0–100% (ganho linear até 0,9) persistido e ajustável em tempo real;
 - ativação/desativação persistida.
 
@@ -206,10 +207,11 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Projeto compartilhado: `botanicstudio` (mesmo Firebase do Botanica Studio).
 - SDK modular **10.14.1** importado dinamicamente de `https://www.gstatic.com/firebasejs/10.14.1/` somente ao abrir a tela de morte/ranking ou iniciar login.
 - Auth: Google via `signInWithPopup`, com fallback para `signInWithRedirect`.
-- Firestore: banco `(default)`, coleção `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `updatedAt`.
-- No game over/vitória, a corrida é salva em `sessionStorage` com `difficulty` até o login/submissão; depois é enviada com `runTransaction`.
+- Firestore: banco `(default)`, coleção `balljumpProfiles/{uid}` com `name`, `photo`, `bestStreak`, `bestLevel`, `scores`, `candy`, `flappy`, `updatedAt`.
+- No game over/vitória, a corrida é salva em `sessionStorage` com `difficulty` (clássico) ou `mode` (doce/flappy) até o login/submissão; depois é enviada com `runTransaction`.
 - Melhores scores são monotônicos (`max`) e `updatedAt` usa `serverTimestamp`.
 - `scores` guarda `{ bestStreak, bestLevel }` por dificuldade (`easy`, `normal`, `hard`, `hardcore`). A chave só é criada quando o jogador conclui uma corrida naquele modo. Os campos globais continuam sendo o máximo histórico.
+- `candy` e `flappy` guardam `{ bestStreak, bestLevel, bestScore }` do modo correspondente. `flappy.bestLevel` é limitado a `500`; esses campos não alimentam o histórico clássico.
 - Perfil editável em `#profileModal`:
   - nick de 1 a 30 caracteres, normalizado e renderizado com `textContent`;
   - foto opcional processada em canvas 160×160 via `createImageBitmap` (fallback
@@ -228,15 +230,17 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Avatares (perfil e linhas do ranking) usam `background-image` com data URL
   validada; sem foto, mostram a inicial do nick.
 - Ranking:
-  - famílias principais **Clássico 🧱** e **Doce 🍪**;
+  - famílias principais **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**;
   - **Clássico 🧱**: abas **Geral / Fácil / Normal / Difícil / Hardcore**, com
     **Streak** e **Níveis**;
-  - **Doce 🍪**: abas **Streak**, **Níveis** e **Pontos** (a aba Pontos só aparece
-    nessa família);
-  - título dinâmico: “Ranking clássico — Fácil”, “Ranking doce”, etc.;
+  - **Doce 🍪**: abas **Streak**, **Níveis** e **Pontos**;
+  - **Flappy 🐦**: abas **Streak**, **Níveis** e **Pontos** (a aba Pontos só
+    aparece nas famílias Doce e Flappy);
+  - título dinâmico: “Ranking clássico — Fácil”, “Ranking doce”, “Ranking flappy”, etc.;
   - consultas por modo: `orderBy('scores.<modo>.bestStreak'|'bestLevel')`;
   - modo **Geral**: `orderBy('bestStreak'|'bestLevel')`;
   - modo **Doce**: `orderBy('candy.bestStreak'|'bestLevel'|'bestScore')`;
+  - modo **Flappy**: `orderBy('flappy.bestStreak'|'bestLevel'|'bestScore')`;
   - cache por modo em `rankData[modo]`, com `rankRequest` para descartar respostas
     antigas ao trocar de modo rapidamente.
 - Leitura exige autenticação; escrita apenas pelo UID do usuário. Regras publicadas no projeto compartilhado.
@@ -294,7 +298,40 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
   dificuldade fica oculta, o timer pausa e, ao fechar (ou voltar do tutorial),
   o timer retoma. Tema, som, volume e **Como jogar** continuam disponíveis.
 
-## 16. Extensibilidade
+## 16. Modo Flappy (voo entre canos)
+
+- Tela própria `#flappyScreen`, aberta pela opção **Modo Flappy** do seletor de modo.
+- Canvas próprio `#flappyCanvas` (480×640 lógicos, ajustado por `devicePixelRatio`
+  em `flappySetupCanvas`) desenhado por `flappyRender`.
+- Controles: ponteiro/toque no palco, clique, **Espaço**, **↑** e **W** chamam
+  `flappyFlap`. O primeiro flap inicia a corrida; a gravidade (`FLAPPY_GRAVITY`) e
+  o impulso (`FLAPPY_FLAP_VY`) são integrados em `flappyUpdate`.
+- 500 fases (`FLAPPY_MAX_LEVEL`) e 3 vidas (`FLAPPY_LIVES`). Cada fase tem de
+  4 a 8 canos (`flappyPipeCountFor`), velocidade de 150→300 px/s
+  (`flappySpeedFor`) e vão de 46%→28% da altura (`flappyGapHeightFor`).
+- Bater em um cano ou no chão (`flappyHitsPipe`/limite inferior) chama
+  `flappyLoseLife`: perde 1 vida, zera a sequência, reinicia os canos e o
+  progresso de canos da fase. Sem vidas, `flappyEndRun(false)` abre o modal de
+  fim de jogo.
+- Teto é apenas um limite suave (não tira vida). Passar por um cano soma
+  `flappyPipePoints(level)` (`5 + ceil(level/5)`); completar todos os canos da
+  fase soma `flappyPhaseBonus(level)` (`50 + level*2`), aumenta a sequência e
+  avança de fase. Completar a fase 500 é a vitória.
+- HUD mostra fase, vidas, pontos, sequência, recorde, tier (`Voo 1..10`) e a
+  barra de progresso de canos. Mensagens e pop-ups usam `#flappyMessage` e
+  `.flappy-pop`; dano dispara flash e tremida no palco.
+- O resultado usa `mode:'flappy'` e grava `flappy.bestStreak`, `flappy.bestLevel`
+  (≤500) e `flappy.bestScore`; o ranking Flappy tem abas Streak/Níveis/Pontos.
+- O modal de fim de jogo reutiliza `#deathModal` com textos de 500 fases;
+  **Menu** sai para o menu e **Jogar novamente** reinicia o modo flappy.
+- A engrenagem do cabeçalho abre `#settingsModal` sobre o modo flappy: a seção
+  de dificuldade fica oculta e o voo pausa; ao fechar (ou voltar do tutorial),
+  o voo retoma. Tema, som, volume e **Como jogar** continuam disponíveis.
+- O loop principal chama `flappyUpdate` quando `flappyOpen && flappyState.active
+  && !flappyState.ended`, respeitando pausa, aba oculta e overlays, e sempre
+  chama `flappyRender()`.
+
+## 17. Extensibilidade
 
 Se o projeto crescer além de um arquivo:
 

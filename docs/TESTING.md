@@ -19,9 +19,10 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Menu inicial aparece ao entrar com o nome **ted-io** no título da aba e no cartão.
 - [ ] O fundo do menu usa ondas no tema escuro e fita laranja no claro; o app clássico fica oculto atrás.
 - [ ] Existem os botões **Jogar**, **Ranking** e **Configurações**; não há **Como jogar** nem **Modo Doce** duplicado no menu.
-- [ ] **Jogar** abre o seletor com **Modo Clássico** e **Modo Doce**.
+- [ ] **Jogar** abre o seletor com **Modo Clássico**, **Modo Doce** e **Modo Flappy**.
 - [ ] Escolher **Modo Clássico** fecha o menu e inicia a partida clássica.
 - [ ] Escolher **Modo Doce** fecha o menu e abre o tabuleiro de doces.
+- [ ] Escolher **Modo Flappy** fecha o menu e abre o voo entre canos.
 - [ ] Fechar o seletor (X, clique fora ou Esc) retorna ao menu sem iniciar partida.
 - [ ] **← Menu** no HUD clássico pausa a partida e volta ao menu; **Jogar → Modo Clássico** retoma nível, vidas e progresso.
 - [ ] **Como jogar** dentro das configurações abre o tutorial; “Voltar” retorna às configurações.
@@ -117,15 +118,16 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] O top 10 é ordenado corretamente; a linha do próprio jogador é destacada.
 - [ ] Trocar de família/aba não quebra a lista.
 - [ ] **Sair** volta ao estado de login.
-- [ ] O menu **Ranking** mostra as famílias **Clássico 🧱** e **Doce 🍪**.
+- [ ] O menu **Ranking** mostra as famílias **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**.
 - [ ] O menu **Ranking** abre o ranking mesmo antes de morrer.
 - [ ] Em **Clássico 🧱**, aparecem as abas **Geral / Fácil / Normal / Difícil / Hardcore** e **Streak / Níveis**.
 - [ ] O título do clássico acompanha a dificuldade: “Ranking clássico — Fácil”, etc.
 - [ ] O ranking de cada dificuldade lista apenas jogadores que jogaram aquele modo.
 - [ ] O ranking **Geral** continua mostrando o melhor histórico.
 - [ ] Em **Doce 🍪**, a linha de dificuldades some e aparecem **Streak / Níveis / Pontos**.
-- [ ] A aba **Pontos** só aparece na família Doce.
-- [ ] Trocar entre Clássico e Doce atualiza título, abas e lista sem misturar dados.
+- [ ] Em **Flappy 🐦**, a linha de dificuldades some e aparecem **Streak / Níveis / Pontos**.
+- [ ] A aba **Pontos** só aparece nas famílias Doce e Flappy.
+- [ ] Trocar entre Clássico, Doce e Flappy atualiza título, abas e lista sem misturar dados.
 - [ ] Jogar uma corrida no modo Fácil atualiza o ranking Fácil e não altera os outros modos.
 - [ ] Trocar de modo rapidamente não deixa linhas de outro modo na lista.
 - [ ] Perfil antigo sem `scores` aparece no Geral e passa a aparecer no modo após jogar.
@@ -170,6 +172,28 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] A fase 100 termina em vitória.
 - [ ] O tabuleiro e o HUD cabem em 320–390 px sem overflow.
 
+### Modo Flappy (voo entre canos)
+
+- [ ] Em **Jogar → Modo Flappy**, o voo abre com o pássaro, o HUD e a barra de progresso.
+- [ ] Clique, toque, **Espaço**, **↑** e **W** fazem o pássaro bater as asas.
+- [ ] A gravidade puxa o pássaro e o primeiro flap inicia a corrida.
+- [ ] Passar por um cano soma pontos e avança a barra de progresso.
+- [ ] Bater em um cano perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase.
+- [ ] Bater no chão perde 1 vida; o teto apenas limita o voo sem tirar vida.
+- [ ] O HUD mostra fase, vidas, pontos, sequência, recorde, tier e canos restantes.
+- [ ] Cada fase tem 4 canos no início e chega a 8 nas fases mais altas.
+- [ ] A velocidade sobe e o vão diminui conforme a fase avança.
+- [ ] Completar todos os canos da fase soma o bônus, aumenta a sequência e avança de fase.
+- [ ] Perder as 3 vidas abre **VIDAS ESGOTADAS** com fase e pontos.
+- [ ] A tela final mostra **Menu** e **Jogar novamente** reinicia o modo flappy.
+- [ ] A engrenagem do cabeçalho do modo flappy abre as configurações e pausa o voo.
+- [ ] A seção de dificuldade fica oculta no modo flappy; fechar as configurações retoma o voo.
+- [ ] Trocar de aba (visibilidade) pausa e retoma o voo sem teleporte.
+- [ ] O ranking **Flappy** tem abas Streak, Níveis e Pontos, separado dos rankings clássicos.
+- [ ] O resultado do modo flappy não altera os scores do modo clássico nem o campo `candy`.
+- [ ] A fase 500 termina em vitória.
+- [ ] O palco do flappy e o HUD cabem em 320–390 px sem overflow horizontal.
+
 ### Edição de perfil
 
 - [ ] **Editar perfil** (tela de morte) e **Editar** (ranking) abrem o mesmo modal.
@@ -207,6 +231,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] `bestStreak`/`bestLevel` não podem diminuir.
 - [ ] `scores` com modo inválido, tipo errado ou valor fora do limite é negado.
 - [ ] `candy` com campo inválido, nível fora de 1–100 ou score negativo é negado.
+- [ ] `flappy` com campo inválido, nível fora de 1–500 ou score negativo é negado.
 - [ ] Schema inválido, nome vazio/longo ou timestamp incorreto é negado.
 - [ ] `photo` ausente, fora do prefixo permitido ou acima de 90.000 caracteres é negado.
 - [ ] `balljumpNicknames` exige autenticação para leitura e só permite escrita ao UID dono.

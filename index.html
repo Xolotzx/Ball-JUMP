@@ -315,18 +315,20 @@
     font-size:23px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
   }
   .mode-card.candy .mode-icon{background:linear-gradient(145deg,#ff9ebd,#db2777);color:#fff}
+  .mode-card.flappy .mode-icon{background:linear-gradient(145deg,#8fe3ff,#0ea5e9);color:#04283d}
   .mode-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
   .mode-copy strong{font-size:13px;line-height:1.2}
   .mode-copy small{font-size:10px;line-height:1.4;color:var(--muted)}
   .mode-chev{font-size:22px;line-height:1;color:var(--muted);font-weight:600}
 
   /* ===== modo doce (match-3) ===== */
-  .candy-screen{
+  .candy-screen,.flappy-screen{
     position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;
     padding:14px;overflow:auto;overscroll-behavior:contain;
     background:color-mix(in srgb,var(--page) 14%,transparent);
   }
   body.candy-active .app{display:none}
+  body.flappy-active .app{display:none}
   .candy-shell{width:min(100%,560px);display:flex;flex-direction:column;gap:11px}
   .candy-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .candy-back{
@@ -520,6 +522,42 @@
   @keyframes candy-hint{
     0%,100%{transform:scale(1)}
     50%{transform:scale(1.08)}
+  }
+
+  /* ===== modo flappy ===== */
+  .flappy-shell{width:min(100%,440px);display:flex;flex-direction:column;gap:10px;align-items:stretch}
+  .flappy-stage{
+    position:relative;width:min(100%,430px,calc((100dvh - 252px) * .75));margin:0 auto;
+    aspect-ratio:3 / 4;border-radius:20px;overflow:hidden;cursor:pointer;
+    border:1px solid var(--glass-border);background:#9ed8ff;
+    box-shadow:inset 0 1px 0 var(--glass-highlight),0 24px 60px -34px var(--shadow);
+    touch-action:none;user-select:none;-webkit-user-select:none;
+  }
+  .flappy-stage canvas{display:block;width:100%;height:100%}
+  .flappy-stage.is-shaking{animation:candy-mega-shake .4s cubic-bezier(.36,.07,.19,.97)}
+  .flappy-pop{
+    position:absolute;left:50%;top:26%;z-index:3;pointer-events:none;white-space:nowrap;
+    font-family:var(--mono);font-size:clamp(14px,4vw,20px);font-weight:900;color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.7),0 0 16px rgba(56,189,248,.85);
+    animation:flappy-pop 1s ease-out forwards;
+  }
+  .flappy-start{
+    position:absolute;left:50%;top:50%;z-index:2;pointer-events:none;text-align:center;
+    transform:translate(-50%,-50%);color:#fff;font-weight:900;letter-spacing:.06em;
+    font-size:clamp(12px,3.4vw,16px);text-shadow:0 2px 10px rgba(0,0,0,.55);
+    animation:flappy-start 1.4s ease-in-out infinite;
+  }
+  .flappy-start small{display:block;margin-top:5px;font-size:9px;letter-spacing:.12em;opacity:.8;font-weight:700}
+  .flappy-meter{display:flex;align-items:center;gap:8px;font-size:9px;color:var(--muted)}
+  .flappy-meter b{font-family:var(--mono);color:var(--accent);font-size:10px}
+  @keyframes flappy-pop{
+    0%{opacity:0;transform:translate(-50%,-20%) scale(.7)}
+    20%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+    100%{opacity:0;transform:translate(-50%,-130%) scale(1)}
+  }
+  @keyframes flappy-start{
+    0%,100%{transform:translate(-50%,-50%) translateY(0);opacity:.92}
+    50%{transform:translate(-50%,-50%) translateY(-5px);opacity:1}
   }
 
   /* ===== tutorial ===== */
@@ -1014,7 +1052,7 @@
         <span class="menu-chev" aria-hidden="true">›</span>
       </button>
     </div>
-    <p class="menu-foot">Jogar abre os modos Clássico e Doce. Dificuldade, aparência, som e tutorial ficam nas configurações.</p>
+    <p class="menu-foot">Jogar abre os modos Clássico, Doce e Flappy. Dificuldade, aparência, som e tutorial ficam nas configurações.</p>
   </div>
 </div>
 
@@ -1043,6 +1081,14 @@
         <span class="mode-copy">
           <strong>Modo Doce</strong>
           <small>Junte doces, cumpra metas e vença o tempo em 100 fases.</small>
+        </span>
+        <span class="mode-chev" aria-hidden="true">›</span>
+      </button>
+      <button id="modeFlappyBtn" class="mode-card flappy" type="button">
+        <span class="mode-icon" aria-hidden="true">🐦</span>
+        <span class="mode-copy">
+          <strong>Modo Flappy</strong>
+          <small>Voe entre os canos, sobreviva com 3 vidas e avance 500 fases.</small>
         </span>
         <span class="mode-chev" aria-hidden="true">›</span>
       </button>
@@ -1098,6 +1144,60 @@
 
     <p class="candy-message" id="candyMessage" role="status">Troque doces adjacentes para juntar 3 ou mais.</p>
     <p class="candy-hint">Junte 3+ ou 2×2 · ⚡ + doce limpa o tipo · 💣+💣 = explosão maior · 🔒 2 detonações.</p>
+  </div>
+</div>
+
+<!-- ===== modo flappy ===== -->
+<div class="candy-screen flappy-screen" id="flappyScreen" hidden>
+  <div class="flappy-shell">
+    <header class="candy-head">
+      <div class="candy-head-left">
+        <button id="flappyExit" class="candy-back" type="button" aria-label="Sair do modo flappy">← Menu</button>
+        <button id="flappySettings" class="candy-back candy-settings" type="button" aria-label="Configurações do modo flappy">&#9881;&#xFE0E;</button>
+      </div>
+      <div class="candy-title">
+        <span class="overlay-kicker">MODO FLAPPY</span>
+        <h2>Fase <span id="flappyLevel">1</span></h2>
+      </div>
+      <span class="candy-tier" id="flappyTier">Voo 1</span>
+    </header>
+
+    <div class="candy-hud">
+      <div class="candy-stat" id="flappyLivesBox">
+        <small>Vidas</small>
+        <b id="flappyLives">3</b>
+      </div>
+      <div class="candy-stat">
+        <small>Pontos</small>
+        <b id="flappyScore">0</b>
+      </div>
+      <div class="candy-stat">
+        <small>Sequência</small>
+        <b id="flappyStreak">0</b>
+      </div>
+      <div class="candy-stat">
+        <small>Recorde</small>
+        <b id="flappyBest">0</b>
+      </div>
+    </div>
+
+    <div class="candy-goal">
+      <div class="candy-goal-head">
+        <span>Progresso da fase</span>
+        <span id="flappyProgressLabel">0 / 4 canos</span>
+      </div>
+      <div class="candy-progress" aria-hidden="true">
+        <div id="flappyProgressBar"></div>
+      </div>
+    </div>
+
+    <div class="flappy-stage" id="flappyStage">
+      <canvas id="flappyCanvas" width="480" height="640" aria-label="Voo do pássaro entre os canos"></canvas>
+      <span class="flappy-start" id="flappyStart">TOQUE PARA VOAR<small>ESPAÇO · CLIQUE · TOQUE</small></span>
+    </div>
+
+    <p class="candy-message" id="flappyMessage" role="status">Toque, clique ou aperte Espaço para voar.</p>
+    <p class="candy-hint">Cada fase tem 4–8 canos · bater perde 1 vida e zera a sequência · 500 fases.</p>
   </div>
 </div>
 
@@ -1470,6 +1570,49 @@ function candyTargetScore(level) {
   return 750 + Math.floor((level - 1) / 5) * 500;
 }
 
+const FLAPPY_MAX_LEVEL = 500;
+const FLAPPY_LIVES = 3;
+const FLAPPY_W = 480;
+const FLAPPY_H = 640;
+const FLAPPY_GROUND = 56;
+const FLAPPY_BIRD_X = 122;
+const FLAPPY_BIRD_R = 15;
+const FLAPPY_GRAVITY = 1450;
+const FLAPPY_FLAP_VY = -430;
+const FLAPPY_PIPE_W = 64;
+const FLAPPY_PIPE_SPACING = 270;
+const FLAPPY_TIER_NAMES = ['Voo 1', 'Voo 2', 'Voo 3', 'Voo 4', 'Voo 5', 'Voo 6', 'Voo 7', 'Voo 8', 'Voo 9', 'Voo 10'];
+
+function flappySpeedFor(level) {
+  const t = Math.min(1, Math.max(0, (level - 1) / (FLAPPY_MAX_LEVEL - 1)));
+  return 150 + t * 150;
+}
+
+function flappyGapHeightFor(level) {
+  const t = Math.min(1, Math.max(0, (level - 1) / (FLAPPY_MAX_LEVEL - 1)));
+  return FLAPPY_H * (0.46 - t * 0.18);
+}
+
+function flappyPipeCountFor(level) {
+  return 4 + Math.min(4, Math.floor((level - 1) / 50));
+}
+
+function flappyTier(level) {
+  return Math.min(9, Math.floor((level - 1) / 50));
+}
+
+function flappyTierName(level) {
+  return FLAPPY_TIER_NAMES[flappyTier(level)];
+}
+
+function flappyPipePoints(level) {
+  return 5 + Math.ceil(level / 5);
+}
+
+function flappyPhaseBonus(level) {
+  return 50 + level * 2;
+}
+
 /* =========================================================
    MODOS DE APARÊNCIA
    ========================================================= */
@@ -1574,12 +1717,18 @@ const ui = {
   themeColor: $('themeColor'),
   startMenu: $('startMenu'), playBtn: $('playBtn'), menuSettings: $('menuSettingsBtn'),
   menuRanking: $('menuRankingBtn'),
-  modeModal: $('modeModal'), closeMode: $('closeMode'), modeClassic: $('modeClassicBtn'), modeCandy: $('modeCandyBtn'),
+  modeModal: $('modeModal'), closeMode: $('closeMode'), modeClassic: $('modeClassicBtn'), modeCandy: $('modeCandyBtn'), modeFlappy: $('modeFlappyBtn'),
   candyScreen: $('candyScreen'), candyExit: $('candyExit'), candySettings: $('candySettings'), candyLevel: $('candyLevel'),
   candyTier: $('candyTier'), candyTime: $('candyTime'), candyTimeBox: $('candyTimeBox'),
   candyScore: $('candyScore'), candyStreak: $('candyStreak'), candyTarget: $('candyTarget'),
   candyProgressLabel: $('candyProgressLabel'), candyProgressBar: $('candyProgressBar'),
   candyBoard: $('candyBoard'), candyMessage: $('candyMessage'),
+  flappyScreen: $('flappyScreen'), flappyExit: $('flappyExit'), flappySettings: $('flappySettings'),
+  flappyLevel: $('flappyLevel'), flappyTier: $('flappyTier'), flappyLivesBox: $('flappyLivesBox'),
+  flappyLives: $('flappyLives'), flappyScore: $('flappyScore'), flappyStreak: $('flappyStreak'),
+  flappyBest: $('flappyBest'), flappyProgressLabel: $('flappyProgressLabel'),
+  flappyProgressBar: $('flappyProgressBar'), flappyStage: $('flappyStage'),
+  flappyCanvas: $('flappyCanvas'), flappyStart: $('flappyStart'), flappyMessage: $('flappyMessage'),
   tutorial: $('tutorialModal'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
   tutorialPlay: $('tutorialPlayBtn'),
   deathModal: $('deathModal'), deathKicker: $('deathKicker'), deathTitle: $('deathTitle'),
@@ -2016,6 +2165,19 @@ const Sound = (() => {
     voice(1180, 0.045, { type: 'sine', vol: 0.007, delay: 0.006, send: 0.05, cutoff: 4200 });
   }
 
+  function flap() {
+    if (!enabled) return;
+    voice(250, 0.1, { type: 'triangle', vol: 0.045, slide: 540, attack: 0.002, send: 0.12, cutoff: 3200 });
+    noiseSweep({ duration: 0.08, vol: 0.014, from: 760, to: 2600, type: 'bandpass', q: 1.1, send: 0.18 });
+  }
+
+  function pipePoint(level = 1) {
+    if (!enabled) return;
+    const base = 660 + Math.min(8, Math.floor(level / 40)) * 55;
+    bell(base, 0.3, 0.035, 0, 0.12);
+    voice(base * 1.5, 0.14, { type: 'triangle', vol: 0.02, slide: base * 1.9, attack: 0.002, send: 0.18, cutoff: 4200 });
+  }
+
   function setEnabled(value) {
     enabled = !!value;
     if (!enabled) stopBuild();
@@ -2037,7 +2199,7 @@ const Sound = (() => {
 
   function unlock() { ensure(); }
 
-  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, explosion, megaExplosion, candyPop, lockHit, lightning, setEnabled, setVolume, unlock };
+  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, flap, pipePoint, explosion, megaExplosion, candyPop, lockHit, lightning, setEnabled, setVolume, unlock };
 })();
 
 /* =========================================================
@@ -2077,6 +2239,7 @@ let deathOpen = false;
 let rankOpen = false;
 let profileOpen = false;
 let candyOpen = false;
+let flappyOpen = false;
 let modeOpen = false;
 let deathMode = 'classic';
 
@@ -2101,6 +2264,32 @@ const candyState = {
   lastTick: 0,
   cells: []
 };
+
+const flappyState = {
+  active: false,
+  paused: false,
+  ended: false,
+  started: false,
+  level: 1,
+  lives: FLAPPY_LIVES,
+  score: 0,
+  streak: 0,
+  bestStreak: 0,
+  birdY: FLAPPY_H / 2,
+  birdVy: 0,
+  birdRot: 0,
+  flapPulse: 0,
+  pipes: [],
+  passed: 0,
+  pipeCount: 4,
+  speed: 150,
+  gapHeight: FLAPPY_H * 0.46,
+  time: 0,
+  flash: 0,
+  shake: 0
+};
+let flappyDpr = 1;
+let flappyCtx = null;
 let pendingPhoto = '';
 let lastFrame = performance.now();
 let accumulator = 0;
@@ -2205,6 +2394,11 @@ function setupCanvas() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 window.addEventListener('resize', setupCanvas);
+window.addEventListener('resize', () => {
+  if (!flappyCtx) return;
+  flappySetupCanvas();
+  if (flappyOpen) flappyRender();
+});
 window.addEventListener('orientationchange', () => setTimeout(setupCanvas, 120));
 
 /* =========================================================
@@ -3158,12 +3352,13 @@ let profileHideTimer = 0;
 let lastFocused = null;
 
 function syncOverlayLock() {
-  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen || modeOpen;
+  const locked = menuOpen || modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen || flappyOpen || modeOpen;
   if (appRoot && 'inert' in appRoot) appRoot.inert = locked;
-  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen || modeOpen;
+  if (ui.startMenu && 'inert' in ui.startMenu) ui.startMenu.inert = modalOpen || tutorialOpen || deathOpen || rankOpen || profileOpen || candyOpen || flappyOpen || modeOpen;
   if (ui.modal && 'inert' in ui.modal) ui.modal.inert = tutorialOpen;
   if (ui.modeModal && 'inert' in ui.modeModal) ui.modeModal.inert = deathOpen || rankOpen || profileOpen || modalOpen || tutorialOpen;
   if (ui.candyScreen && 'inert' in ui.candyScreen) ui.candyScreen.inert = deathOpen || rankOpen || profileOpen || modalOpen || tutorialOpen;
+  if (ui.flappyScreen && 'inert' in ui.flappyScreen) ui.flappyScreen.inert = deathOpen || rankOpen || profileOpen || modalOpen || tutorialOpen;
   if (ui.deathModal && 'inert' in ui.deathModal) ui.deathModal.inert = rankOpen || profileOpen;
   if (ui.rankModal && 'inert' in ui.rankModal) ui.rankModal.inert = profileOpen;
   document.body.style.overflow = locked ? 'hidden' : '';
@@ -3287,6 +3482,15 @@ function sanitizeCandy(value) {
   };
 }
 
+function sanitizeFlappy(value) {
+  if (!value || typeof value !== 'object') return null;
+  return {
+    bestStreak: clampInt(value.bestStreak, 0, 1000000),
+    bestLevel: clampInt(value.bestLevel, 1, FLAPPY_MAX_LEVEL),
+    bestScore: clampInt(value.bestScore, 0, 100000000)
+  };
+}
+
 function profileScoreFor(profile, scope) {
   if (!profile) return { bestStreak: 0, bestLevel: 1, bestScore: 0 };
   if (scope === 'geral') {
@@ -3302,6 +3506,14 @@ function profileScoreFor(profile, scope) {
       bestStreak: clampInt(candy.bestStreak, 0, 1000000),
       bestLevel: clampInt(candy.bestLevel, 1, 100),
       bestScore: clampInt(candy.bestScore, 0, 100000000)
+    };
+  }
+  if (scope === 'flappy') {
+    const flappy = profile.flappy || {};
+    return {
+      bestStreak: clampInt(flappy.bestStreak, 0, 1000000),
+      bestLevel: clampInt(flappy.bestLevel, 1, FLAPPY_MAX_LEVEL),
+      bestScore: clampInt(flappy.bestScore, 0, 100000000)
     };
   }
   const entry = profile.scores && profile.scores[scope];
@@ -3332,39 +3544,44 @@ function mergePendingCandy(candy, pending) {
   };
 }
 
-function readPendingRun() {
-  try {
-    const raw = sessionStorage.getItem(PENDING_RUN_KEY);
-    if (raw) {
-      const data = JSON.parse(raw);
-      return {
-        mode: data.mode === 'candy' ? 'candy' : 'classic',
-        bestStreak: clampInt(data.bestStreak, 0, 1000000),
-        bestLevel: clampInt(data.bestLevel, 1, 100),
-        bestScore: clampInt(data.bestScore, 0, 100000000),
-        difficulty: typeof data.difficulty === 'string' && DIFFICULTIES[data.difficulty] ? data.difficulty : ''
-      };
-    }
-  } catch (_) {}
-  const fallback = firebaseRuntime.pendingRun;
-  if (!fallback) return null;
+function mergePendingFlappy(flappy, pending) {
+  const previous = sanitizeFlappy(flappy) || { bestStreak: 0, bestLevel: 1, bestScore: 0 };
+  if (!pending || pending.mode !== 'flappy') return previous;
   return {
-    mode: fallback.mode === 'candy' ? 'candy' : 'classic',
-    bestStreak: clampInt(fallback.bestStreak, 0, 1000000),
-    bestLevel: clampInt(fallback.bestLevel, 1, 100),
-    bestScore: clampInt(fallback.bestScore, 0, 100000000),
-    difficulty: typeof fallback.difficulty === 'string' && DIFFICULTIES[fallback.difficulty] ? fallback.difficulty : ''
+    bestStreak: clampInt(Math.max(previous.bestStreak, pending.bestStreak), 0, 1000000),
+    bestLevel: clampInt(Math.max(previous.bestLevel, pending.bestLevel), 1, FLAPPY_MAX_LEVEL),
+    bestScore: clampInt(Math.max(previous.bestScore, pending.bestScore), 0, 100000000)
   };
 }
 
+function readPendingRun() {
+  const normalize = (data) => {
+    const mode = data && data.mode === 'candy' ? 'candy' : data && data.mode === 'flappy' ? 'flappy' : 'classic';
+    return {
+      mode,
+      bestStreak: clampInt(data && data.bestStreak, 0, 1000000),
+      bestLevel: clampInt(data && data.bestLevel, 1, mode === 'flappy' ? FLAPPY_MAX_LEVEL : 100),
+      bestScore: clampInt(data && data.bestScore, 0, 100000000),
+      difficulty: typeof (data && data.difficulty) === 'string' && DIFFICULTIES[data.difficulty] ? data.difficulty : ''
+    };
+  };
+  try {
+    const raw = sessionStorage.getItem(PENDING_RUN_KEY);
+    if (raw) return normalize(JSON.parse(raw));
+  } catch (_) {}
+  const fallback = firebaseRuntime.pendingRun;
+  if (!fallback) return null;
+  return normalize(fallback);
+}
+
 function savePendingRun(run) {
-  const mode = run && run.mode === 'candy' ? 'candy' : 'classic';
+  const mode = run && run.mode === 'candy' ? 'candy' : run && run.mode === 'flappy' ? 'flappy' : 'classic';
   const data = {
     mode,
     bestStreak: clampInt(run && run.bestStreak, 0, 1000000),
-    bestLevel: clampInt(run && run.bestLevel, 1, 100)
+    bestLevel: clampInt(run && run.bestLevel, 1, mode === 'flappy' ? FLAPPY_MAX_LEVEL : 100)
   };
-  if (mode === 'candy') {
+  if (mode === 'candy' || mode === 'flappy') {
     data.bestScore = clampInt(run && run.bestScore, 0, 100000000);
   } else {
     const difficulty = run && DIFFICULTIES[run.difficulty] ? run.difficulty : '';
@@ -3421,11 +3638,16 @@ function updateAuthUI() {
     const name = profile.name || fallbackName;
     const mode = DIFFICULTIES[state.difficulty] ? state.difficulty : 'normal';
     const isCandyDeath = deathMode === 'candy';
-    const best = profileScoreFor(profile, isCandyDeath ? 'doce' : mode);
+    const isFlappyDeath = deathMode === 'flappy';
+    const best = profileScoreFor(profile, isFlappyDeath ? 'flappy' : isCandyDeath ? 'doce' : mode);
     ui.deathName.textContent = name;
     setAvatar(ui.deathAvatar, name, profile.photo);
-    ui.deathProfileSub.textContent = isCandyDeath ? 'Perfil conectado · Doce' : 'Perfil conectado · ' + DIFFICULTIES[mode].name;
-    ui.deathBest.textContent = `🔥 ${best.bestStreak} · nível ${best.bestLevel}`;
+    ui.deathProfileSub.textContent = isFlappyDeath
+      ? 'Perfil conectado · Flappy'
+      : isCandyDeath
+        ? 'Perfil conectado · Doce'
+        : 'Perfil conectado · ' + DIFFICULTIES[mode].name;
+    ui.deathBest.textContent = `🔥 ${best.bestStreak} · ${isFlappyDeath ? 'fase' : 'nível'} ${best.bestLevel}`;
     if (fb.error) ui.deathNote.textContent = fb.error;
     else if (fb.syncing) ui.deathNote.textContent = 'Salvando resultado…';
     else if (fb.profile) ui.deathNote.textContent = 'Resultado salvo no ranking.';
@@ -3446,11 +3668,11 @@ function updateAuthUI() {
     const fallbackName = displayNameOf(fb.user);
     const profile = fb.profile || { name: fallbackName, photo: '', bestStreak: 0, bestLevel: 1, scores: {}, candy: null };
     const name = profile.name || fallbackName;
-    const scope = fb.rankDifficulty === 'geral' || fb.rankDifficulty === 'doce' || DIFFICULTIES[fb.rankDifficulty] ? fb.rankDifficulty : 'geral';
+    const scope = fb.rankDifficulty === 'geral' || fb.rankDifficulty === 'doce' || fb.rankDifficulty === 'flappy' || DIFFICULTIES[fb.rankDifficulty] ? fb.rankDifficulty : 'geral';
     const best = profileScoreFor(profile, scope);
     setAvatar(ui.rankAvatar, name, profile.photo);
     ui.rankName.textContent = name;
-    ui.rankBest.textContent = `🔥 ${best.bestStreak} · nível ${best.bestLevel}`;
+    ui.rankBest.textContent = `🔥 ${best.bestStreak} · ${scope === 'flappy' ? 'fase' : 'nível'} ${best.bestLevel}`;
     if (fb.error) {
       ui.rankStatus.textContent = fb.error;
       ui.rankStatus.classList.add('is-error');
@@ -3551,13 +3773,17 @@ async function syncProfile() {
         name: claimed.name,
         updatedAt: fs.serverTimestamp()
       });
-      const scores = mergePendingScore(sanitizeScores(old.scores), pending && pending.mode !== 'candy' ? pending : null);
+      const classicPending = pending && pending.mode === 'classic' ? pending : null;
+      const scores = mergePendingScore(sanitizeScores(old.scores), classicPending);
       const modeScores = Object.values(scores);
-      const classicPending = pending && pending.mode !== 'candy' ? pending : null;
       const existingCandy = sanitizeCandy(old.candy);
       const candy = pending && pending.mode === 'candy'
         ? mergePendingCandy(existingCandy, pending)
         : existingCandy;
+      const existingFlappy = sanitizeFlappy(old.flappy);
+      const flappy = pending && pending.mode === 'flappy'
+        ? mergePendingFlappy(existingFlappy, pending)
+        : existingFlappy;
       values = {
         name: claimed.name,
         photo: preservedPhoto,
@@ -3575,6 +3801,7 @@ async function syncProfile() {
         updatedAt: fs.serverTimestamp()
       };
       if (candy) values.candy = candy;
+      if (flappy) values.flappy = flappy;
       tx.set(ref, values);
     });
     fb.profile = {
@@ -3583,7 +3810,8 @@ async function syncProfile() {
       bestStreak: values.bestStreak,
       bestLevel: values.bestLevel,
       scores: values.scores,
-      candy: values.candy || null
+      candy: values.candy || null,
+      flappy: values.flappy || null
     };
     fb.profileUid = fb.user.uid;
     clearPendingRun();
@@ -3706,20 +3934,30 @@ function maybeBootstrapFirebase() {
    ========================================================= */
 function openEndModal(victory = false, mode = 'classic') {
   hideOverlay();
-  deathMode = mode === 'candy' ? 'candy' : 'classic';
+  deathMode = mode === 'candy' ? 'candy' : mode === 'flappy' ? 'flappy' : 'classic';
   deathOpen = true;
   state.paused = true;
   Sound.stopBuild();
 
   const isCandy = deathMode === 'candy';
-  const run = isCandy
-    ? { mode: 'candy', bestStreak: candyState.bestStreak, bestLevel: candyState.level, bestScore: candyState.runScore }
-    : { mode: 'classic', bestStreak: state.runBestStreak, bestLevel: state.level, difficulty: state.difficulty };
+  const isFlappy = deathMode === 'flappy';
+  const run = isFlappy
+    ? { mode: 'flappy', bestStreak: flappyState.bestStreak, bestLevel: flappyState.level, bestScore: flappyState.score }
+    : isCandy
+      ? { mode: 'candy', bestStreak: candyState.bestStreak, bestLevel: candyState.level, bestScore: candyState.runScore }
+      : { mode: 'classic', bestStreak: state.runBestStreak, bestLevel: state.level, difficulty: state.difficulty };
   savePendingRun(run);
 
   ui.deathModal.dataset.kind = victory ? 'victory' : 'gameover';
   ui.deathModal.dataset.mode = deathMode;
-  if (isCandy) {
+  if (isFlappy) {
+    ui.deathKicker.textContent = victory ? '500 FASES' : 'VIDAS ESGOTADAS';
+    ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'FIM DE JOGO';
+    ui.deathSubtitle.textContent = victory
+      ? 'Você completou as 500 fases do modo flappy!'
+      : 'Você chegou à fase ' + run.bestLevel + ' com ' + run.bestScore.toLocaleString('pt-BR') + ' pontos.';
+    ui.deathLevelLabel.textContent = 'fase alcançada';
+  } else if (isCandy) {
     ui.deathKicker.textContent = victory ? '100 FASES' : 'TEMPO ESGOTADO';
     ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'FIM DO TEMPO';
     ui.deathSubtitle.textContent = victory
@@ -3736,10 +3974,10 @@ function openEndModal(victory = false, mode = 'classic') {
   }
   ui.deathStreakVal.textContent = run.bestStreak;
   ui.deathLevelVal.textContent = run.bestLevel;
-  ui.deathScoreStat.hidden = !isCandy;
-  ui.deathStats.classList.toggle('has-score', isCandy);
-  ui.deathScoreVal.textContent = isCandy ? run.bestScore.toLocaleString('pt-BR') : '0';
-  ui.deathMenu.hidden = !isCandy;
+  ui.deathScoreStat.hidden = !(isCandy || isFlappy);
+  ui.deathStats.classList.toggle('has-score', isCandy || isFlappy);
+  ui.deathScoreVal.textContent = (isCandy || isFlappy) ? run.bestScore.toLocaleString('pt-BR') : '0';
+  ui.deathMenu.hidden = !(isCandy || isFlappy);
 
   firebaseRuntime.error = '';
   updateAuthUI();
@@ -3780,6 +4018,10 @@ function restartFromDeath() {
   closeEndModal();
   if (deathMode === 'candy') {
     startCandyMode();
+    return;
+  }
+  if (deathMode === 'flappy') {
+    startFlappyMode();
     return;
   }
   restartGame();
@@ -4546,12 +4788,421 @@ function onCandyBoardClick(event) {
   if (Number.isInteger(index)) candyCellClick(index);
 }
 
+/* =========================================================
+   MODO FLAPPY
+   ========================================================= */
+function flappySetupCanvas() {
+  if (!ui.flappyCanvas) return;
+  flappyDpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+  ui.flappyCanvas.width = Math.round(FLAPPY_W * flappyDpr);
+  ui.flappyCanvas.height = Math.round(FLAPPY_H * flappyDpr);
+  flappyCtx = ui.flappyCanvas.getContext('2d');
+  if (flappyCtx) flappyCtx.setTransform(flappyDpr, 0, 0, flappyDpr, 0, 0);
+}
+
+function flappyBuildPipes() {
+  const f = flappyState;
+  const gapH = f.gapHeight;
+  const minCenter = 46 + gapH / 2;
+  const maxCenter = FLAPPY_H - FLAPPY_GROUND - 34 - gapH / 2;
+  const pipes = [];
+  let center = clamp(FLAPPY_H / 2 + rand(-90, 90), minCenter, maxCenter);
+  for (let i = 0; i < f.pipeCount; i += 1) {
+    if (i > 0) center = clamp(center + rand(-145, 145), minCenter, maxCenter);
+    pipes.push({
+      x: FLAPPY_W + 90 + i * FLAPPY_PIPE_SPACING,
+      gapY: center - gapH / 2,
+      gapH,
+      passed: false
+    });
+  }
+  return pipes;
+}
+
+function flappyUpdateHUD() {
+  const f = flappyState;
+  ui.flappyLevel.textContent = f.level;
+  ui.flappyLives.textContent = Math.max(0, f.lives);
+  ui.flappyScore.textContent = f.score.toLocaleString('pt-BR');
+  ui.flappyStreak.textContent = f.streak;
+  ui.flappyBest.textContent = f.bestStreak;
+  ui.flappyTier.textContent = flappyTierName(f.level);
+  ui.flappyProgressLabel.textContent = f.passed + ' / ' + f.pipeCount + ' canos';
+  ui.flappyProgressBar.style.width = (f.pipeCount ? (f.passed / f.pipeCount) * 100 : 0).toFixed(1) + '%';
+  ui.flappyLivesBox.classList.toggle('is-low', f.lives <= 1);
+  if (ui.flappyStart) ui.flappyStart.hidden = f.started || !f.active || f.ended;
+}
+
+function flappySetMessage(text, good = false) {
+  ui.flappyMessage.textContent = text;
+  ui.flappyMessage.classList.toggle('is-good', !!good);
+}
+
+function flappyShowPop(text) {
+  if (!ui.flappyStage) return;
+  const el = document.createElement('span');
+  el.className = 'flappy-pop';
+  el.textContent = text;
+  ui.flappyStage.appendChild(el);
+  setTimeout(() => el.remove(), 1050);
+}
+
+function flappyFlap() {
+  const f = flappyState;
+  if (!flappyOpen || !f.active || f.ended || f.paused) return;
+  if (deathOpen || rankOpen || modalOpen || profileOpen || tutorialOpen) return;
+  Sound.unlock();
+  if (!f.started) {
+    f.started = true;
+    flappySetMessage('Voe pelos canos! Cada fase tem ' + f.pipeCount + ' canos.');
+  }
+  f.birdVy = FLAPPY_FLAP_VY;
+  f.flapPulse = 1;
+  Sound.flap();
+  ui.flappyStart.hidden = true;
+}
+
+function flappyHitsPipe(pipe) {
+  const f = flappyState;
+  const r = FLAPPY_BIRD_R - 2;
+  if (FLAPPY_BIRD_X + r < pipe.x || FLAPPY_BIRD_X - r > pipe.x + FLAPPY_PIPE_W) return false;
+  return f.birdY - r < pipe.gapY || f.birdY + r > pipe.gapY + pipe.gapH;
+}
+
+function flappyLoseLife() {
+  const f = flappyState;
+  if (!f.active || f.ended) return;
+  f.lives -= 1;
+  f.streak = 0;
+  f.flash = 1;
+  f.birdY = FLAPPY_H / 2;
+  f.birdVy = 0;
+  f.birdRot = 0;
+  f.passed = 0;
+  f.pipes = flappyBuildPipes();
+  flappyUpdateHUD();
+  Sound.lifeLost();
+  ui.flappyStage.classList.remove('is-shaking');
+  void ui.flappyStage.offsetWidth;
+  ui.flappyStage.classList.add('is-shaking');
+  setTimeout(() => ui.flappyStage.classList.remove('is-shaking'), 430);
+  if (f.lives <= 0) {
+    flappySetMessage('Sem vidas — fim de jogo.');
+    flappyEndRun(false);
+    return;
+  }
+  flappySetMessage('Bateu! Perdeu 1 vida — fase ' + f.level + ' reiniciada. Vidas: ' + f.lives + '.');
+  flappyShowPop('−1 VIDA');
+}
+
+function flappyCompletePhase() {
+  const f = flappyState;
+  if (!f.active || f.ended) return;
+  const cleared = f.level;
+  f.score += flappyPhaseBonus(cleared);
+  f.streak += 1;
+  f.bestStreak = Math.max(f.bestStreak, f.streak);
+  if (cleared >= FLAPPY_MAX_LEVEL) {
+    f.level = FLAPPY_MAX_LEVEL;
+    flappyUpdateHUD();
+    flappyShowPop('500 FASES!');
+    flappyEndRun(true);
+    return;
+  }
+  f.level = cleared + 1;
+  f.speed = flappySpeedFor(f.level);
+  f.gapHeight = flappyGapHeightFor(f.level);
+  f.pipeCount = flappyPipeCountFor(f.level);
+  f.passed = 0;
+  f.pipes = flappyBuildPipes();
+  f.birdY = FLAPPY_H / 2;
+  f.birdVy = -140;
+  f.birdRot = 0;
+  flappyUpdateHUD();
+  flappyShowPop('FASE ' + f.level + ' · 🔥 ' + f.streak);
+  flappySetMessage('Fase ' + cleared + ' concluída! Agora ' + f.pipeCount + ' canos com vão menor.', true);
+  if (f.level % 25 === 1) Sound.fanfare();
+  else Sound.success();
+}
+
+function flappyUpdate(dt) {
+  const f = flappyState;
+  f.time += dt;
+  if (f.flash > 0) f.flash = Math.max(0, f.flash - dt * 2.6);
+  if (f.flapPulse > 0) f.flapPulse = Math.max(0, f.flapPulse - dt * 4.5);
+  if (!f.active || f.ended || f.paused || !f.started) return;
+
+  f.birdVy = Math.min(760, f.birdVy + FLAPPY_GRAVITY * dt);
+  f.birdY += f.birdVy * dt;
+  const targetRot = clamp(f.birdVy / 600, -0.5, 1.05);
+  f.birdRot += (targetRot - f.birdRot) * Math.min(1, dt * 11);
+
+  if (f.birdY - FLAPPY_BIRD_R <= 0) {
+    f.birdY = FLAPPY_BIRD_R;
+    if (f.birdVy < 0) f.birdVy = 0;
+  }
+  if (f.birdY + FLAPPY_BIRD_R >= FLAPPY_H - FLAPPY_GROUND) {
+    f.birdY = FLAPPY_H - FLAPPY_GROUND - FLAPPY_BIRD_R;
+    flappyLoseLife();
+    return;
+  }
+
+  for (const pipe of f.pipes) pipe.x -= f.speed * dt;
+  for (const pipe of f.pipes) {
+    if (flappyHitsPipe(pipe)) {
+      flappyLoseLife();
+      return;
+    }
+  }
+
+  let scored = 0;
+  for (const pipe of f.pipes) {
+    if (!pipe.passed && pipe.x + FLAPPY_PIPE_W < FLAPPY_BIRD_X - FLAPPY_BIRD_R) {
+      pipe.passed = true;
+      f.passed += 1;
+      scored += 1;
+    }
+  }
+  if (scored > 0) {
+    f.score += scored * flappyPipePoints(f.level);
+    flappyUpdateHUD();
+    Sound.pipePoint(f.level);
+  }
+  if (f.passed >= f.pipeCount) flappyCompletePhase();
+}
+
+function flappyEndRun(victory) {
+  const f = flappyState;
+  if (f.ended) return;
+  f.active = false;
+  f.ended = true;
+  f.paused = true;
+  flappyUpdateHUD();
+  if (victory) Sound.victory();
+  else Sound.gameOver();
+  openEndModal(victory, 'flappy');
+}
+
+function startFlappyMode() {
+  Sound.click();
+  Sound.stopBuild();
+  clearPendingRun();
+  menuOpen = false;
+  ui.startMenu.hidden = true;
+  ui.startMenu.classList.remove('is-leaving');
+  document.body.classList.remove('menu-active');
+  flappyOpen = true;
+  const f = flappyState;
+  f.active = true;
+  f.ended = false;
+  f.paused = false;
+  f.started = false;
+  f.level = 1;
+  f.lives = FLAPPY_LIVES;
+  f.score = 0;
+  f.streak = 0;
+  f.bestStreak = 0;
+  f.speed = flappySpeedFor(1);
+  f.gapHeight = flappyGapHeightFor(1);
+  f.pipeCount = flappyPipeCountFor(1);
+  f.passed = 0;
+  f.birdY = FLAPPY_H / 2;
+  f.birdVy = 0;
+  f.birdRot = 0;
+  f.flapPulse = 0;
+  f.time = 0;
+  f.flash = 0;
+  f.shake = 0;
+  f.pipes = flappyBuildPipes();
+  flappySetupCanvas();
+  ui.flappyScreen.hidden = false;
+  document.body.classList.add('flappy-active');
+  state.paused = true;
+  flappyUpdateHUD();
+  flappySetMessage('Toque, clique ou aperte Espaço para voar.');
+  flappyRender();
+  syncOverlayLock();
+  setTimeout(() => { if (flappyOpen) { try { ui.flappyExit.focus(); } catch (_) {} } }, 80);
+}
+
+function exitFlappyMode() {
+  flappyState.active = false;
+  flappyState.ended = true;
+  flappyState.paused = true;
+  flappyState.pipes = [];
+  ui.flappyScreen.hidden = true;
+  ui.flappyStart.hidden = false;
+  document.body.classList.remove('flappy-active');
+  flappyOpen = false;
+  openStartMenu();
+}
+
+function flappyRender() {
+  if (!flappyOpen || !flappyCtx) return;
+  const c = flappyCtx;
+  const f = flappyState;
+  c.setTransform(flappyDpr, 0, 0, flappyDpr, 0, 0);
+  c.clearRect(0, 0, FLAPPY_W, FLAPPY_H);
+
+  // céu
+  const sky = c.createLinearGradient(0, 0, 0, FLAPPY_H);
+  sky.addColorStop(0, '#79c9ff');
+  sky.addColorStop(0.55, '#b9e6ff');
+  sky.addColorStop(1, '#e9f8ff');
+  c.fillStyle = sky;
+  c.fillRect(0, 0, FLAPPY_W, FLAPPY_H);
+
+  const sun = c.createRadialGradient(392, 92, 8, 392, 92, 108);
+  sun.addColorStop(0, 'rgba(255,247,196,.95)');
+  sun.addColorStop(0.45, 'rgba(255,236,150,.35)');
+  sun.addColorStop(1, 'rgba(255,236,150,0)');
+  c.fillStyle = sun;
+  c.beginPath();
+  c.arc(392, 92, 108, 0, Math.PI * 2);
+  c.fill();
+
+  // nuvens em parallax
+  c.fillStyle = 'rgba(255,255,255,.72)';
+  for (let i = 0; i < 5; i += 1) {
+    const span = FLAPPY_W + 180;
+    const x = FLAPPY_W + 90 - ((f.time * 22 + i * 137) % span);
+    const y = 54 + (i % 3) * 62;
+    const s = 0.7 + (i % 4) * 0.16;
+    c.beginPath();
+    c.ellipse(x, y, 38 * s, 16 * s, 0, 0, Math.PI * 2);
+    c.ellipse(x + 26 * s, y - 8 * s, 26 * s, 15 * s, 0, 0, Math.PI * 2);
+    c.ellipse(x - 28 * s, y - 3 * s, 22 * s, 12 * s, 0, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // colinas distantes
+  c.fillStyle = 'rgba(96,196,142,.45)';
+  c.beginPath();
+  c.moveTo(0, FLAPPY_H - FLAPPY_GROUND);
+  for (let x = 0; x <= FLAPPY_W; x += 40) {
+    const y = FLAPPY_H - FLAPPY_GROUND - 40 - Math.sin((x + f.time * 12) / 90) * 26;
+    c.lineTo(x, y);
+  }
+  c.lineTo(FLAPPY_W, FLAPPY_H - FLAPPY_GROUND);
+  c.closePath();
+  c.fill();
+
+  // canos
+  for (const pipe of f.pipes) {
+    if (pipe.x > FLAPPY_W + 8 || pipe.x + FLAPPY_PIPE_W < -8) continue;
+    const bottomY = pipe.gapY + pipe.gapH;
+    const body = c.createLinearGradient(pipe.x, 0, pipe.x + FLAPPY_PIPE_W, 0);
+    body.addColorStop(0, '#2f8f46');
+    body.addColorStop(0.32, '#67d97f');
+    body.addColorStop(0.6, '#3fae5c');
+    body.addColorStop(1, '#1f6f37');
+    c.fillStyle = body;
+    c.fillRect(pipe.x + 3, 0, FLAPPY_PIPE_W - 6, pipe.gapY);
+    c.fillRect(pipe.x + 3, bottomY, FLAPPY_PIPE_W - 6, FLAPPY_H - FLAPPY_GROUND - bottomY);
+
+    const capTop = Math.max(0, pipe.gapY - 26);
+    const capBottom = bottomY;
+    rr(c, pipe.x - 4, capTop, FLAPPY_PIPE_W + 8, 26, 7);
+    c.fillStyle = '#6fe08a';
+    c.fill();
+    c.strokeStyle = 'rgba(20,80,40,.55)';
+    c.lineWidth = 2;
+    c.stroke();
+    rr(c, pipe.x - 4, capBottom, FLAPPY_PIPE_W + 8, 26, 7);
+    c.fillStyle = '#5ed179';
+    c.fill();
+    c.stroke();
+
+    c.fillStyle = 'rgba(255,255,255,.22)';
+    c.fillRect(pipe.x + 11, Math.max(0, pipe.gapY - 22), 7, Math.max(0, 18));
+    c.fillRect(pipe.x + 11, bottomY + 4, 7, 18);
+  }
+
+  // chão
+  c.fillStyle = '#dfb87c';
+  c.fillRect(0, FLAPPY_H - FLAPPY_GROUND, FLAPPY_W, FLAPPY_GROUND);
+  c.fillStyle = '#7fd06a';
+  c.fillRect(0, FLAPPY_H - FLAPPY_GROUND, FLAPPY_W, 13);
+  c.fillStyle = 'rgba(255,255,255,.28)';
+  c.fillRect(0, FLAPPY_H - FLAPPY_GROUND, FLAPPY_W, 4);
+  c.fillStyle = 'rgba(150,105,50,.35)';
+  for (let x = -20; x < FLAPPY_W + 20; x += 34) {
+    const off = ((x + f.time * 60) % 34);
+    c.beginPath();
+    c.moveTo(x + off, FLAPPY_H - FLAPPY_GROUND + 20);
+    c.lineTo(x + off + 12, FLAPPY_H);
+    c.lineTo(x + off + 20, FLAPPY_H);
+    c.lineTo(x + off + 8, FLAPPY_H - FLAPPY_GROUND + 20);
+    c.closePath();
+    c.fill();
+  }
+
+  // pássaro
+  const wing = Math.sin(f.time * 16) * 0.35 - f.flapPulse * 0.55;
+  c.save();
+  c.translate(FLAPPY_BIRD_X, f.birdY);
+  c.rotate(f.birdRot);
+  c.fillStyle = 'rgba(0,0,0,.12)';
+  c.beginPath();
+  c.ellipse(2, 20, 16, 5, 0, 0, Math.PI * 2);
+  c.fill();
+  const body = c.createRadialGradient(-5, -6, 3, 0, 0, 21);
+  body.addColorStop(0, '#fff6bd');
+  body.addColorStop(0.55, '#ffd93d');
+  body.addColorStop(1, '#f19a0b');
+  c.fillStyle = body;
+  c.beginPath();
+  c.ellipse(0, 0, 18, 16, 0, 0, Math.PI * 2);
+  c.fill();
+  c.strokeStyle = 'rgba(150,90,0,.35)';
+  c.lineWidth = 1.5;
+  c.stroke();
+  c.save();
+  c.translate(-6, 3);
+  c.rotate(wing);
+  c.fillStyle = '#fff3b0';
+  c.strokeStyle = 'rgba(170,105,0,.4)';
+  c.beginPath();
+  c.ellipse(0, 0, 9, 5, 0, 0, Math.PI * 2);
+  c.fill();
+  c.stroke();
+  c.restore();
+  c.fillStyle = '#fff';
+  c.beginPath();
+  c.arc(8, -6, 5.2, 0, Math.PI * 2);
+  c.fill();
+  c.fillStyle = '#17222b';
+  c.beginPath();
+  c.arc(9.4, -6, 2.5, 0, Math.PI * 2);
+  c.fill();
+  c.fillStyle = '#ff8a3d';
+  c.beginPath();
+  c.moveTo(15, 0);
+  c.lineTo(28, 4.5);
+  c.lineTo(15, 8.5);
+  c.closePath();
+  c.fill();
+  c.restore();
+
+  // flash de dano
+  if (f.flash > 0.01) {
+    c.fillStyle = 'rgba(255,60,60,' + (f.flash * 0.34).toFixed(3) + ')';
+    c.fillRect(0, 0, FLAPPY_W, FLAPPY_H);
+  }
+
+  if (!f.started && f.active) {
+    c.fillStyle = 'rgba(10,30,50,.28)';
+    c.fillRect(0, 0, FLAPPY_W, FLAPPY_H);
+  }
+}
+
 
 function buildRankFamilyButtons() {
   if (!ui.rankFamilies) return;
   const families = [
     { key: 'classic', label: 'Clássico 🧱' },
-    { key: 'candy', label: 'Doce 🍪' }
+    { key: 'candy', label: 'Doce 🍪' },
+    { key: 'flappy', label: 'Flappy 🐦' }
   ];
   ui.rankFamilies.replaceChildren();
   for (const family of families) {
@@ -4594,6 +5245,7 @@ function rankScopeLabel(scope) {
 function updateRankHeader() {
   const fb = firebaseRuntime;
   const isCandy = fb.rankFamily === 'candy';
+  const isFlappy = fb.rankFamily === 'flappy';
   if (ui.rankFamilies) {
     for (const button of ui.rankFamilies.querySelectorAll('.rank-family')) {
       const selected = button.dataset.family === fb.rankFamily;
@@ -4602,8 +5254,8 @@ function updateRankHeader() {
     }
   }
   if (ui.rankModes) {
-    ui.rankModes.hidden = isCandy;
-    if (!isCandy) {
+    ui.rankModes.hidden = isCandy || isFlappy;
+    if (!isCandy && !isFlappy) {
       for (const button of ui.rankModes.querySelectorAll('.rank-mode')) {
         const selected = button.dataset.diff === fb.rankDifficulty;
         button.classList.toggle('is-active', selected);
@@ -4611,13 +5263,17 @@ function updateRankHeader() {
       }
     }
   }
-  ui.rankScoreTab.hidden = !isCandy;
-  if (isCandy) {
+  ui.rankScoreTab.hidden = !(isCandy || isFlappy);
+  if (isFlappy) {
+    ui.rankTitle.textContent = 'Ranking flappy';
+    ui.rankSubtitle.textContent = 'Top 10 de streak, fases e pontos no modo flappy.';
+    ui.rankEmpty.textContent = 'Nenhum jogador no ranking flappy ainda.';
+  } else if (isCandy) {
     ui.rankTitle.textContent = 'Ranking doce';
     ui.rankSubtitle.textContent = 'Top 10 de streak, níveis e pontos no modo doce.';
     ui.rankEmpty.textContent = 'Nenhum jogador no ranking doce ainda.';
   } else {
-    const scope = fb.rankDifficulty === 'doce' ? 'geral' : fb.rankDifficulty;
+    const scope = fb.rankDifficulty === 'doce' || fb.rankDifficulty === 'flappy' ? 'geral' : fb.rankDifficulty;
     const label = rankScopeLabel(scope);
     ui.rankTitle.textContent = 'Ranking clássico — ' + label;
     ui.rankSubtitle.textContent = scope === 'geral'
@@ -4632,14 +5288,14 @@ function updateRankHeader() {
 
 function setRankFamily(family, options = {}) {
   const fb = firebaseRuntime;
-  const next = family === 'candy' ? 'candy' : 'classic';
+  const next = family === 'candy' ? 'candy' : family === 'flappy' ? 'flappy' : 'classic';
   const changed = fb.rankFamily !== next;
-  if (next === 'candy') {
-    if (changed && fb.rankDifficulty !== 'doce') {
+  if (next === 'candy' || next === 'flappy') {
+    if (changed && fb.rankDifficulty !== 'doce' && fb.rankDifficulty !== 'flappy') {
       fb.rankClassicScope = fb.rankDifficulty;
     }
-    fb.rankFamily = 'candy';
-    fb.rankDifficulty = 'doce';
+    fb.rankFamily = next;
+    fb.rankDifficulty = next === 'candy' ? 'doce' : 'flappy';
     if (changed) setRankMode('score', { load: false });
   } else {
     fb.rankFamily = 'classic';
@@ -4653,8 +5309,8 @@ function setRankFamily(family, options = {}) {
 }
 
 function setRankDifficulty(scope, options = {}) {
-  if (scope === 'doce') {
-    setRankFamily('candy', options);
+  if (scope === 'doce' || scope === 'flappy') {
+    setRankFamily(scope, options);
     return;
   }
   const fb = firebaseRuntime;
@@ -4670,9 +5326,9 @@ function setRankDifficulty(scope, options = {}) {
 function openRankModal(scope) {
   if (rankOpen) return;
   const fb = firebaseRuntime;
-  if (scope === 'doce') {
-    fb.rankFamily = 'candy';
-    fb.rankDifficulty = 'doce';
+  if (scope === 'doce' || scope === 'flappy') {
+    fb.rankFamily = scope === 'flappy' ? 'flappy' : 'candy';
+    fb.rankDifficulty = scope;
     fb.rankMode = 'score';
   } else if (scope === 'geral' || DIFFICULTIES[scope]) {
     fb.rankFamily = 'classic';
@@ -4680,8 +5336,8 @@ function openRankModal(scope) {
     fb.rankDifficulty = scope;
     if (fb.rankMode === 'score') fb.rankMode = 'streak';
   }
-  if (fb.rankFamily === 'candy') {
-    fb.rankDifficulty = 'doce';
+  if (fb.rankFamily === 'candy' || fb.rankFamily === 'flappy') {
+    fb.rankDifficulty = fb.rankFamily === 'candy' ? 'doce' : 'flappy';
     if (fb.rankMode !== 'score') fb.rankMode = 'score';
   } else {
     if (!(fb.rankDifficulty === 'geral' || DIFFICULTIES[fb.rankDifficulty])) {
@@ -4743,7 +5399,7 @@ function closeRankModal() {
 function setRankMode(mode, options = {}) {
   const fb = firebaseRuntime;
   let next = mode === 'level' || mode === 'score' ? mode : 'streak';
-  if (next === 'score' && fb.rankDifficulty !== 'doce') next = 'streak';
+  if (next === 'score' && fb.rankDifficulty !== 'doce' && fb.rankDifficulty !== 'flappy') next = 'streak';
   fb.rankMode = next;
   const streakActive = fb.rankMode === 'streak';
   const levelActive = fb.rankMode === 'level';
@@ -4764,15 +5420,17 @@ function rankEntryFromDoc(snapshot, scope) {
   const data = snapshot.data() || {};
   const mode = scope === 'doce'
     ? (data.candy || {})
-    : scope === 'geral'
-      ? data
-      : (data.scores && data.scores[scope]) || {};
+    : scope === 'flappy'
+      ? (data.flappy || {})
+      : scope === 'geral'
+        ? data
+        : (data.scores && data.scores[scope]) || {};
   return {
     uid: snapshot.id,
     name: String(data.name || 'Jogador').trim().slice(0, 40) || 'Jogador',
     photo: isPhotoDataURL(data.photo) ? data.photo : '',
     bestStreak: clampInt(mode.bestStreak, 0, 1000000),
-    bestLevel: clampInt(mode.bestLevel, 1, 100),
+    bestLevel: clampInt(mode.bestLevel, 1, scope === 'flappy' ? FLAPPY_MAX_LEVEL : 100),
     bestScore: clampInt(mode.bestScore, 0, 100000000)
   };
 }
@@ -4797,21 +5455,24 @@ async function loadRanks(force = false) {
     const fs = fb.mods.firestoreModule;
     const base = fs.collection(fb.db, RANK_COLLECTION);
     const isCandy = scope === 'doce';
-    const streakField = scope === 'geral' ? 'bestStreak' : isCandy ? 'candy.bestStreak' : `scores.${scope}.bestStreak`;
-    const levelField = scope === 'geral' ? 'bestLevel' : isCandy ? 'candy.bestLevel' : `scores.${scope}.bestLevel`;
+    const isFlappy = scope === 'flappy';
+    const withScore = isCandy || isFlappy;
+    const prefix = isCandy ? 'candy' : isFlappy ? 'flappy' : '';
+    const streakField = scope === 'geral' ? 'bestStreak' : prefix ? `${prefix}.bestStreak` : `scores.${scope}.bestStreak`;
+    const levelField = scope === 'geral' ? 'bestLevel' : prefix ? `${prefix}.bestLevel` : `scores.${scope}.bestLevel`;
     const requests = [
       fs.getDocs(fs.query(base, fs.orderBy(streakField, 'desc'), fs.limit(RANK_FETCH_LIMIT))),
       fs.getDocs(fs.query(base, fs.orderBy(levelField, 'desc'), fs.limit(RANK_FETCH_LIMIT)))
     ];
-    if (isCandy) {
-      requests.push(fs.getDocs(fs.query(base, fs.orderBy('candy.bestScore', 'desc'), fs.limit(RANK_FETCH_LIMIT))));
+    if (withScore) {
+      requests.push(fs.getDocs(fs.query(base, fs.orderBy(`${prefix}.bestScore`, 'desc'), fs.limit(RANK_FETCH_LIMIT))));
     }
     const snaps = await Promise.all(requests);
     if (requestId !== fb.rankRequest) return;
     fb.rankData[scope] = {
       streak: snaps[0].docs.map(doc => rankEntryFromDoc(doc, scope)),
       level: snaps[1].docs.map(doc => rankEntryFromDoc(doc, scope)),
-      score: isCandy ? snaps[2].docs.map(doc => rankEntryFromDoc(doc, scope)) : []
+      score: withScore ? snaps[2].docs.map(doc => rankEntryFromDoc(doc, scope)) : []
     };
     fb.rankLoaded[scope] = true;
     ui.rankStatus.textContent = '';
@@ -5052,6 +5713,8 @@ async function saveProfileEdits() {
       };
       const candy = sanitizeCandy(old.candy);
       if (candy) values.candy = candy;
+      const flappy = sanitizeFlappy(old.flappy);
+      if (flappy) values.flappy = flappy;
       tx.set(ref, values);
     });
     fb.profile = {
@@ -5060,7 +5723,8 @@ async function saveProfileEdits() {
       bestStreak: values.bestStreak,
       bestLevel: values.bestLevel,
       scores: values.scores,
-      candy: values.candy || null
+      candy: values.candy || null,
+      flappy: values.flappy || null
     };
     fb.profileUid = fb.user.uid;
     closeProfileEditor();
@@ -5125,11 +5789,12 @@ function chooseMode(mode) {
   lastFocused = null;
   closeModeChooser(false);
   if (mode === 'candy') startCandyMode();
+  else if (mode === 'flappy') startFlappyMode();
   else startGame();
 }
 
 function returnClassicToMenu() {
-  if (menuOpen || candyOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || profileOpen) return;
+  if (menuOpen || candyOpen || flappyOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || profileOpen) return;
   Sound.click();
   openStartMenu();
 }
@@ -5199,21 +5864,29 @@ function openSettings() {
   modalOpen = true;
   lastFocused = document.activeElement;
   const inCandy = candyOpen;
+  const inFlappy = flappyOpen;
   if (inCandy && candyState.active) {
     candyState.paused = true;
     candyState.lastTick = performance.now();
   }
+  if (inFlappy && flappyState.active) {
+    flappyState.paused = true;
+  }
   state.paused = true;
   Sound.stopBuild();
   Sound.click();
-  ui.settingsTitle.textContent = inCandy ? 'Configurações do modo doce' : 'Configurações';
-  ui.settingsSubtitle.textContent = inCandy
-    ? 'O modo doce pausa enquanto este menu estiver aberto.'
-    : 'O jogo pausa enquanto este menu estiver aberto.';
-  ui.settingsDifficultySection.hidden = inCandy;
-  ui.settingsHint.textContent = inCandy
-    ? 'Dica: troque doces adjacentes e use bombas para explodir a área ao redor.'
-    : 'Dica: paredes crescem em duas direções. Se uma bolinha tocar durante o crescimento, você perde uma vida.';
+  ui.settingsTitle.textContent = inFlappy ? 'Configurações do modo flappy' : inCandy ? 'Configurações do modo doce' : 'Configurações';
+  ui.settingsSubtitle.textContent = inFlappy
+    ? 'O modo flappy pausa enquanto este menu estiver aberto.'
+    : inCandy
+      ? 'O modo doce pausa enquanto este menu estiver aberto.'
+      : 'O jogo pausa enquanto este menu estiver aberto.';
+  ui.settingsDifficultySection.hidden = inCandy || inFlappy;
+  ui.settingsHint.textContent = inFlappy
+    ? 'Dica: toque, clique ou aperte Espaço para bater as asas e passe entre os canos.'
+    : inCandy
+      ? 'Dica: troque doces adjacentes e use bombas para explodir a área ao redor.'
+      : 'Dica: paredes crescem em duas direções. Se uma bolinha tocar durante o crescimento, você perde uma vida.';
   ui.settingsStatus.textContent = '';
   clearTimeout(modalHideTimer);
   ui.modal.hidden = false;
@@ -5228,10 +5901,13 @@ function closeSettings() {
   if (!modalOpen) return;
   modalOpen = false;
   ui.modal.classList.remove('is-open');
-  state.paused = menuOpen || tutorialOpen || candyOpen;
+  state.paused = menuOpen || tutorialOpen || candyOpen || flappyOpen;
   if (candyOpen && candyState.active && !tutorialOpen) {
     candyState.paused = false;
     candyState.lastTick = performance.now();
+  }
+  if (flappyOpen && flappyState.active && !tutorialOpen) {
+    flappyState.paused = false;
   }
   accumulator = 0;
   lastFrame = performance.now();
@@ -5289,11 +5965,19 @@ function bindEvents() {
   ui.closeMode.addEventListener('click', () => closeModeChooser());
   ui.modeClassic.addEventListener('click', () => chooseMode('classic'));
   ui.modeCandy.addEventListener('click', () => chooseMode('candy'));
+  ui.modeFlappy.addEventListener('click', () => chooseMode('flappy'));
   ui.modeModal.addEventListener('click', (e) => {
     if (e.target === ui.modeModal) closeModeChooser();
   });
   ui.candyExit.addEventListener('click', exitCandyMode);
   ui.candySettings.addEventListener('click', openSettings);
+  ui.flappyExit.addEventListener('click', exitFlappyMode);
+  ui.flappySettings.addEventListener('click', openSettings);
+  ui.flappyStage.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button')) return;
+    e.preventDefault();
+    flappyFlap();
+  });
   ui.closeTutorial.addEventListener('click', closeTutorial);
   ui.closeTutorialBtn.addEventListener('click', closeTutorial);
   ui.tutorialPlay.addEventListener('click', () => {
@@ -5320,7 +6004,14 @@ function bindEvents() {
   ui.rankLoginBtn.addEventListener('click', handleGoogleLogin);
   ui.deathSignOut.addEventListener('click', signOutGoogle);
   ui.rankSignOut.addEventListener('click', signOutGoogle);
-  ui.deathRankBtn.addEventListener('click', () => openRankModal(deathMode === 'candy' ? 'doce' : (DIFFICULTIES[state.difficulty] ? state.difficulty : 'geral')));
+  ui.deathRankBtn.addEventListener('click', () => {
+    const scope = deathMode === 'candy'
+      ? 'doce'
+      : deathMode === 'flappy'
+        ? 'flappy'
+        : (DIFFICULTIES[state.difficulty] ? state.difficulty : 'geral');
+    openRankModal(scope);
+  });
   ui.deathEditProfile.addEventListener('click', openProfileEditor);
   ui.rankEditProfile.addEventListener('click', openProfileEditor);
   ui.deathRestart.addEventListener('click', restartFromDeath);
@@ -5329,6 +6020,7 @@ function bindEvents() {
     clearPendingRun();
     closeEndModal();
     if (deathMode === 'candy') exitCandyMode();
+    else if (deathMode === 'flappy') exitFlappyMode();
     else openStartMenu();
   });
   ui.closeRank.addEventListener('click', closeRankModal);
@@ -5390,7 +6082,14 @@ function bindEvents() {
       closeSettings();
       return;
     }
-    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen || candyOpen || modeOpen) return;
+    if (flappyOpen && !deathOpen && !rankOpen && !modalOpen && !profileOpen && !tutorialOpen) {
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        e.preventDefault();
+        flappyFlap();
+        return;
+      }
+    }
+    if (profileOpen || deathOpen || rankOpen || modalOpen || tutorialOpen || menuOpen || candyOpen || flappyOpen || modeOpen) return;
     if (e.code === 'Space') {
       const tag = (e.target && e.target.tagName) || '';
       if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
@@ -5407,6 +6106,15 @@ function bindEvents() {
     } else {
       candyState.paused = false;
       candyState.lastTick = performance.now();
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!flappyOpen || !flappyState.active) return;
+    if (document.hidden) {
+      flappyState.paused = true;
+    } else {
+      flappyState.paused = false;
     }
   });
 
@@ -5448,6 +6156,13 @@ function loop(now) {
     if (steps >= 6) accumulator = 0;
   }
 
+  if (flappyOpen && flappyState.active && !flappyState.ended) {
+    const free = !flappyState.paused && !document.hidden && !modalOpen && !tutorialOpen
+      && !deathOpen && !rankOpen && !profileOpen && !menuOpen;
+    if (free) flappyUpdate(Math.min(0.05, raw / 1000));
+    flappyRender();
+  }
+
   draw(now);
 }
 
@@ -5468,6 +6183,7 @@ function init() {
   buildRankModeButtons();
   buildRankFamilyButtons();
   candyBuildBoard();
+  flappySetupCanvas();
   setRankDifficulty(firebaseRuntime.rankDifficulty, { load: false });
   bindEvents();
   openStartMenu();
