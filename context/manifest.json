@@ -168,7 +168,7 @@
         "timeBaseSeconds": 60,
         "timeFloorSeconds": 33,
         "difficultyRampEvery": 10,
-        "targetScore": "500 at levels 1-5, +500 every 5 levels, 10000 at level 100",
+        "targetScore": "750 at levels 1-5, +500 every 5 levels, 10250 at level 100",
         "matchShapes": ["line3", "line4", "line5", "square2x2"],
         "types": "5 until level 10, 6 from level 11, no seventh type",
         "bombs": "3x3 explosion on swap, chain reaction",

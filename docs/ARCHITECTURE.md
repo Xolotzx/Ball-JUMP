@@ -277,8 +277,8 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
   próprios, sem vidas. O tempo base é 60 s e cai 3 s a cada 10 fases (33 s na
   fase 100). É controlado por `setInterval` de 250 ms e pausa quando a aba fica
   oculta ou o overlay abre.
-- A cada 5 fases a meta sobe 500 pontos (`candyTargetScore`): 500 nas fases 1–5,
-  1.000 nas fases 6–10, e assim por diante até 10.000 na fase 100. Os tipos vão
+- A cada 5 fases a meta sobe 500 pontos (`candyTargetScore`): 750 nas fases 1–5,
+  1.250 nas fases 6–10, e assim por diante até 10.250 na fase 100. Os tipos vão
   de 5 para 6 na fase 11 e, a partir da fase 21, o desafio extra são os cadeados
   (sem sétimo tipo).
 - Fase concluída → próxima fase; fase 100 → vitória. Tempo esgotado → fim da run.

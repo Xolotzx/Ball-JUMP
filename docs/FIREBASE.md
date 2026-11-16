@@ -46,10 +46,10 @@ administrativo ou `.env` no repositório.
    ou um quadrado 2×2, cumpra a meta antes do tempo e avance. As vidas são
    substituídas por tempo (60 s na fase 1, caindo até 33 s na fase 100).
    Bombas explodem a área 3×3; o ⚡ trocado com um doce elimina todos daquele tipo.
-10. A meta sobe 500 pontos a cada 5 fases (500 na fase 1, 1.000 na fase 6, até
-    10.000 na fase 100) e o tempo cai a cada 10 fases. Os tipos vão de 5 para 6 na
-    fase 11; da fase 21 em diante entram doces com cadeado (2 detonações para
-    sumir), em vez de um sétimo tipo, até a fase 100.
+10. A meta começa em 750 pontos e sobe 500 a cada 5 fases (750 na fase 1, 1.250
+    na fase 6, até 10.250 na fase 100) e o tempo cai a cada 10 fases. Os tipos vão
+    de 5 para 6 na fase 11; da fase 21 em diante entram doces com cadeado (2
+    detonações para sumir), em vez de um sétimo tipo, até a fase 100.
 11. O título acompanha a seleção: “Ranking clássico — Fácil”,
     “Ranking doce”, etc.
 

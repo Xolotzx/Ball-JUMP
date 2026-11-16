@@ -27,7 +27,7 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - Combine 3+ doces ou um quadrado 2×2.
 - O especial **⚡** trocado com um doce elimina todos os doces daquele tipo.
 - A partir da fase 21 aparecem doces com **cadeado**, que precisam de 2 detonações para sumir.
-- A meta sobe **500 pontos a cada 5 fases** (500 na fase 1, 1.000 na fase 6, até 10.000 na fase 100); o tempo cai a cada 10 fases.
+- A meta é **750 pontos** nas fases 1–5 e sobe **500 a cada 5 fases** (750 na fase 1, 1.250 na fase 6, até 10.250 na fase 100); o tempo cai a cada 10 fases.
 - Bombas aparecem no tabuleiro doce; troque uma bomba com qualquer doce para explodir a área ao redor, com reações em cadeia.
 - Explosões com som, faíscas, texto flutuante e tremida no tabuleiro.
 - O modo doce usa o mesmo fundo ambiente (ondas/fita) do modo clássico.

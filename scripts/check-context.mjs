@@ -193,7 +193,8 @@ check(index.includes('CANDY_LIGHTNING') && index.includes('function candyLightni
 check(index.includes('candySeedLocks') && index.includes('candyState.locks'), 'cadeados presentes');
 check(index.includes('60 - candyTier'), 'tempo base de 60s presente');
 check(index.includes('function lockHit') && index.includes('function lightning'), 'sons de cadeado e relâmpago presentes');
-check(index.includes('function candyTargetScore') && index.includes('500 * (1 + Math.floor((level - 1) / 5))'), 'meta +500 a cada 5 fases presente');
+check(index.includes('function candyTargetScore') && index.includes('750 + Math.floor((level - 1) / 5) * 500'), 'meta +500 a cada 5 fases presente');
+check(index.includes('Math.min(0.018, 0.002 + level * 0.00015)'), 'spawn de relâmpago reduzido presente');
 check(index.includes('id="candySettings"') && index.includes("ui.candySettings.addEventListener('click', openSettings)"), 'configurações no modo doce presentes');
 check(index.includes('settingsDifficultySection.hidden = inCandy'), 'dificuldade oculta nas configurações do doce');
 check(index.includes('body.menu-active .app') && index.includes("classList.add('menu-active')"), 'menu principal com fundo temático');

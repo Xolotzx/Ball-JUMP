@@ -27,7 +27,7 @@
 - Configurações com tema, dificuldade, som, volume (0–100%) e botão **Como jogar**.
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
-- **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente. Combina 3+ ou 2×2; ⚡ limpa um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s. A meta é 500 e sobe 500 a cada 5 fases (10.000 na fase 100).
+- **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente. Combina 3+ ou 2×2; ⚡ limpa um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s. A meta começa em 750 e sobe 500 a cada 5 fases (10.250 na fase 100).
 - Ranking em famílias **Clássico 🧱** e **Doce 🍪**: clássico com Geral/Fácil/Normal/Difícil/Hardcore e abas Streak/Níveis; doce com Streak/Níveis/Pontos.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 - Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
@@ -66,7 +66,8 @@
 - Ranking ganhou escopo **Doce** e a aba **Pontos**; perfil ganhou o mapa `candy`.
 - Ranking reorganizado em famílias **Clássico 🧱** (dificuldades + Streak/Níveis) e **Doce 🍪** (Streak/Níveis/Pontos).
 - Modo doce ganhou match 2×2, especial ⚡, cadeados a partir da fase 21, tempo base de 60 s e tipos limitados a 6.
-- Meta do modo doce agora sobe 500 a cada 5 fases (500 na fase 1 até 10.000 na fase 100).
+- Meta do modo doce agora começa em 750 e sobe 500 a cada 5 fases (até 10.250 na fase 100).
+- Spawn de ⚡ reduzido para cerca de metade, sem raios antes da fase 8 e com 2 no máximo a partir da fase 60.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.

@@ -96,7 +96,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - **Jogar** abre um seletor com **Modo Clássico** e **Modo Doce**.
 - **Configurações** ficam disponíveis no clássico e também no modo doce (engrenagem no cabeçalho); no doce a seção de dificuldade é ocultada e o timer pausa.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, metas de pontos e dificuldade crescente.
-- A meta é 500 pontos nas fases 1–5 e sobe **500 a cada 5 fases**, chegando a 10.000 na fase 100.
+- A meta é 750 pontos nas fases 1–5 e sobe **500 a cada 5 fases**, chegando a 10.250 na fase 100.
 - Combinações válidas: 3+ em linha/coluna ou um quadrado 2×2 do mesmo tipo.
 - O especial **⚡** trocado com um doce elimina todos os doces daquele tipo; duas ⚡ juntas limpam o tabuleiro.
 - A partir da fase 21 aparecem doces com **cadeado** (2 detonações para sumir); eles não podem ser trocados e não caem, mas podem ser atingidos por matches, bombas ou ⚡.

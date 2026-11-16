@@ -314,14 +314,26 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - efeitos e sons novos: `Sound.lightning()`, `Sound.lockHit()`, flash e células zap;
   - o balanceamento dos cadeados e do tempo de 60 s precisa de playtest.
 
-## ADR-025 — Meta do modo doce sobe 500 a cada 5 fases
+## ADR-025 — Meta do modo doce começa em 750 e sobe 500 a cada 5 fases
+
+- **Data:** 2026-11-16
+- **Status:** aceita (revisada)
+- **Contexto:** a meta anterior crescia por fase (35 + bônus por faixa), gerando valores pouco previsíveis e quase lineares. O jogador precisava de uma progressão clara e fácil de comunicar, com um começo um pouco menos trivial que 500 pontos.
+- **Decisão:** `candyTargetScore(level)` passa a ser `750 + floor((level − 1) / 5) × 500`. Ou seja: 750 pontos nas fases 1–5, 1.250 nas fases 6–10, +500 a cada bloco de 5 fases, chegando a 10.250 na fase 100.
+- **Consequências:**
+  - a meta é 750 + múltiplos de 500 e cada bloco de 5 fases tem o mesmo alvo;
+  - o tempo continua caindo a cada 10 fases (60 s → 33 s), então os blocos finais exigem mais pontos no mesmo tempo;
+  - simulação com bot guloso confirmou que 10.250 pontos são alcançáveis em ~10 jogadas na fase 100 (33 s);
+  - a barra de progresso e as mensagens usam `candyState.target`, sem mudanças adicionais.
+
+## ADR-026 — Spawn de ⚡ reduzido
 
 - **Data:** 2026-11-16
 - **Status:** aceita
-- **Contexto:** a meta anterior crescia por fase (35 + bônus por faixa), gerando valores pouco previsíveis e quase lineares. O jogador precisava de uma progressão clara e fácil de comunicar.
-- **Decisão:** `candyTargetScore(level)` passa a ser `500 × (1 + floor((level − 1) / 5))`. Ou seja: 500 pontos nas fases 1–5, 1.000 nas fases 6–10, +500 a cada bloco de 5 fases, chegando a 10.000 na fase 100.
+- **Contexto:** o relâmpago aparecia com frequência próxima à das bombas, o que tornava as limpezas de tipo (e a sobrecarga de duas ⚡) comuns demais e achatava a dificuldade.
+- **Decisão:** reduzir `candyLightningChance` para `min(0,018; 0,002 + fase × 0,00015)` (cerca de metade da chance anterior) e atrasar/reduzir os seeds: nenhum ⚡ antes da fase 8 (antes era 5), 1 entre as fases 8–59 (antes 2 a partir da 50) e 2 a partir da fase 60.
 - **Consequências:**
-  - a meta é múltipla de 500 e cada bloco de 5 fases tem o mesmo alvo;
-  - o tempo continua caindo a cada 10 fases (60 s → 33 s), então os blocos finais exigem mais pontos no mesmo tempo;
-  - simulação com bot guloso confirmou que 10.000 pontos são alcançáveis em ~10 jogadas na fase 100 (33 s);
-  - a barra de progresso e as mensagens usam `candyState.target`, sem mudanças adicionais.
+  - o ⚡ fica mais raro que as bombas em todas as fases;
+  - a fase 100 fica em ~1,8% de chance por doce novo, contra 3,5% antes;
+  - `candyHasMove` continua tratando ⚡ como jogada válida, sem mudanças;
+  - a frequência ainda precisa de playtest em runs longas.
