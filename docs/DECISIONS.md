@@ -337,3 +337,15 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - a fase 100 fica em ~1,8% de chance por doce novo, contra 3,5% antes;
   - `candyHasMove` continua tratando ⚡ como jogada válida, sem mudanças;
   - a frequência ainda precisa de playtest em runs longas.
+
+## ADR-027 — Bomba + bomba gera explosão dupla
+
+- **Data:** 2026-11-16
+- **Status:** aceita
+- **Contexto:** trocar duas bombas não tinha nenhum efeito especial: o resultado era só a soma de duas explosões 3×3, sem recompensa visual ou de pontos à altura do risco.
+- **Decisão:** quando as duas células trocadas são bombas, `candyExplodeBombs` ativa o modo `mega`: `candyExplosionSet` usa raio 2 (5×5) ao redor de cada bomba inicial, bombas em cadeia continuam com raio 1, e a jogada ganha +500 pontos, multiplicadores maiores por célula/bomba/cadeado.
+- **Consequências:**
+  - duas bombas adjacentes podem limpar até 30 células (contra 9 de uma bomba sozinha);
+  - efeitos novos: `.candy-mega-flash`, `.is-mega-shaking`, blasts `is-mega` maiores e `Sound.megaExplosion()`;
+  - a mensagem “💥 Explosão dupla!” pode ser substituída pelo combo da cascata seguinte;
+  - cadeados atingidos pela explosão dupla perdem carga normalmente.

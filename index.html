@@ -425,11 +425,21 @@
     animation:candy-explode .34s ease-out forwards;z-index:4;
   }
   .candy-board.is-shaking{animation:candy-shake .32s ease-out}
+  .candy-board.is-mega-shaking{animation:candy-mega-shake .55s cubic-bezier(.36,.07,.19,.97)}
   .candy-blast{
     position:absolute;z-index:8;pointer-events:none;border-radius:50%;
     background:radial-gradient(circle,#fff 0%,#ffe08a 16%,rgba(255,122,24,.55) 42%,transparent 70%);
     mix-blend-mode:screen;
     animation:candy-blast .48s ease-out forwards;
+  }
+  .candy-blast.is-mega{
+    background:radial-gradient(circle,#fff 0%,#ffd166 14%,rgba(255,70,20,.6) 44%,transparent 72%);
+    animation-duration:.62s;
+  }
+  .candy-mega-flash{
+    position:absolute;inset:0;z-index:7;pointer-events:none;
+    background:radial-gradient(circle at 50% 50%,#fff 0%,rgba(255,200,90,.7) 26%,rgba(255,80,20,.35) 55%,transparent 78%);
+    mix-blend-mode:screen;animation:candy-mega-flash .62s ease-out forwards;
   }
   .candy-float{
     position:absolute;z-index:9;pointer-events:none;white-space:nowrap;
@@ -474,6 +484,21 @@
     40%{transform:translate(3px,-2px)}
     60%{transform:translate(-2px,-1px)}
     80%{transform:translate(2px,1px)}
+  }
+  @keyframes candy-mega-shake{
+    0%,100%{transform:translate(0,0)}
+    15%{transform:translate(-6px,4px)}
+    30%{transform:translate(6px,-4px)}
+    45%{transform:translate(-5px,-2px)}
+    60%{transform:translate(5px,2px)}
+    75%{transform:translate(-3px,1px)}
+  }
+  @keyframes candy-mega-flash{
+    0%{opacity:0}
+    12%{opacity:1}
+    40%{opacity:.4}
+    62%{opacity:.75}
+    100%{opacity:0}
   }
   @keyframes candy-blast{
     0%{transform:scale(.18);opacity:1}
@@ -1072,7 +1097,7 @@
     <div class="candy-board" id="candyBoard" role="grid" aria-label="Tabuleiro de doces"></div>
 
     <p class="candy-message" id="candyMessage" role="status">Troque doces adjacentes para juntar 3 ou mais.</p>
-    <p class="candy-hint">Junte 3+ ou um quadrado 2×2 · ⚡ + doce limpa o tipo · 🔒 precisa de 2 detonações.</p>
+    <p class="candy-hint">Junte 3+ ou 2×2 · ⚡ + doce limpa o tipo · 💣+💣 = explosão maior · 🔒 2 detonações.</p>
   </div>
 </div>
 
@@ -1881,6 +1906,17 @@ const Sound = (() => {
     });
   }
 
+  function megaExplosion() {
+    if (!enabled) return;
+    voice(46, 0.85, { type: 'sine', vol: 0.22, slide: 26, attack: 0.002, send: 0.09, cutoff: 200 });
+    voice(78, 0.52, { type: 'triangle', vol: 0.1, slide: 38, attack: 0.002, send: 0.18, cutoff: 420 });
+    noiseSweep({ duration: 0.72, vol: 0.075, from: 3000, to: 60, type: 'lowpass', send: 0.32 });
+    noiseSweep({ duration: 0.2, vol: 0.04, from: 420, to: 3200, delay: 0.03, type: 'bandpass', q: 0.7, send: 0.26 });
+    [783.99, 1046.5, 1318.51, 1567.98, 2093].forEach((freq, i) => {
+      bell(freq, 0.5, 0.035, 0.02 + i * 0.04, (i - 2) * 0.2);
+    });
+  }
+
   function candyPop(combo = 1) {
     if (!enabled) return;
     const level = Math.min(8, Math.max(1, combo));
@@ -2001,7 +2037,7 @@ const Sound = (() => {
 
   function unlock() { ensure(); }
 
-  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, explosion, candyPop, lockHit, lightning, setEnabled, setVolume, unlock };
+  return { startBuild, updateBuild, stopBuild, success, lifeLost, gameOver, fanfare, victory, bounce, fire, deny, click, explosion, megaExplosion, candyPop, lockHit, lightning, setEnabled, setVolume, unlock };
 })();
 
 /* =========================================================
@@ -4226,14 +4262,14 @@ async function candyResolveMatches(initialMatches, cascade) {
   candyUpdateHUD();
 }
 
-function candyBlastAt(index) {
+function candyBlastAt(index, scale = 1) {
   const cell = candyState.cells[index];
   if (!cell || !ui.candyBoard) return;
   const cellRect = cell.getBoundingClientRect();
   const boardRect = ui.candyBoard.getBoundingClientRect();
-  const size = Math.max(cellRect.width, cellRect.height) * 2.6;
+  const size = Math.max(cellRect.width, cellRect.height) * 2.6 * scale;
   const blast = document.createElement('span');
-  blast.className = 'candy-blast';
+  blast.className = scale > 1 ? 'candy-blast is-mega' : 'candy-blast';
   blast.style.width = size + 'px';
   blast.style.height = size + 'px';
   blast.style.left = (cellRect.left - boardRect.left + cellRect.width / 2 - size / 2) + 'px';
@@ -4258,26 +4294,34 @@ function candyFloatText(index, text) {
 
 function candyClearFx() {
   if (!ui.candyBoard) return;
-  ui.candyBoard.querySelectorAll('.candy-blast,.candy-float').forEach(el => el.remove());
-  ui.candyBoard.classList.remove('is-shaking');
+  ui.candyBoard.querySelectorAll('.candy-blast,.candy-float,.candy-mega-flash,.candy-lightning-flash').forEach(el => el.remove());
+  ui.candyBoard.classList.remove('is-shaking', 'is-mega-shaking');
 }
 
-function candyExplosionSet(bombs) {
+function candyMegaFlash() {
+  if (!ui.candyBoard) return;
+  const flash = document.createElement('span');
+  flash.className = 'candy-mega-flash';
+  ui.candyBoard.appendChild(flash);
+  setTimeout(() => flash.remove(), 700);
+}
+
+function candyExplosionSet(bombs, mega = false) {
   const blast = new Set();
   const queued = new Set();
   const queue = [];
   for (const index of bombs) {
     if (!queued.has(index)) {
       queued.add(index);
-      queue.push(index);
+      queue.push({ index, radius: mega ? 2 : 1 });
     }
   }
   while (queue.length) {
-    const index = queue.pop();
+    const { index, radius } = queue.pop();
     const row = Math.floor(index / CANDY_SIZE);
     const col = index % CANDY_SIZE;
-    for (let dr = -1; dr <= 1; dr++) {
-      for (let dc = -1; dc <= 1; dc++) {
+    for (let dr = -radius; dr <= radius; dr++) {
+      for (let dc = -radius; dc <= radius; dc++) {
         const r = row + dr;
         const c = col + dc;
         if (r < 0 || r >= CANDY_SIZE || c < 0 || c >= CANDY_SIZE) continue;
@@ -4285,7 +4329,7 @@ function candyExplosionSet(bombs) {
         blast.add(next);
         if (candyState.grid[next] === CANDY_BOMB && !queued.has(next)) {
           queued.add(next);
-          queue.push(next);
+          queue.push({ index: next, radius: 1 });
         }
       }
     }
@@ -4317,32 +4361,35 @@ function candyApplyDamage(indices) {
 async function candyExplodeBombs(bombs) {
   if (!candyState.active || candyState.ended) return;
   const grid = candyState.grid;
-  const blast = candyExplosionSet(bombs);
+  const mega = bombs.length > 1;
+  const blast = candyExplosionSet(bombs, mega);
   let bombCount = 0;
   let lockCount = 0;
   for (const index of blast) {
     if (grid[index] === CANDY_BOMB) bombCount += 1;
     if (candyState.locks[index] > 0) lockCount += 1;
   }
-  const points = blast.size * 60 + bombCount * 150 + lockCount * 80;
+  const points = blast.size * (mega ? 90 : 60) + bombCount * (mega ? 220 : 150) + lockCount * (mega ? 110 : 80) + (mega ? 500 : 0);
   candyState.levelScore += points;
   candyState.runScore += points;
   candyUpdateHUD();
-  candySetMessage('Boom! +' + points.toLocaleString('pt-BR') + ' pontos', true);
+  candySetMessage((mega ? '💥 Explosão dupla! +' : 'Boom! +') + points.toLocaleString('pt-BR') + ' pontos', true);
   Sound.explosion();
+  if (mega) Sound.megaExplosion();
   if (lockCount) Sound.lockHit();
-  if (bombCount > 1) Sound.fire(4);
-  ui.candyBoard.classList.remove('is-shaking');
+  if (bombCount > 1) Sound.fire(mega ? 6 : 4);
+  ui.candyBoard.classList.remove('is-shaking', 'is-mega-shaking');
   void ui.candyBoard.offsetWidth;
-  ui.candyBoard.classList.add('is-shaking');
-  for (const index of bombs) candyBlastAt(index);
+  ui.candyBoard.classList.add(mega ? 'is-mega-shaking' : 'is-shaking');
+  if (mega) candyMegaFlash();
+  for (const index of bombs) candyBlastAt(index, mega ? 2.1 : 1);
   candyFloatText(bombs[0], '+' + points.toLocaleString('pt-BR'));
   for (const index of blast) {
     const cell = candyState.cells[index];
     if (!cell) continue;
     cell.classList.add(candyState.locks[index] > 0 ? 'is-lock-hit' : 'is-exploding');
   }
-  await candyDelay(320);
+  await candyDelay(mega ? 420 : 320);
   if (!candyState.active || candyState.ended) return;
   candyApplyDamage(blast);
   candyRender();

@@ -29,6 +29,7 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - A partir da fase 21 aparecem doces com **cadeado**, que precisam de 2 detonações para sumir.
 - A meta é **750 pontos** nas fases 1–5 e sobe **500 a cada 5 fases** (750 na fase 1, 1.250 na fase 6, até 10.250 na fase 100); o tempo cai a cada 10 fases.
 - Bombas aparecem no tabuleiro doce; troque uma bomba com qualquer doce para explodir a área ao redor, com reações em cadeia.
+- **Bomba + bomba** vira uma explosão dupla: área 5×5 ao redor de cada bomba, +500 de bônus, flash e som mais fortes.
 - Explosões com som, faíscas, texto flutuante e tremida no tabuleiro.
 - O modo doce usa o mesmo fundo ambiente (ondas/fita) do modo clássico.
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.

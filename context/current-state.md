@@ -68,6 +68,7 @@
 - Modo doce ganhou match 2×2, especial ⚡, cadeados a partir da fase 21, tempo base de 60 s e tipos limitados a 6.
 - Meta do modo doce agora começa em 750 e sobe 500 a cada 5 fases (até 10.250 na fase 100).
 - Spawn de ⚡ reduzido para cerca de metade, sem raios antes da fase 8 e com 2 no máximo a partir da fase 60.
+- Trocar bomba + bomba causa explosão dupla: raio 5×5 ao redor de cada bomba, +500 de bônus, flash laranja e `Sound.megaExplosion()`.
 - Regras do Firestore atualizadas para validar `candy` e publicadas.
 - Firebase Auth Google + Firestore `balljumpProfiles` integrados.
 - Tela de morte/vitória redesenhada com login, perfil e acesso ao ranking.

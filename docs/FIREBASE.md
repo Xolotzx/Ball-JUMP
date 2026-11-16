@@ -45,7 +45,8 @@ administrativo ou `.env` no repositório.
 9. O modo **Doce** é um match-3 de 100 fases: troque doces adjacentes, junte 3+
    ou um quadrado 2×2, cumpra a meta antes do tempo e avance. As vidas são
    substituídas por tempo (60 s na fase 1, caindo até 33 s na fase 100).
-   Bombas explodem a área 3×3; o ⚡ trocado com um doce elimina todos daquele tipo.
+   Bombas explodem a área 3×3 e, quando duas são trocadas juntas, causam uma
+   explosão dupla 5×5 com bônus; o ⚡ trocado com um doce elimina todos daquele tipo.
 10. A meta começa em 750 pontos e sobe 500 a cada 5 fases (750 na fase 1, 1.250
     na fase 6, até 10.250 na fase 100) e o tempo cai a cada 10 fases. Os tipos vão
     de 5 para 6 na fase 11; da fase 21 em diante entram doces com cadeado (2

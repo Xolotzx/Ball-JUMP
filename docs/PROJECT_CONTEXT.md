@@ -102,6 +102,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - A partir da fase 21 aparecem doces com **cadeado** (2 detonações para sumir); eles não podem ser trocados e não caem, mas podem ser atingidos por matches, bombas ou ⚡.
 - O tempo base é 60 s e cai a cada 10 fases, até 33 s na fase 100.
 - Bombas aparecem no tabuleiro doce e explodem a área 3×3 ao serem trocadas com qualquer doce; bombas vizinhas entram em cadeia.
+- Trocar **bomba + bomba** produz uma explosão dupla: 5×5 ao redor de cada bomba, +500 de bônus e efeitos/som mais fortes.
 - Explosões usam som próprio, faísca, texto de pontos e tremida; o fundo ambiente é o mesmo do modo clássico (ondas/fita).
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
 - O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.

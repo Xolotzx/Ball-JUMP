@@ -171,7 +171,7 @@
         "targetScore": "750 at levels 1-5, +500 every 5 levels, 10250 at level 100",
         "matchShapes": ["line3", "line4", "line5", "square2x2"],
         "types": "5 until level 10, 6 from level 11, no seventh type",
-        "bombs": "3x3 explosion on swap, chain reaction",
+        "bombs": "3x3 explosion on swap; bomb+bomb gives 5x5 around each with bonus; chain reaction uses 3x3",
         "lightning": "swap with a candy clears all candies of that type; two lightnings clear the board",
         "locks": "from level 21; 2 hits, immovable, do not fall",
         "background": "shared classic ambient waves/ribbon",

@@ -255,7 +255,10 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Bombas (`CANDY_BOMB`) aparecem no tabuleiro (seed por fase + chance no refill),
   não entram em matches e explodem quando trocadas com qualquer doce:
   - a explosão limpa a área 3×3 ao redor;
-  - bombas dentro da área entram em cadeia;
+  - **bomba + bomba** vira uma explosão dupla: raio 2 (5×5) ao redor de cada
+    bomba, +500 de bônus, flash laranja, tremida mais forte e `Sound.megaExplosion()`;
+  - bombas dentro da área entram em cadeia (essas usam raio 1, para não estourar
+    o tabuleiro inteiro);
   - o dano soma pontos, faíscas, texto flutuante, tremida e `Sound.explosion()`;
   - depois do refill, cascatas normais continuam com `Sound.candyPop()`.
 - Relâmpago (`CANDY_LIGHTNING`, ⚡) aparece por seed/chance. Trocado com um doce,

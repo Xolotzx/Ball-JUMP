@@ -154,7 +154,8 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Na fase 31 o sétimo tipo não é adicionado.
 - [ ] Bombas aparecem no tabuleiro (a partir da fase 4 no início e por chance no refill).
 - [ ] Trocar uma bomba com qualquer doce explode a área 3×3 ao redor e soma pontos.
-- [ ] Bombas vizinhas explodem em cadeia.
+- [ ] Trocar **bomba com bomba** gera a explosão dupla: área 5×5 ao redor de cada uma, bônus de 500, flash laranja, tremida forte e som mais grave.
+- [ ] Bombas vizinhas explodem em cadeia (com raio 3×3 normal).
 - [ ] A explosão mostra faísca, células explodindo, texto de pontos e tremida no tabuleiro.
 - [ ] O som de explosão é audível e o volume respeita o slider.
 - [ ] A engrenagem do cabeçalho do modo doce abre as configurações.
