@@ -106,7 +106,7 @@ check(
   'manifesto declara escopos de ranking'
 );
 check(manifest?.firebase?.profileCustomization?.candyMode?.levels === 100, 'manifesto declara 100 fases do modo doce');
-check(manifest?.firebase?.profileCustomization?.flappyMode?.levels === 500, 'manifesto declara 500 fases do modo flappy');
+check(manifest?.firebase?.profileCustomization?.flappyMode?.pipes === 500, 'manifesto declara 500 canos do modo flappy');
 check(manifest?.project?.repositoryVisibility === 'private', 'manifesto declara repositório privado');
 check(manifest?.deployment?.headersFile === '_headers', 'manifesto aponta para _headers');
 
@@ -210,16 +210,16 @@ check(index.includes('id="modeModal"') && index.includes('id="modeClassicBtn"') 
 check(index.includes('function openModeChooser') && index.includes('function chooseMode'), 'lógica do seletor de modo presente');
 check(!index.includes('menuCandyBtn'), 'sem botão duplicado de modo doce no menu');
 check(index.includes('id="candyBoard"'), 'tabuleiro do modo doce presente');
-check(index.includes('FLAPPY_MAX_LEVEL = 500') && index.includes('function startFlappyMode'), 'modo flappy com 500 fases presente');
+check(index.includes('FLAPPY_MAX_PIPES = 500') && index.includes('function startFlappyMode'), 'modo flappy com 500 canos presente');
 check(index.includes('id="flappyCanvas"') && index.includes('function flappyRender'), 'canvas e renderização do flappy presentes');
 check(index.includes('FLAPPY_LIVES = 3') && index.includes('function flappyLoseLife'), 'vidas e dano do flappy presentes');
-check(index.includes('function flappyPipeCountFor') && index.includes('4 + Math.min(4, Math.floor((level - 1) / 50))'), 'canos por fase do flappy presentes');
+check(index.includes('function flappyPipeCountFor') && index.includes('4 + Math.min(4, Math.floor(pipes / 100))'), 'canos por fase do flappy presentes');
 check(index.includes("family === 'flappy'") && index.includes('flappy.bestScore'), 'ranking flappy presente');
 check(index.includes('id="flappySettings"') && index.includes("ui.flappySettings.addEventListener('click', openSettings)"), 'configurações no modo flappy presentes');
 check(index.includes('settingsDifficultySection.hidden = inCandy || inFlappy'), 'dificuldade oculta nas configurações do flappy');
 check(index.includes('body.flappy-active .app') && index.includes("classList.add('flappy-active')"), 'tela do flappy isolada do app clássico');
 check(index.includes('sanitizeFlappy') && index.includes('mergePendingFlappy') && index.includes('flappy: values.flappy'), 'perfil e sync do flappy presentes');
-check(index.includes('function flappyCompletePhase') && index.includes('completou as 500 fases'), 'vitória do flappy em 500 fases presente');
+check(index.includes('function flappyCompletePhase') && index.includes('passou pelos 500 canos'), 'vitória do flappy em 500 canos presente');
 check(index.includes('id="classicMenuBtn"') && index.includes('function returnClassicToMenu'), 'botão menu do clássico presente');
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');

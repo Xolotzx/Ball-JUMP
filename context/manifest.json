@@ -9,7 +9,7 @@
     "repositoryVisibility": "private",
     "license": "not specified"
   },
-  "lastReviewed": "2026-11-16",
+  "lastReviewed": "2026-11-17",
   "contextLoadOrder": [
     "AGENTS.md",
     "context/manifest.json",
@@ -180,16 +180,17 @@
       },
       "flappyMode": {
         "canvas": "480x640 logical",
-        "levels": 500,
+        "pipes": 500,
         "lives": 3,
         "controls": ["pointer", "click", "Space", "ArrowUp", "W"],
-        "pipesPerLevel": "4 + min(4, floor((level-1)/50)) = 4 to 8",
-        "speed": "150 to 300 px/s",
-        "gap": "46% to 28% of canvas height",
-        "phaseProgression": "pass all pipes to advance; streak +1 per phase",
-        "damage": "pipe or ground hit costs one life, resets pipes, phase pipe progress and streak; 0 lives ends run",
-        "victory": "complete phase 500",
-        "rankingCategories": ["streak", "level", "score"]
+        "pipesPerPhase": "4 + min(4, floor(pipesPassed / 100)) = 4 to 8 (changes every 100 pipes)",
+        "speed": "150 to 300 px/s, scaled by total pipes passed",
+        "gap": "46% to 28% of canvas height, scaled by total pipes passed",
+        "phaseProgression": "phases are difficulty blocks; pass all pipes in the phase to advance and gain streak",
+        "damage": "pipe or ground hit costs one life, resets on-screen pipes, phase pipe progress and streak; total pipes passed is preserved",
+        "victory": "pass the 500th pipe in total",
+        "tiers": "Voo 1 to Voo 10, one every 50 pipes",
+        "rankingCategories": ["streak", "pipes", "score"]
       },
       "avatarFallback": "first letter of the nick"
     },
@@ -229,9 +230,9 @@
     "candy time starts at 60 seconds and falls to 33 seconds at level 100",
     "candy bombs explode a 3x3 area on swap and can chain; the candy screen shares the classic ambient background",
     "candy ranking has streak, level and score categories and does not affect classic scores",
-    "flappy mode is a 500-level pipe-flight game with 3 lives, 4-8 pipes per level and its own ranking",
+    "flappy mode is a 500-pipe pipe-flight game with 3 lives, 4-8 pipes per phase and its own ranking",
     "a flappy hit costs one life and resets pipes, phase pipe progress and streak; 0 lives ends the run",
-    "flappy victory requires completing phase 500; its profile field caps bestLevel at 500",
+    "flappy victory requires passing the 500th pipe in total; phases are difficulty blocks; its profile field caps bestLevel at 500",
     "profile photo is a validated data URL limited to 90000 chars and rendered without innerHTML",
     "nicknames are unique via balljumpNicknames reservation; rename releases the old key in the same transaction",
     "ranking reads require authentication and writes require owner UID with monotonic scores",

@@ -50,7 +50,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 - **Ranking por dificuldade:** `scores.easy/normal/hard/hardcore` guardam `{ bestStreak, bestLevel }` por modo; o ranking consulta `scores.<modo>.bestStreak` e `.bestLevel`; o ranking geral usa `bestStreak`/`bestLevel`.
 - **Famílias de ranking:** **Clássico 🧱** (Geral/Fácil/Normal/Difícil/Hardcore, com Streak e Níveis), **Doce 🍪** (Streak, Níveis e Pontos) e **Flappy 🐦** (Streak, Níveis e Pontos).
 - **Modo Doce:** match-3 8×8 com 100 fases, tempo em vez de vidas e ranking próprio em `candy` (`bestStreak`, `bestLevel`, `bestScore`); categorias Streak, Níveis e Pontos. Combina 3+ ou 2×2; bombas explodem 3×3; ⚡ elimina um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s.
-- **Modo Flappy:** voo entre canos com 500 fases, 3 vidas e ranking próprio em `flappy` (`bestStreak`, `bestLevel ≤ 500`, `bestScore`); 4–8 canos por fase, velocidade 150→300 px/s, vão 46%→28%; clique/toque/Espaço/↑/W bate as asas; cano ou chão custa vida e reinicia canos/progresso/sequência.
+- **Modo Flappy:** voo entre canos com 500 canos no total, 3 vidas e ranking próprio em `flappy` (`bestStreak`, `bestLevel ≤ 500`, `bestScore`); 4–8 canos por fase, velocidade 150→300 px/s, vão 46%→28%; clique/toque/Espaço/↑/W bate as asas; cano ou chão custa vida e reinicia canos/progresso/sequência, mas preserva o total de canos passados.
 - **Perfil editável:** nick de 1 a 30 caracteres na UI e foto opcional em data URL (160×160 JPEG, até 90.000 caracteres); sem Firebase Storage; fallback para a inicial do nick.
 - **Nicks únicos:** reserva em `balljumpNicknames/{key}` com chave normalizada (minúscula, sem acentos, separadores colapsados); transação reserva/libera o nick; nomes do Google ocupados recebem sufixo automático.
 - **SDK Firebase:** modular 10.14.1, importado dinamicamente do gstatic somente ao abrir a tela de morte/ranking ou fazer login. O jogo principal continua offline.
@@ -75,7 +75,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 15. Manter o ranking por dificuldade (`scores.<modo>`) e o ranking geral; o modo da corrida deve ser salvo junto ao resultado pendente.
 16. Manter o volume dos efeitos (0–100, persistido) e o botão **Como jogar** dentro das configurações.
 17. Manter o modo doce com 100 fases, tempo em vez de vidas, ranking `candy`, bombas/explosões, ⚡, cadeados a partir da fase 21, match 2×2 e fundo compartilhado com o clássico.
-18. Manter o modo flappy com 500 fases, 3 vidas, ranking `flappy`, progressão 4–8 canos, velocidade/vão crescentes e dano que reinicia canos/progresso/sequência.
+18. Manter o modo flappy com 500 canos no total, 3 vidas, ranking `flappy`, progressão 4–8 canos por fase, velocidade/vão crescentes e dano que reinicia canos/progresso/sequência sem zerar o total.
 19. O botão **Jogar** deve abrir a escolha entre **Clássico**, **Doce** e **Flappy**; não adicionar atalhos duplicados no menu.
 20. Manter as configurações acessíveis nos modos doce e flappy pela engrenagem, pausando o jogo e ocultando a dificuldade.
 21. Manter o menu principal com fundo ambiente do tema (ondas/fita) e a marca **ted-io** no título e no cartão.

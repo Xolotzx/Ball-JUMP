@@ -306,23 +306,27 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
 - Controles: ponteiro/toque no palco, clique, **Espaço**, **↑** e **W** chamam
   `flappyFlap`. O primeiro flap inicia a corrida; a gravidade (`FLAPPY_GRAVITY`) e
   o impulso (`FLAPPY_FLAP_VY`) são integrados em `flappyUpdate`.
-- 500 fases (`FLAPPY_MAX_LEVEL`) e 3 vidas (`FLAPPY_LIVES`). Cada fase tem de
-  4 a 8 canos (`flappyPipeCountFor`), velocidade de 150→300 px/s
-  (`flappySpeedFor`) e vão de 46%→28% da altura (`flappyGapHeightFor`).
+- 500 canos no total (`FLAPPY_MAX_PIPES`) e 3 vidas (`FLAPPY_LIVES`). As fases
+  continuam como blocos de dificuldade: cada fase tem de 4 a 8 canos
+  (`flappyPipeCountFor`), velocidade de 150→300 px/s (`flappySpeedFor`) e vão de
+  46%→28% da altura (`flappyGapHeightFor`), escalados pelos canos já passados.
 - Bater em um cano ou no chão (`flappyHitsPipe`/limite inferior) chama
   `flappyLoseLife`: perde 1 vida, zera a sequência, reinicia os canos e o
-  progresso de canos da fase. Sem vidas, `flappyEndRun(false)` abre o modal de
-  fim de jogo.
+  progresso de canos da fase, mas preserva o total de canos passados. Sem vidas,
+  `flappyEndRun(false)` abre o modal de fim de jogo.
 - Teto é apenas um limite suave (não tira vida). Passar por um cano soma
-  `flappyPipePoints(level)` (`5 + ceil(level/5)`); completar todos os canos da
-  fase soma `flappyPhaseBonus(level)` (`50 + level*2`), aumenta a sequência e
-  avança de fase. Completar a fase 500 é a vitória.
-- HUD mostra fase, vidas, pontos, sequência, recorde, tier (`Voo 1..10`) e a
-  barra de progresso de canos. Mensagens e pop-ups usam `#flappyMessage` e
-  `.flappy-pop`; dano dispara flash e tremida no palco.
+  `flappyPipePoints(pipesPassed)` (`5 + ceil(pipesPassed/5)`) e incrementa o
+  total; completar todos os canos da fase soma `flappyPhaseBonus(level)`
+  (`50 + level*2`), aumenta a sequência e avança de fase. Passar pelo 500º cano
+  é a vitória.
+- HUD mostra canos (`0 / 500 canos`), vidas, pontos, sequência, recorde, tier
+  (`Voo 1..10`, um a cada 50 canos) e a barra de progresso total de canos.
+  Mensagens e pop-ups usam `#flappyMessage` e `.flappy-pop`; dano dispara flash
+  e tremida no palco.
 - O resultado usa `mode:'flappy'` e grava `flappy.bestStreak`, `flappy.bestLevel`
-  (≤500) e `flappy.bestScore`; o ranking Flappy tem abas Streak/Níveis/Pontos.
-- O modal de fim de jogo reutiliza `#deathModal` com textos de 500 fases;
+  (`min(500, canos + 1)`, ou 500 na vitória) e `flappy.bestScore`; o ranking
+  Flappy tem abas Streak/Canos/Pontos.
+- O modal de fim de jogo reutiliza `#deathModal` com textos de 500 canos;
   **Menu** sai para o menu e **Jogar novamente** reinicia o modo flappy.
 - A engrenagem do cabeçalho abre `#settingsModal` sobre o modo flappy: a seção
   de dificuldade fica oculta e o voo pausa; ao fechar (ou voltar do tutorial),

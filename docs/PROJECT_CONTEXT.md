@@ -5,7 +5,7 @@
 
 ## 1. Visão
 
-**ted-io** é um site de jogos casuais para navegador com três modos. No **Clássico**, inspirado no JezzBall, o jogador constrói paredes para dividir a arena e isolar bolinhas; áreas fechadas sem bolinhas são preenchidas automaticamente e o objetivo é preencher **75%** da área antes de perder todas as vidas. No **Doce**, um match-3 de 100 fases, o jogador troca doces, cumpre metas e administra o tempo. No **Flappy**, um voo entre canos de 500 fases, o jogador bate as asas para passar pelos canos e sobrevive com 3 vidas.
+**ted-io** é um site de jogos casuais para navegador com três modos. No **Clássico**, inspirado no JezzBall, o jogador constrói paredes para dividir a arena e isolar bolinhas; áreas fechadas sem bolinhas são preenchidas automaticamente e o objetivo é preencher **75%** da área antes de perder todas as vidas. No **Doce**, um match-3 de 100 fases, o jogador troca doces, cumpre metas e administra o tempo. No **Flappy**, um voo entre canos com meta de 500 canos no total, o jogador bate as asas para passar pelos canos e sobrevive com 3 vidas.
 
 O projeto tem uma restrição deliberada: **o núcleo do jogo fica em um único `index.html`** e funciona offline. A única dependência externa é o SDK modular do Firebase, carregado sob demanda para login Google e ranking; não há back-end próprio. A documentação de contexto e segurança é externa ao runtime.
 
@@ -106,11 +106,11 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Explosões usam som próprio, faísca, texto de pontos e tremida; o fundo ambiente é o mesmo do modo clássico (ondas/fita).
 - No modo doce, cada troca válida aumenta a sequência; troca inválida zera. Cascatas geram combos e mais pontos.
 - O modo doce termina quando o tempo chega a zero ou na vitória da fase 100; o resultado entra no ranking próprio.
-- **Modo Flappy**: voo entre canos com 500 fases e 3 vidas. Clique, toque, **Espaço**, **↑** e **W** fazem o pássaro bater as asas.
-- Cada fase tem de 4 a 8 canos; a velocidade sobe e o vão diminui conforme a fase avança.
-- Bater em um cano ou no chão perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase; o teto apenas limita o voo.
+- **Modo Flappy**: voo entre canos com 500 canos no total e 3 vidas. Clique, toque, **Espaço**, **↑** e **W** fazem o pássaro bater as asas.
+- Cada fase é um bloco de dificuldade com 4 a 8 canos; a velocidade sobe e o vão diminui conforme os canos passados avançam.
+- Bater em um cano ou no chão perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase, mas preserva o total de canos; o teto apenas limita o voo.
 - Passar por um cano soma pontos; completar todos os canos da fase soma um bônus, aumenta a sequência e avança de fase.
-- O modo flappy termina sem vidas ou na vitória da fase 500; o resultado entra no ranking próprio.
+- O modo flappy termina sem vidas ou ao passar pelo 500º cano; o resultado entra no ranking próprio.
 - Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.
 - HUD: sequência, nível, vidas, área, direção, configurações e botão **← Menu**.
 - Botão de compartilhar removido por decisão de produto.

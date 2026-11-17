@@ -4,7 +4,7 @@
 
 ## Snapshot
 
-- **Data:** 2026-11-16
+- **Data:** 2026-11-17
 - **Status:** publicado e funcional
 - **Jogo local:** `index.html` (~245 KB, núcleo single-file; Firebase SDK sob demanda)
 - **Deploy:** https://ted-io.pages.dev
@@ -28,8 +28,8 @@
 - Tutorial aberto pelas configurações fica por cima e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente. Combina 3+ ou 2×2; ⚡ limpa um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s. A meta começa em 750 e sobe 500 a cada 5 fases (10.250 na fase 100).
-- **Modo Flappy**: voo entre canos com 500 fases, 3 vidas e ranking próprio (streak, níveis, pontos). Clique/toque/Espaço/↑/W batem as asas; 4–8 canos por fase, velocidade 150→300 px/s e vão 46%→28%; cano ou chão custa vida e reinicia canos/progresso/sequência; fase 500 é vitória.
-- Ranking em famílias **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**: clássico com Geral/Fácil/Normal/Difícil/Hardcore e abas Streak/Níveis; doce e flappy com Streak/Níveis/Pontos.
+- **Modo Flappy**: voo entre canos com 500 canos no total, 3 vidas e ranking próprio (streak, canos, pontos). Clique/toque/Espaço/↑/W batem as asas; 4–8 canos por fase, velocidade 150→300 px/s e vão 46%→28%; cano ou chão custa vida e reinicia canos/progresso/sequência, sem zerar o total; o 500º cano é vitória.
+- Ranking em famílias **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**: clássico com Geral/Fácil/Normal/Difícil/Hardcore e abas Streak/Níveis; doce com Streak/Níveis/Pontos; flappy com Streak/Canos/Pontos.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 - Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
 
@@ -39,13 +39,14 @@
 - Deploy por allowlist em `dist/` (`index.html`, `404.html`, `_headers`); documentação interna não é publicada.
 - Caminhos internos como `/AGENTS.md` retornam 404 com página própria.
 - Núcleo offline; Firebase SDK/APIs carregados apenas para login/ranking.
-- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; `scores` validado por modo; `candy` validado para o modo doce; `flappy` validado para o modo flappy com nível ≤ 500; `balljumpNicknames` legível por autenticados e gravável só pelo dono; regras preservam o Botanica.
+- Firestore: leitura autenticada, escrita somente pelo UID com schema/monotonicidade/server timestamp; `photo` validada como data URL até 90.000 chars; `scores` validado por modo; `candy` validado para o modo doce; `flappy` validado para o modo flappy com `bestLevel` ≤ 500 (cano alcançado); `balljumpNicknames` legível por autenticados e gravável só pelo dono; regras preservam o Botanica.
 - Domínio `ted-io.pages.dev` autorizado; provedor Google habilitado.
 - Repositório privado; sem segredos no Git (apiKey Firebase é pública por design).
 
 ## Últimas mudanças
 
-- **Modo Flappy adicionado**: canvas 480×640, 500 fases, 3 vidas, 4–8 canos por fase, velocidade/vão progressivos, streak por fase, ranking próprio e tela de fim com “500 FASES”/“VIDAS ESGOTADAS”.
+- **Meta do Flappy mudou de 500 fases para 500 canos no total**: a vitória ocorre ao passar pelo 500º cano; as fases continuam como blocos de dificuldade (4–8 canos) e o dano preserva o total de canos passados. HUD, tela final e ranking agora falam em canos.
+- **Modo Flappy adicionado**: canvas 480×640, 500 canos no total, 3 vidas, 4–8 canos por fase, velocidade/vão progressivos, streak por fase, ranking próprio e tela de fim com “500 CANOS”/“VIDAS ESGOTADAS”.
 - Ranking ganhou a família **Flappy 🐦**; perfil e regras do Firestore ganharam o campo `flappy` (`bestLevel ≤ 500`).
 - Configurações do modo flappy pela engrenagem, com pausa do voo e dificuldade oculta.
 - Perfil editável com nick e foto; modal com prévia, remoção e validação.
@@ -96,7 +97,7 @@
 - Validar manualmente o login Google real (popup e fallback de redirect) em desktop e mobile.
 - Validar manualmente a edição de perfil (nick, foto JPG/PNG/WebP, remoção e persistência) com conta real.
 - Validar o modo doce em navegador real: trocas, cascatas, 2×2, ⚡, bombas/cadeias, cadeados, tempo de 60 s, fases 10/11, 20/21, 30/31, 90/100 e ranking Doce.
-- Validar o modo flappy em navegador real: flap por toque/teclado, colisões, perda de vida/reset, progressão de canos/velocidade, fases altas, vitória na 500 e ranking Flappy.
+- Validar o modo flappy em navegador real: flap por toque/teclado, colisões, perda de vida/reset (preservando o total), progressão de canos/velocidade, fases altas, vitória no 500º cano e ranking Flappy.
 - Ajustar metas/tempos e frequência/força das bombas após playtest em celular e desktop.
 - Balancear a curva do modo flappy (velocidade/vão/canos) após playtest de longa duração.
 - Revalidar headers/CSP no ambiente de produção a cada deploy (validado em 2026-11-15).

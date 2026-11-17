@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -1088,7 +1088,7 @@
         <span class="mode-icon" aria-hidden="true">🐦</span>
         <span class="mode-copy">
           <strong>Modo Flappy</strong>
-          <small>Voe entre os canos, sobreviva com 3 vidas e avance 500 fases.</small>
+          <small>Voe entre os canos, sobreviva com 3 vidas e passe pelos 500 canos.</small>
         </span>
         <span class="mode-chev" aria-hidden="true">›</span>
       </button>
@@ -1157,7 +1157,7 @@
       </div>
       <div class="candy-title">
         <span class="overlay-kicker">MODO FLAPPY</span>
-        <h2>Fase <span id="flappyLevel">1</span></h2>
+        <h2><span id="flappyPipes">0</span> / 500 canos</h2>
       </div>
       <span class="candy-tier" id="flappyTier">Voo 1</span>
     </header>
@@ -1184,7 +1184,7 @@
     <div class="candy-goal">
       <div class="candy-goal-head">
         <span>Progresso da fase</span>
-        <span id="flappyProgressLabel">0 / 4 canos</span>
+        <span id="flappyProgressLabel">0 / 500 canos</span>
       </div>
       <div class="candy-progress" aria-hidden="true">
         <div id="flappyProgressBar"></div>
@@ -1197,7 +1197,7 @@
     </div>
 
     <p class="candy-message" id="flappyMessage" role="status">Toque, clique ou aperte Espaço para voar.</p>
-    <p class="candy-hint">Cada fase tem 4–8 canos · bater perde 1 vida e zera a sequência · 500 fases.</p>
+    <p class="candy-hint">Cada fase tem 4–8 canos · bater perde 1 vida e zera a sequência · 500 canos no total.</p>
   </div>
 </div>
 
@@ -1570,7 +1570,7 @@ function candyTargetScore(level) {
   return 750 + Math.floor((level - 1) / 5) * 500;
 }
 
-const FLAPPY_MAX_LEVEL = 500;
+const FLAPPY_MAX_PIPES = 500;
 const FLAPPY_LIVES = 3;
 const FLAPPY_W = 480;
 const FLAPPY_H = 640;
@@ -1583,30 +1583,30 @@ const FLAPPY_PIPE_W = 64;
 const FLAPPY_PIPE_SPACING = 270;
 const FLAPPY_TIER_NAMES = ['Voo 1', 'Voo 2', 'Voo 3', 'Voo 4', 'Voo 5', 'Voo 6', 'Voo 7', 'Voo 8', 'Voo 9', 'Voo 10'];
 
-function flappySpeedFor(level) {
-  const t = Math.min(1, Math.max(0, (level - 1) / (FLAPPY_MAX_LEVEL - 1)));
+function flappySpeedFor(pipes) {
+  const t = Math.min(1, Math.max(0, pipes / (FLAPPY_MAX_PIPES - 1)));
   return 150 + t * 150;
 }
 
-function flappyGapHeightFor(level) {
-  const t = Math.min(1, Math.max(0, (level - 1) / (FLAPPY_MAX_LEVEL - 1)));
+function flappyGapHeightFor(pipes) {
+  const t = Math.min(1, Math.max(0, pipes / (FLAPPY_MAX_PIPES - 1)));
   return FLAPPY_H * (0.46 - t * 0.18);
 }
 
-function flappyPipeCountFor(level) {
-  return 4 + Math.min(4, Math.floor((level - 1) / 50));
+function flappyPipeCountFor(pipes) {
+  return 4 + Math.min(4, Math.floor(pipes / 100));
 }
 
-function flappyTier(level) {
-  return Math.min(9, Math.floor((level - 1) / 50));
+function flappyTier(pipes) {
+  return Math.min(9, Math.floor(pipes / 50));
 }
 
-function flappyTierName(level) {
-  return FLAPPY_TIER_NAMES[flappyTier(level)];
+function flappyTierName(pipes) {
+  return FLAPPY_TIER_NAMES[flappyTier(pipes)];
 }
 
-function flappyPipePoints(level) {
-  return 5 + Math.ceil(level / 5);
+function flappyPipePoints(pipes) {
+  return 5 + Math.ceil(Math.max(1, pipes) / 5);
 }
 
 function flappyPhaseBonus(level) {
@@ -1724,7 +1724,7 @@ const ui = {
   candyProgressLabel: $('candyProgressLabel'), candyProgressBar: $('candyProgressBar'),
   candyBoard: $('candyBoard'), candyMessage: $('candyMessage'),
   flappyScreen: $('flappyScreen'), flappyExit: $('flappyExit'), flappySettings: $('flappySettings'),
-  flappyLevel: $('flappyLevel'), flappyTier: $('flappyTier'), flappyLivesBox: $('flappyLivesBox'),
+  flappyPipes: $('flappyPipes'), flappyTier: $('flappyTier'), flappyLivesBox: $('flappyLivesBox'),
   flappyLives: $('flappyLives'), flappyScore: $('flappyScore'), flappyStreak: $('flappyStreak'),
   flappyBest: $('flappyBest'), flappyProgressLabel: $('flappyProgressLabel'),
   flappyProgressBar: $('flappyProgressBar'), flappyStage: $('flappyStage'),
@@ -2271,6 +2271,7 @@ const flappyState = {
   ended: false,
   started: false,
   level: 1,
+  pipesPassed: 0,
   lives: FLAPPY_LIVES,
   score: 0,
   streak: 0,
@@ -3486,7 +3487,7 @@ function sanitizeFlappy(value) {
   if (!value || typeof value !== 'object') return null;
   return {
     bestStreak: clampInt(value.bestStreak, 0, 1000000),
-    bestLevel: clampInt(value.bestLevel, 1, FLAPPY_MAX_LEVEL),
+    bestLevel: clampInt(value.bestLevel, 1, FLAPPY_MAX_PIPES),
     bestScore: clampInt(value.bestScore, 0, 100000000)
   };
 }
@@ -3512,7 +3513,7 @@ function profileScoreFor(profile, scope) {
     const flappy = profile.flappy || {};
     return {
       bestStreak: clampInt(flappy.bestStreak, 0, 1000000),
-      bestLevel: clampInt(flappy.bestLevel, 1, FLAPPY_MAX_LEVEL),
+      bestLevel: clampInt(flappy.bestLevel, 1, FLAPPY_MAX_PIPES),
       bestScore: clampInt(flappy.bestScore, 0, 100000000)
     };
   }
@@ -3549,7 +3550,7 @@ function mergePendingFlappy(flappy, pending) {
   if (!pending || pending.mode !== 'flappy') return previous;
   return {
     bestStreak: clampInt(Math.max(previous.bestStreak, pending.bestStreak), 0, 1000000),
-    bestLevel: clampInt(Math.max(previous.bestLevel, pending.bestLevel), 1, FLAPPY_MAX_LEVEL),
+    bestLevel: clampInt(Math.max(previous.bestLevel, pending.bestLevel), 1, FLAPPY_MAX_PIPES),
     bestScore: clampInt(Math.max(previous.bestScore, pending.bestScore), 0, 100000000)
   };
 }
@@ -3560,7 +3561,7 @@ function readPendingRun() {
     return {
       mode,
       bestStreak: clampInt(data && data.bestStreak, 0, 1000000),
-      bestLevel: clampInt(data && data.bestLevel, 1, mode === 'flappy' ? FLAPPY_MAX_LEVEL : 100),
+      bestLevel: clampInt(data && data.bestLevel, 1, mode === 'flappy' ? FLAPPY_MAX_PIPES : 100),
       bestScore: clampInt(data && data.bestScore, 0, 100000000),
       difficulty: typeof (data && data.difficulty) === 'string' && DIFFICULTIES[data.difficulty] ? data.difficulty : ''
     };
@@ -3579,7 +3580,7 @@ function savePendingRun(run) {
   const data = {
     mode,
     bestStreak: clampInt(run && run.bestStreak, 0, 1000000),
-    bestLevel: clampInt(run && run.bestLevel, 1, mode === 'flappy' ? FLAPPY_MAX_LEVEL : 100)
+    bestLevel: clampInt(run && run.bestLevel, 1, mode === 'flappy' ? FLAPPY_MAX_PIPES : 100)
   };
   if (mode === 'candy' || mode === 'flappy') {
     data.bestScore = clampInt(run && run.bestScore, 0, 100000000);
@@ -3647,7 +3648,7 @@ function updateAuthUI() {
       : isCandyDeath
         ? 'Perfil conectado · Doce'
         : 'Perfil conectado · ' + DIFFICULTIES[mode].name;
-    ui.deathBest.textContent = `🔥 ${best.bestStreak} · ${isFlappyDeath ? 'fase' : 'nível'} ${best.bestLevel}`;
+    ui.deathBest.textContent = `🔥 ${best.bestStreak} · ${isFlappyDeath ? 'cano' : 'nível'} ${best.bestLevel}`;
     if (fb.error) ui.deathNote.textContent = fb.error;
     else if (fb.syncing) ui.deathNote.textContent = 'Salvando resultado…';
     else if (fb.profile) ui.deathNote.textContent = 'Resultado salvo no ranking.';
@@ -3672,7 +3673,7 @@ function updateAuthUI() {
     const best = profileScoreFor(profile, scope);
     setAvatar(ui.rankAvatar, name, profile.photo);
     ui.rankName.textContent = name;
-    ui.rankBest.textContent = `🔥 ${best.bestStreak} · ${scope === 'flappy' ? 'fase' : 'nível'} ${best.bestLevel}`;
+    ui.rankBest.textContent = `🔥 ${best.bestStreak} · ${scope === 'flappy' ? 'cano' : 'nível'} ${best.bestLevel}`;
     if (fb.error) {
       ui.rankStatus.textContent = fb.error;
       ui.rankStatus.classList.add('is-error');
@@ -3942,7 +3943,12 @@ function openEndModal(victory = false, mode = 'classic') {
   const isCandy = deathMode === 'candy';
   const isFlappy = deathMode === 'flappy';
   const run = isFlappy
-    ? { mode: 'flappy', bestStreak: flappyState.bestStreak, bestLevel: flappyState.level, bestScore: flappyState.score }
+    ? {
+        mode: 'flappy',
+        bestStreak: flappyState.bestStreak,
+        bestLevel: Math.min(FLAPPY_MAX_PIPES, flappyState.pipesPassed + (victory ? 0 : 1)),
+        bestScore: flappyState.score
+      }
     : isCandy
       ? { mode: 'candy', bestStreak: candyState.bestStreak, bestLevel: candyState.level, bestScore: candyState.runScore }
       : { mode: 'classic', bestStreak: state.runBestStreak, bestLevel: state.level, difficulty: state.difficulty };
@@ -3951,12 +3957,12 @@ function openEndModal(victory = false, mode = 'classic') {
   ui.deathModal.dataset.kind = victory ? 'victory' : 'gameover';
   ui.deathModal.dataset.mode = deathMode;
   if (isFlappy) {
-    ui.deathKicker.textContent = victory ? '500 FASES' : 'VIDAS ESGOTADAS';
+    ui.deathKicker.textContent = victory ? '500 CANOS' : 'VIDAS ESGOTADAS';
     ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'FIM DE JOGO';
     ui.deathSubtitle.textContent = victory
-      ? 'Você completou as 500 fases do modo flappy!'
-      : 'Você chegou à fase ' + run.bestLevel + ' com ' + run.bestScore.toLocaleString('pt-BR') + ' pontos.';
-    ui.deathLevelLabel.textContent = 'fase alcançada';
+      ? 'Você passou pelos 500 canos do modo flappy!'
+      : 'Você chegou ao cano ' + run.bestLevel + ' com ' + run.bestScore.toLocaleString('pt-BR') + ' pontos.';
+    ui.deathLevelLabel.textContent = 'cano alcançado';
   } else if (isCandy) {
     ui.deathKicker.textContent = victory ? '100 FASES' : 'TEMPO ESGOTADO';
     ui.deathTitle.textContent = victory ? 'VITÓRIA' : 'FIM DO TEMPO';
@@ -4821,14 +4827,14 @@ function flappyBuildPipes() {
 
 function flappyUpdateHUD() {
   const f = flappyState;
-  ui.flappyLevel.textContent = f.level;
+  ui.flappyPipes.textContent = f.pipesPassed;
   ui.flappyLives.textContent = Math.max(0, f.lives);
   ui.flappyScore.textContent = f.score.toLocaleString('pt-BR');
   ui.flappyStreak.textContent = f.streak;
   ui.flappyBest.textContent = f.bestStreak;
-  ui.flappyTier.textContent = flappyTierName(f.level);
-  ui.flappyProgressLabel.textContent = f.passed + ' / ' + f.pipeCount + ' canos';
-  ui.flappyProgressBar.style.width = (f.pipeCount ? (f.passed / f.pipeCount) * 100 : 0).toFixed(1) + '%';
+  ui.flappyTier.textContent = flappyTierName(f.pipesPassed) + ' · Fase ' + f.level;
+  ui.flappyProgressLabel.textContent = f.pipesPassed + ' / ' + FLAPPY_MAX_PIPES + ' canos';
+  ui.flappyProgressBar.style.width = ((f.pipesPassed / FLAPPY_MAX_PIPES) * 100).toFixed(1) + '%';
   ui.flappyLivesBox.classList.toggle('is-low', f.lives <= 1);
   if (ui.flappyStart) ui.flappyStart.hidden = f.started || !f.active || f.ended;
 }
@@ -4891,7 +4897,7 @@ function flappyLoseLife() {
     flappyEndRun(false);
     return;
   }
-  flappySetMessage('Bateu! Perdeu 1 vida — fase ' + f.level + ' reiniciada. Vidas: ' + f.lives + '.');
+  flappySetMessage('Bateu! Perdeu 1 vida — sequência zerada. Vidas: ' + f.lives + '.');
   flappyShowPop('−1 VIDA');
 }
 
@@ -4902,17 +4908,10 @@ function flappyCompletePhase() {
   f.score += flappyPhaseBonus(cleared);
   f.streak += 1;
   f.bestStreak = Math.max(f.bestStreak, f.streak);
-  if (cleared >= FLAPPY_MAX_LEVEL) {
-    f.level = FLAPPY_MAX_LEVEL;
-    flappyUpdateHUD();
-    flappyShowPop('500 FASES!');
-    flappyEndRun(true);
-    return;
-  }
   f.level = cleared + 1;
-  f.speed = flappySpeedFor(f.level);
-  f.gapHeight = flappyGapHeightFor(f.level);
-  f.pipeCount = flappyPipeCountFor(f.level);
+  f.speed = flappySpeedFor(f.pipesPassed);
+  f.gapHeight = flappyGapHeightFor(f.pipesPassed);
+  f.pipeCount = flappyPipeCountFor(f.pipesPassed);
   f.passed = 0;
   f.pipes = flappyBuildPipes();
   f.birdY = FLAPPY_H / 2;
@@ -4920,7 +4919,7 @@ function flappyCompletePhase() {
   f.birdRot = 0;
   flappyUpdateHUD();
   flappyShowPop('FASE ' + f.level + ' · 🔥 ' + f.streak);
-  flappySetMessage('Fase ' + cleared + ' concluída! Agora ' + f.pipeCount + ' canos com vão menor.', true);
+  flappySetMessage('Fase ' + cleared + ' concluída! Canos: ' + f.pipesPassed + ' / ' + FLAPPY_MAX_PIPES + '.', true);
   if (f.level % 25 === 1) Sound.fanfare();
   else Sound.success();
 }
@@ -4960,13 +4959,20 @@ function flappyUpdate(dt) {
     if (!pipe.passed && pipe.x + FLAPPY_PIPE_W < FLAPPY_BIRD_X - FLAPPY_BIRD_R) {
       pipe.passed = true;
       f.passed += 1;
+      f.pipesPassed += 1;
       scored += 1;
+      if (f.pipesPassed >= FLAPPY_MAX_PIPES) break;
     }
   }
   if (scored > 0) {
-    f.score += scored * flappyPipePoints(f.level);
+    f.score += scored * flappyPipePoints(f.pipesPassed);
     flappyUpdateHUD();
     Sound.pipePoint(f.level);
+  }
+  if (f.pipesPassed >= FLAPPY_MAX_PIPES) {
+    flappyShowPop('500 CANOS!');
+    flappyEndRun(true);
+    return;
   }
   if (f.passed >= f.pipeCount) flappyCompletePhase();
 }
@@ -4998,13 +5004,14 @@ function startFlappyMode() {
   f.paused = false;
   f.started = false;
   f.level = 1;
+  f.pipesPassed = 0;
   f.lives = FLAPPY_LIVES;
   f.score = 0;
   f.streak = 0;
   f.bestStreak = 0;
-  f.speed = flappySpeedFor(1);
-  f.gapHeight = flappyGapHeightFor(1);
-  f.pipeCount = flappyPipeCountFor(1);
+  f.speed = flappySpeedFor(0);
+  f.gapHeight = flappyGapHeightFor(0);
+  f.pipeCount = flappyPipeCountFor(0);
   f.passed = 0;
   f.birdY = FLAPPY_H / 2;
   f.birdVy = 0;
@@ -5019,7 +5026,7 @@ function startFlappyMode() {
   document.body.classList.add('flappy-active');
   state.paused = true;
   flappyUpdateHUD();
-  flappySetMessage('Toque, clique ou aperte Espaço para voar.');
+  flappySetMessage('Toque, clique ou aperte Espaço para voar — passe pelos 500 canos.');
   flappyRender();
   syncOverlayLock();
   setTimeout(() => { if (flappyOpen) { try { ui.flappyExit.focus(); } catch (_) {} } }, 80);
@@ -5264,9 +5271,10 @@ function updateRankHeader() {
     }
   }
   ui.rankScoreTab.hidden = !(isCandy || isFlappy);
+  ui.rankLevelTab.textContent = isFlappy ? '🏆 Canos' : '🏆 Níveis';
   if (isFlappy) {
     ui.rankTitle.textContent = 'Ranking flappy';
-    ui.rankSubtitle.textContent = 'Top 10 de streak, fases e pontos no modo flappy.';
+    ui.rankSubtitle.textContent = 'Top 10 de streak, canos e pontos no modo flappy.';
     ui.rankEmpty.textContent = 'Nenhum jogador no ranking flappy ainda.';
   } else if (isCandy) {
     ui.rankTitle.textContent = 'Ranking doce';
@@ -5430,7 +5438,7 @@ function rankEntryFromDoc(snapshot, scope) {
     name: String(data.name || 'Jogador').trim().slice(0, 40) || 'Jogador',
     photo: isPhotoDataURL(data.photo) ? data.photo : '',
     bestStreak: clampInt(mode.bestStreak, 0, 1000000),
-    bestLevel: clampInt(mode.bestLevel, 1, scope === 'flappy' ? FLAPPY_MAX_LEVEL : 100),
+    bestLevel: clampInt(mode.bestLevel, 1, scope === 'flappy' ? FLAPPY_MAX_PIPES : 100),
     bestScore: clampInt(mode.bestScore, 0, 100000000)
   };
 }

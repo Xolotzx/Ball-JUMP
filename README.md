@@ -32,7 +32,7 @@ Preencha **75%** da arena construindo paredes para isolar as bolinhas. Se uma bo
 - **Bomba + bomba** vira uma explosão dupla: área 5×5 ao redor de cada bomba, +500 de bônus, flash e som mais fortes.
 - Explosões com som, faíscas, texto flutuante e tremida no tabuleiro.
 - O modo doce usa o mesmo fundo ambiente (ondas/fita) do modo clássico.
-- **Modo Flappy**: voo entre canos com 500 fases, 3 vidas e ranking próprio (streak, níveis e pontos). Clique, toque ou **Espaço/↑/W** para bater as asas.
+- **Modo Flappy**: voo entre canos com 500 canos no total, 3 vidas e ranking próprio (streak, canos e pontos). Clique, toque ou **Espaço/↑/W** para bater as asas.
 - Cada fase tem de 4 a 8 canos; a velocidade sobe e o vão diminui com o avanço. Bater em cano ou chão custa uma vida e reinicia os canos e o progresso da fase.
 - Perfil editável com nick e foto (a foto é opcional, recortada e comprimida no navegador). Nicks são únicos.
 - Modo **Preto & laranja** e modo **Laranja & branco**.

@@ -53,12 +53,13 @@ administrativo ou `.env` no repositório.
     na fase 6, até 10.250 na fase 100) e o tempo cai a cada 10 fases. Os tipos vão
     de 5 para 6 na fase 11; da fase 21 em diante entram doces com cadeado (2
     detonações para sumir), em vez de um sétimo tipo, até a fase 100.
-11. O modo **Flappy** é um voo entre canos com 500 fases e 3 vidas: toque,
-    clique ou aperte Espaço/↑/W para bater as asas e passar pelos canos. Cada
-    fase tem de 4 a 8 canos, o vão diminui e a velocidade sobe com o avanço.
-    Bater em um cano ou no chão custa uma vida e reinicia os canos, o progresso
-    da fase e a sequência; sem vidas a corrida termina. Completar a fase 500 é a
-    vitória.
+11. O modo **Flappy** é um voo entre canos com 500 canos no total e 3 vidas:
+    toque, clique ou aperte Espaço/↑/W para bater as asas e passar pelos canos.
+    As fases são blocos de dificuldade com 4 a 8 canos; o vão diminui e a
+    velocidade sobe conforme os canos passados. Bater em um cano ou no chão
+    custa uma vida e reinicia os canos, o progresso da fase e a sequência, mas
+    mantém o total de canos; sem vidas a corrida termina. Passar pelo 500º cano
+    é a vitória.
 12. O título acompanha a seleção: “Ranking clássico — Fácil”,
     “Ranking doce”, “Ranking flappy”, etc.
 
@@ -313,9 +314,10 @@ Também foi validado:
   - o ranking Doce consulta `candy.bestStreak`, `candy.bestLevel` e
     `candy.bestScore`.
 - Modo Flappy (voo entre canos):
-  - 500 fases, 3 vidas e 4–8 canos por fase, com velocidade e vão progressivos;
+  - 500 canos no total, 3 vidas e 4–8 canos por fase (blocos de dificuldade),
+    com velocidade e vão progressivos conforme os canos passados;
   - o resultado pendente usa `mode:'flappy'` com `bestStreak`, `bestLevel` e
-    `bestScore`; `bestLevel` fica limitado a 500;
+    `bestScore`; `bestLevel` é `min(500, canos + 1)` e fica limitado a 500;
   - `syncProfile` grava/atualiza apenas `flappy`, sem mexer nos scores clássicos;
   - o ranking Flappy consulta `flappy.bestStreak`, `flappy.bestLevel` e
     `flappy.bestScore`.
@@ -359,11 +361,11 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
     - avance de fase e confira a meta/tempo; na fase 11 a dificuldade deve aumentar;
     - complete a fase 100 para validar a vitória.
 12. No menu, abra **Modo Flappy**:
-    - voe com clique/toque/Espaço, passe pelos canos e confira pontos e progresso;
-    - bata em um cano e confirme a perda de vida, o reset dos canos e da sequência;
-    - perca as 3 vidas e confira a tela **VIDAS ESGOTADAS** com fase e pontos;
-    - entre com Google e confira **Ranking → Flappy** nas abas Streak, Níveis e Pontos;
-    - complete a fase 500 (ou force `flappyState.level = 500`) para validar a vitória.
+    - voe com clique/toque/Espaço, passe pelos canos e confira pontos e o HUD `X / 500 canos`;
+    - bata em um cano e confirme a perda de vida, o reset dos canos e da sequência, mantendo o total de canos;
+    - perca as 3 vidas e confira a tela **VIDAS ESGOTADAS** com cano e pontos;
+    - entre com Google e confira **Ranking → Flappy** nas abas Streak, Canos e Pontos;
+    - passe pelo 500º cano (ou force `flappyState.pipesPassed = 499`) para validar a vitória.
 13. Abra em outro navegador/dispositivo com a mesma conta e confira o perfil.
 14. Confira no console do Firebase → Firestore → `balljumpProfiles` e
     `balljumpNicknames`.

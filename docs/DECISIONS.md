@@ -350,15 +350,15 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - a mensagem “💥 Explosão dupla!” pode ser substituída pelo combo da cascata seguinte;
   - cadeados atingidos pela explosão dupla perdem carga normalmente.
 
-## ADR-028 — Modo Flappy com 500 fases e ranking próprio
+## ADR-028 — Modo Flappy com 500 canos e ranking próprio
 
 - **Data:** 2026-11-16
-- **Status:** aceita
+- **Status:** aceita (revisada em 2026-11-17: meta passou de 500 fases para 500 canos)
 - **Contexto:** o produto já tinha Clássico e Doce; faltava um terceiro modo arcade rápido, com os mesmos conceitos de fase, sequência e ranking, mas com desafio e duração próprios.
-- **Decisão:** adicionar um modo **Flappy** em canvas próprio (480×640 lógicos) com **500 fases**, 3 vidas e progressão por canos. O jogador toca/clica ou usa **Espaço/↑/W** para bater as asas; passar por um cano pontua e completar todos os canos da fase avança de fase e aumenta a sequência. Bater em cano ou chão custa uma vida, zera a sequência e reinicia os canos/progresso da fase. O resultado usa `mode:'flappy'` e grava `flappy.bestStreak`, `flappy.bestLevel` (≤500) e `flappy.bestScore`.
+- **Decisão:** adicionar um modo **Flappy** em canvas próprio (480×640 lógicos) com **500 canos no total**, 3 vidas e progressão por canos. O jogador toca/clica ou usa **Espaço/↑/W** para bater as asas; passar por um cano pontua e completa o total. As fases continuam como blocos de dificuldade de 4–8 canos; completar todos os canos da fase avança de fase e aumenta a sequência. Bater em cano ou chão custa uma vida, zera a sequência e reinicia os canos/progresso da fase, mas preserva o total de canos. O resultado usa `mode:'flappy'` e grava `flappy.bestStreak`, `flappy.bestLevel` (`min(500, canos + 1)`, ou 500 na vitória) e `flappy.bestScore`.
 - **Consequências:**
   - o seletor de modo passa a listar Clássico, Doce e Flappy;
-  - o ranking ganha a família **Flappy 🐦** com Streak/Níveis/Pontos, sem misturar com `scores.*` ou `candy`;
+  - o ranking ganha a família **Flappy 🐦** com Streak/Canos/Pontos, sem misturar com `scores.*` ou `candy`;
   - as regras do Firestore validam `flappy` com `bestLevel` entre 1 e 500;
-  - 500 fases exigem balanceamento de velocidade/vão e um teste de longa duração separado;
-  - a tela de fim reutiliza `#deathModal` com textos de “500 FASES”/“VIDAS ESGOTADAS”.
+  - 500 canos exigem balanceamento de velocidade/vão e um teste de longa duração separado;
+  - a tela de fim reutiliza `#deathModal` com textos de “500 CANOS”/“VIDAS ESGOTADAS”.

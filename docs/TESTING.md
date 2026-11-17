@@ -180,18 +180,19 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Passar por um cano soma pontos e avança a barra de progresso.
 - [ ] Bater em um cano perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase.
 - [ ] Bater no chão perde 1 vida; o teto apenas limita o voo sem tirar vida.
-- [ ] O HUD mostra fase, vidas, pontos, sequência, recorde, tier e canos restantes.
-- [ ] Cada fase tem 4 canos no início e chega a 8 nas fases mais altas.
-- [ ] A velocidade sobe e o vão diminui conforme a fase avança.
+- [ ] O HUD mostra canos (`X / 500 canos`), vidas, pontos, sequência, recorde e tier.
+- [ ] Cada fase tem 4 canos no início e chega a 8 conforme os canos passados aumentam.
+- [ ] A velocidade sobe e o vão diminui conforme o total de canos avança.
 - [ ] Completar todos os canos da fase soma o bônus, aumenta a sequência e avança de fase.
-- [ ] Perder as 3 vidas abre **VIDAS ESGOTADAS** com fase e pontos.
+- [ ] Perder as 3 vidas abre **VIDAS ESGOTADAS** com cano e pontos.
 - [ ] A tela final mostra **Menu** e **Jogar novamente** reinicia o modo flappy.
 - [ ] A engrenagem do cabeçalho do modo flappy abre as configurações e pausa o voo.
 - [ ] A seção de dificuldade fica oculta no modo flappy; fechar as configurações retoma o voo.
 - [ ] Trocar de aba (visibilidade) pausa e retoma o voo sem teleporte.
-- [ ] O ranking **Flappy** tem abas Streak, Níveis e Pontos, separado dos rankings clássicos.
+- [ ] O ranking **Flappy** tem abas Streak, Canos e Pontos, separado dos rankings clássicos.
 - [ ] O resultado do modo flappy não altera os scores do modo clássico nem o campo `candy`.
-- [ ] A fase 500 termina em vitória.
+- [ ] Perder uma vida preserva o total de canos passados (só reseta a fase atual e a sequência).
+- [ ] O 500º cano termina em vitória com a tela **500 CANOS**.
 - [ ] O palco do flappy e o HUD cabem em 320–390 px sem overflow horizontal.
 
 ### Edição de perfil
