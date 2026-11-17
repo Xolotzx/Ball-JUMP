@@ -362,3 +362,15 @@ Formato: contexto → decisão → consequências. Mudanças de decisão exigem 
   - as regras do Firestore validam `flappy` com `bestLevel` entre 1 e 500;
   - 500 canos exigem balanceamento de velocidade/vão e um teste de longa duração separado;
   - a tela de fim reutiliza `#deathModal` com textos de “500 CANOS”/“VIDAS ESGOTADAS”.
+
+## ADR-029 — Tutorial contextual por modo
+
+- **Data:** 2026-11-17
+- **Status:** aceita
+- **Contexto:** o botão **Como jogar** das configurações abria sempre o tutorial do Clássico, mesmo quando o jogador estava no Doce ou no Flappy.
+- **Decisão:** manter um único `#tutorialModal` com três seções estáticas (`data-tutorial-mode` para Clássico, Doce e Flappy). `renderTutorialMode` detecta o modo ativo por `flappyOpen`/`candyOpen` (menu cai no Clássico), ajusta o título para “Como jogar · Modo” e mostra apenas a seção correspondente.
+- **Consequências:**
+  - o tutorial explica as regras, controles e objetivos do modo em que o jogador está;
+  - o modal continua único e sem duplicar lógica de abertura/fechamento;
+  - novas regras de um modo exigem atualizar apenas a seção dele;
+  - o guia do modo ativo deve ser validado ao abrir as configurações pelo menu, pelo Clássico, pelo Doce e pelo Flappy.

@@ -113,7 +113,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - Os canos entram em fluxo contínuo: a troca de bloco de dificuldade não recria a fila, não reposiciona o pássaro e não mostra popup/mensagem de fase.
 - O HUD do flappy mostra vidas, pontos, sequência, recorde, tier e barra de progresso, sem contador numérico de canos.
 - O modo flappy termina sem vidas ou ao passar pelo 500º cano; o resultado entra no ranking próprio.
-- Tutorial em modal, acessível pelo botão **Como jogar** nas configurações.
+- Tutorial em modal, acessível pelo botão **Como jogar** nas configurações; o conteúdo acompanha o modo ativo (Clássico, Doce ou Flappy).
 - HUD: sequência, nível, vidas, área, direção, configurações e botão **← Menu**.
 - Botão de compartilhar removido por decisão de produto.
 - Modo **Escuro**: preto e laranja.

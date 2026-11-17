@@ -158,7 +158,7 @@ Controle de sobreposição:
 - `menuOpen`, `tutorialOpen`, `modalOpen`, `deathOpen`, `rankOpen`, `profileOpen`, `candyOpen`, `flappyOpen`, `modeOpen`;
 - `syncOverlayLock()` aplica `inert` no conteúdo de fundo, bloqueia scroll do body e libera ao fechar;
 - foco é enviado para o overlay ativo;
-- o tutorial aberto pelas configurações fica por cima delas; ao fechar, as configurações continuam abertas (exceto em **Voltar ao jogo**);
+- o tutorial aberto pelas configurações mostra o guia do modo ativo (Clássico, Doce ou Flappy), fica por cima das configurações e, ao fechar, elas continuam abertas (exceto em **Voltar ao jogo**);
 - `Escape` fecha tutorial/configurações;
 - o jogo não inicia até **Jogar**.
 

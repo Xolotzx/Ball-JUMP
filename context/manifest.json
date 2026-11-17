@@ -221,7 +221,7 @@
     "flappy screen has a settings gear that pauses the flight and hides the difficulty section",
     "Jogar opens a mode chooser with classic, candy and flappy; no duplicate mode button in the menu",
     "settings include a 0-100 volume slider persisted in localStorage",
-    "tutorial can be opened from settings and returns to settings when closed",
+    "tutorial can be opened from settings, shows the active mode's guide (classic, candy or flappy) and returns to settings when closed",
     "ranking documents store only name, optional photo, bestStreak, bestLevel, optional per-difficulty scores, optional candy and flappy blocks and server updatedAt",
     "rankings are split by difficulty (easy, normal, hard, hardcore) plus an overall ranking",
     "ranking menu has classic, candy and flappy families; classic lists difficulties, candy and flappy list streak/level/score",

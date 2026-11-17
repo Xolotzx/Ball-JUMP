@@ -227,6 +227,8 @@ check(index.includes('id="classicMenuBtn"') && index.includes('function returnCl
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');
 check(index.includes('id="settingsHowBtn"') && index.includes('openTutorial(true)'), 'como jogar nas configurações presente');
+check(index.includes('data-tutorial-mode="classic"') && index.includes('data-tutorial-mode="candy"') && index.includes('data-tutorial-mode="flappy"'), 'tutorial cobre os três modos');
+check(index.includes('function renderTutorialMode') && index.includes('currentTutorialMode'), 'tutorial segue o modo atual');
 check(!index.includes('menuHowBtn'), 'como jogar removido do menu principal');
 check(!/service_account|private_key\s*:/i.test(index), 'sem service account no cliente');
 check(index.includes('function isPhotoDataURL'), 'validação de foto presente');

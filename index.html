@@ -587,6 +587,36 @@
   .sw-wall{background:color-mix(in srgb,var(--muted) 68%,transparent)}
   .sw-build{background:var(--accent)}
   .sw-ball{background:var(--ball);border-radius:50%!important}
+  .sw-candy{background:linear-gradient(150deg,#8ee6a8,#109e5a)}
+  .sw-lightning{background:linear-gradient(150deg,#fde047,#2563eb)}
+  .sw-bomb{background:linear-gradient(135deg,#ffd166,#b91c1c)}
+  .sw-lock{background:color-mix(in srgb,var(--text) 34%,transparent)}
+  .demo-candy-row{display:flex;flex-wrap:wrap;gap:6px;padding:2px}
+  .demo-candy-row .candy-cell{
+    width:42px;height:42px;aspect-ratio:auto;border-radius:10px;
+    font-size:21px;cursor:default;pointer-events:none;
+  }
+  .demo-candy-row .candy-cell:hover{transform:none;filter:none}
+  .demo-flappy{
+    position:relative;height:118px;border-radius:11px;overflow:hidden;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg,#bfe9ff,#eafaff 72%,#dfb87c 72%,#cfa469);
+  }
+  .demo-pipe{
+    position:absolute;right:27%;width:34px;border-radius:4px;
+    background:linear-gradient(90deg,#2f8f46,#67d97f 40%,#1f6f37);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 6px rgba(20,60,30,.25);
+  }
+  .demo-pipe.top{top:0;height:30%}
+  .demo-pipe.bottom{bottom:0;height:46%}
+  .demo-flappy-bird{
+    position:absolute;left:22%;top:48%;transform:translateY(-50%);
+    font-size:30px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));
+  }
+  .demo-flappy-hearts{
+    position:absolute;left:14px;top:10px;display:flex;gap:4px;font-size:12px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.2));
+  }
   .tutorial-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
   .tutorial-steps li{
     display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border-radius:14px;
@@ -1263,47 +1293,136 @@
       <button id="closeTutorial" class="close-btn" type="button" aria-label="Fechar tutorial">✕</button>
     </header>
     <div class="modal-body tutorial-body">
-      <div class="tutorial-demo" aria-hidden="true">
-        <div class="demo-board">
-          <span class="demo-wall" style="grid-column:2 / 15;grid-row:2 / 3"></span>
-          <span class="demo-wall" style="grid-column:11 / 12;grid-row:2 / 8"></span>
-          <span class="demo-build" style="grid-column:5 / 6;grid-row:2 / 9"></span>
-          <span class="demo-ball" style="grid-column:7;grid-row:5"></span>
-          <span class="demo-ball alt" style="grid-column:12;grid-row:5"></span>
-          <span class="demo-ball alt2" style="grid-column:8;grid-row:7"></span>
+      <div class="tutorial-mode" data-tutorial-mode="classic">
+        <div class="tutorial-demo" aria-hidden="true">
+          <div class="demo-board">
+            <span class="demo-wall" style="grid-column:2 / 15;grid-row:2 / 3"></span>
+            <span class="demo-wall" style="grid-column:11 / 12;grid-row:2 / 8"></span>
+            <span class="demo-build" style="grid-column:5 / 6;grid-row:2 / 9"></span>
+            <span class="demo-ball" style="grid-column:7;grid-row:5"></span>
+            <span class="demo-ball alt" style="grid-column:12;grid-row:5"></span>
+            <span class="demo-ball alt2" style="grid-column:8;grid-row:7"></span>
+          </div>
+          <div class="demo-legend">
+            <span><i class="sw-wall"></i>parede</span>
+            <span><i class="sw-build"></i>em construção</span>
+            <span><i class="sw-ball"></i>bolinha</span>
+          </div>
         </div>
-        <div class="demo-legend">
-          <span><i class="sw-wall"></i>parede</span>
-          <span><i class="sw-build"></i>em construção</span>
-          <span><i class="sw-ball"></i>bolinha</span>
+
+        <ol class="tutorial-steps">
+          <li>
+            <span class="step-num" aria-hidden="true">1</span>
+            <div><strong>Encha 75% da arena</strong><p>Isolar as bolinhas vai preenchendo a área. Quando a barra de <b>ÁREA</b> alcançar a marca de 75%, o nível termina.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">2</span>
+            <div><strong>Construa paredes</strong><p>Clique ou toque em um bloco vazio. A parede cresce para os dois lados na direção escolhida. No PC, o <b>clique direito</b> gira; no celular, use o botão <b>HORIZ / VERT</b>.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">3</span>
+            <div><strong>Cuidado com as bolinhas</strong><p>Se uma bolinha encostar na parede enquanto ela cresce, a parede quebra, você perde <b>1 vida</b> e a sequência volta a zero. Planeje o momento e o lugar.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">4</span>
+            <div><strong>Feche as áreas</strong><p>Quando a parede chega às bordas, toda região fechada sem bolinhas é preenchida automaticamente. São <b>100 níveis</b>, uma bolinha extra a cada 2 níveis e <b>+1 vida</b> por fase concluída.</p></div>
+          </li>
+        </ol>
+
+        <div class="tutorial-controls">
+          <div><span class="control-tag">PC</span><p><b>Clique esquerdo</b> constrói · <b>clique direito</b> gira · <kbd>Espaço</kbd> também gira.</p></div>
+          <div><span class="control-tag">Celular</span><p><b>Toque</b> constrói · botão <b>HORIZ / VERT</b> gira. A tela não rola enquanto você joga.</p></div>
         </div>
+
+        <p class="tutorial-note">A sequência 🔥 aumenta a cada parede concluída. Dificuldade, aparência e som ficam em <b>Configurações</b>.</p>
       </div>
 
-      <ol class="tutorial-steps">
-        <li>
-          <span class="step-num" aria-hidden="true">1</span>
-          <div><strong>Encha 75% da arena</strong><p>Isolar as bolinhas vai preenchendo a área. Quando a barra de <b>ÁREA</b> alcançar a marca de 75%, o nível termina.</p></div>
-        </li>
-        <li>
-          <span class="step-num" aria-hidden="true">2</span>
-          <div><strong>Construa paredes</strong><p>Clique ou toque em um bloco vazio. A parede cresce para os dois lados na direção escolhida. No PC, o <b>clique direito</b> gira; no celular, use o botão <b>HORIZ / VERT</b>.</p></div>
-        </li>
-        <li>
-          <span class="step-num" aria-hidden="true">3</span>
-          <div><strong>Cuidado com as bolinhas</strong><p>Se uma bolinha encostar na parede enquanto ela cresce, a parede quebra, você perde <b>1 vida</b> e a sequência volta a zero. Planeje o momento e o lugar.</p></div>
-        </li>
-        <li>
-          <span class="step-num" aria-hidden="true">4</span>
-          <div><strong>Feche as áreas</strong><p>Quando a parede chega às bordas, toda região fechada sem bolinhas é preenchida automaticamente. São <b>100 níveis</b>, uma bolinha extra a cada 2 níveis e <b>+1 vida</b> por fase concluída.</p></div>
-        </li>
-      </ol>
+      <div class="tutorial-mode" data-tutorial-mode="candy" hidden>
+        <div class="tutorial-demo" aria-hidden="true">
+          <div class="demo-candy-row">
+            <span class="candy-cell" data-type="0">🍬</span>
+            <span class="candy-cell" data-type="0">🍬</span>
+            <span class="candy-cell" data-type="0">🍬</span>
+            <span class="candy-cell" data-type="lightning">⚡</span>
+            <span class="candy-cell" data-type="bomb">💣</span>
+            <span class="candy-cell is-locked" data-type="2" data-lock="1">🍫</span>
+          </div>
+          <div class="demo-legend">
+            <span><i class="sw-candy"></i>3+ ou 2×2</span>
+            <span><i class="sw-lightning"></i>⚡ limpa o tipo</span>
+            <span><i class="sw-bomb"></i>💣+💣 = explosão maior</span>
+            <span><i class="sw-lock"></i>🔒 2 detonações</span>
+          </div>
+        </div>
 
-      <div class="tutorial-controls">
-        <div><span class="control-tag">PC</span><p><b>Clique esquerdo</b> constrói · <b>clique direito</b> gira · <kbd>Espaço</kbd> também gira.</p></div>
-        <div><span class="control-tag">Celular</span><p><b>Toque</b> constrói · botão <b>HORIZ / VERT</b> gira. A tela não rola enquanto você joga.</p></div>
+        <ol class="tutorial-steps">
+          <li>
+            <span class="step-num" aria-hidden="true">1</span>
+            <div><strong>Troque doces vizinhos</strong><p>Selecione dois doces adjacentes. A troca só vale se formar uma <b>linha de 3+</b> ou um <b>quadrado 2×2</b>.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">2</span>
+            <div><strong>Cumpra a meta antes do tempo</strong><p>Cada fase tem uma meta de pontos e um tempo próprio. O relógio começa em <b>60 s</b> e cai até <b>33 s</b> na fase 100 — se zerar, a corrida termina.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">3</span>
+            <div><strong>Use ⚡, 💣 e 🔒</strong><p>Trocar um <b>⚡</b> limpa todos os doces daquele tipo; <b>💣+💣</b> faz uma explosão dupla maior; <b>🔒</b> entra na fase 21 e precisa de <b>2 detonações</b>.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">4</span>
+            <div><strong>Avance as 100 fases</strong><p>Cada troca válida soma pontos e aumenta a sequência 🔥. A meta sobe <b>500 pontos a cada 5 fases</b>, chegando a 10.250 na fase 100.</p></div>
+          </li>
+        </ol>
+
+        <div class="tutorial-controls">
+          <div><span class="control-tag">PC</span><p><b>Clique</b> em dois doces vizinhos para trocar · a troca inválida não gasta tempo, mas zera a sequência.</p></div>
+          <div><span class="control-tag">Celular</span><p><b>Toque</b> em dois doces vizinhos. A tela não rola enquanto você joga.</p></div>
+        </div>
+
+        <p class="tutorial-note">A sequência 🔥 sobe a cada troca válida e zera nas inválidas. Aparência e som ficam em <b>Configurações</b>.</p>
       </div>
 
-      <p class="tutorial-note">A sequência 🔥 aumenta a cada parede concluída. Dificuldade, aparência e som ficam em <b>Configurações</b>.</p>
+      <div class="tutorial-mode" data-tutorial-mode="flappy" hidden>
+        <div class="tutorial-demo" aria-hidden="true">
+          <div class="demo-flappy">
+            <span class="demo-pipe top"></span>
+            <span class="demo-pipe bottom"></span>
+            <span class="demo-flappy-bird">🐦</span>
+            <span class="demo-flappy-hearts">❤️❤️❤️</span>
+          </div>
+          <div class="demo-legend">
+            <span><i class="sw-candy"></i>500 canos</span>
+            <span><i class="sw-lock"></i>cano ou chão = −1 vida</span>
+            <span>🔥 sequência por bloco</span>
+          </div>
+        </div>
+
+        <ol class="tutorial-steps">
+          <li>
+            <span class="step-num" aria-hidden="true">1</span>
+            <div><strong>Bata as asas</strong><p>Toque na tela, clique ou use <b>Espaço</b>, <b>↑</b> ou <b>W</b>. A gravidade puxa o pássaro para baixo — alterne as batidas para manter a altura.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">2</span>
+            <div><strong>Passe pelos canos</strong><p>Voe pelo vão de cada cano. Cada cano passado vale pontos; o objetivo é passar pelos <b>500 canos no total</b>.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">3</span>
+            <div><strong>Evite bater</strong><p>Bater em um cano ou no chão custa <b>1 vida</b>, zera a sequência e reinicia a fase atual — mas o total de canos já passados é mantido.</p></div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">4</span>
+            <div><strong>A dificuldade sobe</strong><p>Os canos ficam mais rápidos, o vão diminui e entram mais canos por bloco. Completar um bloco aumenta a sequência 🔥.</p></div>
+          </li>
+        </ol>
+
+        <div class="tutorial-controls">
+          <div><span class="control-tag">PC</span><p><kbd>Espaço</kbd>, <kbd>↑</kbd> ou <kbd>W</kbd> batem as asas · o <b>clique</b> no palco também.</p></div>
+          <div><span class="control-tag">Celular</span><p><b>Toque</b> no palco para bater as asas. A tela não rola enquanto você joga.</p></div>
+        </div>
+
+        <p class="tutorial-note">O ranking Flappy tem abas de streak, <b>canos</b> e pontos. Aparência e som ficam em <b>Configurações</b>.</p>
+      </div>
     </div>
     <footer class="tutorial-foot">
       <button id="closeTutorialBtn" class="secondary-btn" type="button">Voltar</button>
@@ -1727,7 +1846,7 @@ const ui = {
   flappyBest: $('flappyBest'),
   flappyProgressBar: $('flappyProgressBar'), flappyStage: $('flappyStage'),
   flappyCanvas: $('flappyCanvas'), flappyStart: $('flappyStart'), flappyMessage: $('flappyMessage'),
-  tutorial: $('tutorialModal'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
+  tutorial: $('tutorialModal'), tutorialTitle: $('tutorialTitle'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
   tutorialPlay: $('tutorialPlayBtn'),
   deathModal: $('deathModal'), deathKicker: $('deathKicker'), deathTitle: $('deathTitle'),
   deathSubtitle: $('deathSubtitle'), deathStreakVal: $('deathStreakVal'), deathLevelVal: $('deathLevelVal'),
@@ -5829,6 +5948,22 @@ function startGame() {
   try { canvas.focus({ preventScroll: true }); } catch (_) {}
 }
 
+const TUTORIAL_MODE_NAMES = { classic: 'Clássico', candy: 'Doce', flappy: 'Flappy' };
+
+function currentTutorialMode() {
+  if (flappyOpen) return 'flappy';
+  if (candyOpen) return 'candy';
+  return 'classic';
+}
+
+function renderTutorialMode() {
+  const mode = currentTutorialMode();
+  if (ui.tutorialTitle) ui.tutorialTitle.textContent = 'Como jogar · ' + TUTORIAL_MODE_NAMES[mode];
+  for (const section of ui.tutorial.querySelectorAll('[data-tutorial-mode]')) {
+    section.hidden = section.dataset.tutorialMode !== mode;
+  }
+}
+
 function openTutorial(fromSettings = false) {
   if (tutorialOpen) return;
   tutorialFromSettings = !!fromSettings && modalOpen;
@@ -5837,6 +5972,7 @@ function openTutorial(fromSettings = false) {
   state.paused = true;
   Sound.stopBuild();
   Sound.click();
+  renderTutorialMode();
   ui.tutorialPlay.textContent = tutorialFromSettings ? 'Voltar ao jogo' : 'Jogar agora';
   clearTimeout(tutorialHideTimer);
   ui.tutorial.hidden = false;

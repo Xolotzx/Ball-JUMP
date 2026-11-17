@@ -63,7 +63,7 @@ Evite ler o `index.html` inteiro por padrão. Use `grep`/busca por símbolos (`G
 3. Manter a meta em **75%** e a vida extra por fase, salvo mudança explícita de requisito.
 4. Manter suporte a desktop e mobile, incluindo `touchstart`, escala correta e `touch-action: none` no canvas.
 5. Manter o botão de compartilhamento removido.
-6. Manter menu inicial, tutorial e configurações acessíveis.
+6. Manter menu inicial, tutorial contextual do modo ativo e configurações acessíveis.
 7. Manter a paleta preto/laranja no modo escuro, laranja/branco no claro e o fundo SVG (ondas desfocadas à direita no escuro, fita laranja desfocada no claro).
 8. Manter o áudio sintetizado com Web Audio API, sem arquivos externos.
 9. Manter a sequência 🔥: +1 por parede concluída, zerada ao levar dano; o chip deve mostrar apenas o ícone e o número.

@@ -25,7 +25,8 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Escolher **Modo Flappy** fecha o menu e abre o voo entre canos.
 - [ ] Fechar o seletor (X, clique fora ou Esc) retorna ao menu sem iniciar partida.
 - [ ] **← Menu** no HUD clássico pausa a partida e volta ao menu; **Jogar → Modo Clássico** retoma nível, vidas e progresso.
-- [ ] **Como jogar** dentro das configurações abre o tutorial; “Voltar” retorna às configurações.
+- [ ] **Como jogar** dentro das configurações abre o tutorial do **modo ativo** (Clássico, Doce ou Flappy); “Voltar” retorna às configurações.
+- [ ] O tutorial mostra o guia certo ao abrir pelas configurações do menu, do Clássico, do Doce e do Flappy.
 - [ ] “Voltar ao jogo” no tutorial aberto pelas configurações retoma a partida.
 - [ ] “Configurações” abre o modal, pausa o jogo e, ao fechar, retorna ao menu ou ao jogo.
 - [ ] HUD mostra nível, vidas, área (x%/75%), direção e configurações.
@@ -66,7 +67,7 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Slider de volume ajusta de 0 a 100%, mostra a porcentagem e persiste.
 - [ ] Volume 0 deixa o jogo em silêncio; ao subir, os efeitos voltam.
 - [ ] Slider fica visualmente esmaecido quando o som está desligado, mas continua ajustável.
-- [ ] **Como jogar** dentro das configurações abre o tutorial por cima; **Voltar** retorna às configurações.
+- [ ] **Como jogar** dentro das configurações abre o tutorial por cima, com o guia do modo ativo; **Voltar** retorna às configurações.
 - [ ] **Voltar ao jogo** no tutorial aberto pelas configurações fecha os dois e retoma a partida.
 - [ ] Recarregar a página preserva tema, dificuldade, som e volume, mas volta ao menu.
 
