@@ -55,7 +55,8 @@ administrativo ou `.env` no repositório.
     detonações para sumir), em vez de um sétimo tipo, até a fase 100.
 11. O modo **Flappy** é um voo entre canos com 500 canos no total e 3 vidas:
     toque, clique ou aperte Espaço/↑/W para bater as asas e passar pelos canos.
-    As fases são blocos de dificuldade com 4 a 8 canos; o vão diminui e a
+    As fases são blocos de dificuldade com 4 a 8 canos; os canos entram em
+    fluxo contínuo e a troca de bloco não interrompe o voo. O vão diminui e a
     velocidade sobe conforme os canos passados. Bater em um cano ou no chão
     custa uma vida e reinicia os canos, o progresso da fase e a sequência, mas
     mantém o total de canos; sem vidas a corrida termina. Passar pelo 500º cano
@@ -361,7 +362,7 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
     - avance de fase e confira a meta/tempo; na fase 11 a dificuldade deve aumentar;
     - complete a fase 100 para validar a vitória.
 12. No menu, abra **Modo Flappy**:
-    - voe com clique/toque/Espaço, passe pelos canos e confira pontos e o HUD `X / 500 canos`;
+    - voe com clique/toque/Espaço, passe pelos canos e confira pontos e a barra de progresso;
     - bata em um cano e confirme a perda de vida, o reset dos canos e da sequência, mantendo o total de canos;
     - perca as 3 vidas e confira a tela **VIDAS ESGOTADAS** com cano e pontos;
     - entre com Google e confira **Ranking → Flappy** nas abas Streak, Canos e Pontos;

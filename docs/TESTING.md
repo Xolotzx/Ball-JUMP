@@ -180,10 +180,12 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Passar por um cano soma pontos e avança a barra de progresso.
 - [ ] Bater em um cano perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase.
 - [ ] Bater no chão perde 1 vida; o teto apenas limita o voo sem tirar vida.
-- [ ] O HUD mostra canos (`X / 500 canos`), vidas, pontos, sequência, recorde e tier.
+- [ ] O HUD mostra vidas, pontos, sequência, recorde, tier e barra de progresso, sem contador numérico de canos.
 - [ ] Cada fase tem 4 canos no início e chega a 8 conforme os canos passados aumentam.
 - [ ] A velocidade sobe e o vão diminui conforme o total de canos avança.
-- [ ] Completar todos os canos da fase soma o bônus, aumenta a sequência e avança de fase.
+- [ ] Completar os canos do bloco soma o bônus e a sequência sem interromper o voo.
+- [ ] A transição entre fases é contínua: os canos não somem, o pássaro não é reposicionado e não aparece popup/mensagem de fase.
+- [ ] Os canos mantêm espaçamento constante e sempre há canos entrando pela direita.
 - [ ] Perder as 3 vidas abre **VIDAS ESGOTADAS** com cano e pontos.
 - [ ] A tela final mostra **Menu** e **Jogar novamente** reinicia o modo flappy.
 - [ ] A engrenagem do cabeçalho do modo flappy abre as configurações e pausa o voo.

@@ -1157,7 +1157,6 @@
       </div>
       <div class="candy-title">
         <span class="overlay-kicker">MODO FLAPPY</span>
-        <h2><span id="flappyPipes">0</span> / 500 canos</h2>
       </div>
       <span class="candy-tier" id="flappyTier">Voo 1</span>
     </header>
@@ -1183,8 +1182,7 @@
 
     <div class="candy-goal">
       <div class="candy-goal-head">
-        <span>Progresso da fase</span>
-        <span id="flappyProgressLabel">0 / 500 canos</span>
+        <span>Progresso</span>
       </div>
       <div class="candy-progress" aria-hidden="true">
         <div id="flappyProgressBar"></div>
@@ -1197,7 +1195,7 @@
     </div>
 
     <p class="candy-message" id="flappyMessage" role="status">Toque, clique ou aperte Espaço para voar.</p>
-    <p class="candy-hint">Cada fase tem 4–8 canos · bater perde 1 vida e zera a sequência · 500 canos no total.</p>
+    <p class="candy-hint">Voe entre os canos · bater perde 1 vida e zera a sequência · 500 canos no total.</p>
   </div>
 </div>
 
@@ -1724,9 +1722,9 @@ const ui = {
   candyProgressLabel: $('candyProgressLabel'), candyProgressBar: $('candyProgressBar'),
   candyBoard: $('candyBoard'), candyMessage: $('candyMessage'),
   flappyScreen: $('flappyScreen'), flappyExit: $('flappyExit'), flappySettings: $('flappySettings'),
-  flappyPipes: $('flappyPipes'), flappyTier: $('flappyTier'), flappyLivesBox: $('flappyLivesBox'),
+  flappyTier: $('flappyTier'), flappyLivesBox: $('flappyLivesBox'),
   flappyLives: $('flappyLives'), flappyScore: $('flappyScore'), flappyStreak: $('flappyStreak'),
-  flappyBest: $('flappyBest'), flappyProgressLabel: $('flappyProgressLabel'),
+  flappyBest: $('flappyBest'),
   flappyProgressBar: $('flappyProgressBar'), flappyStage: $('flappyStage'),
   flappyCanvas: $('flappyCanvas'), flappyStart: $('flappyStart'), flappyMessage: $('flappyMessage'),
   tutorial: $('tutorialModal'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
@@ -4806,34 +4804,46 @@ function flappySetupCanvas() {
   if (flappyCtx) flappyCtx.setTransform(flappyDpr, 0, 0, flappyDpr, 0, 0);
 }
 
-function flappyBuildPipes() {
+function flappyMakePipe(x, previous) {
   const f = flappyState;
   const gapH = f.gapHeight;
   const minCenter = 46 + gapH / 2;
   const maxCenter = FLAPPY_H - FLAPPY_GROUND - 34 - gapH / 2;
+  const base = previous ? previous.gapY + previous.gapH / 2 : FLAPPY_H / 2;
+  const delta = previous ? rand(-145, 145) : rand(-90, 90);
+  const center = clamp(base + delta, minCenter, maxCenter);
+  return { x, gapY: center - gapH / 2, gapH, passed: false };
+}
+
+function flappyBuildPipes() {
+  const f = flappyState;
   const pipes = [];
-  let center = clamp(FLAPPY_H / 2 + rand(-90, 90), minCenter, maxCenter);
-  for (let i = 0; i < f.pipeCount; i += 1) {
-    if (i > 0) center = clamp(center + rand(-145, 145), minCenter, maxCenter);
-    pipes.push({
-      x: FLAPPY_W + 90 + i * FLAPPY_PIPE_SPACING,
-      gapY: center - gapH / 2,
-      gapH,
-      passed: false
-    });
+  for (let i = 0; i < 6; i += 1) {
+    const previous = pipes[pipes.length - 1];
+    const x = previous ? previous.x + FLAPPY_PIPE_SPACING : FLAPPY_W + 90;
+    pipes.push(flappyMakePipe(x, previous));
   }
+  f.pipes = pipes;
   return pipes;
+}
+
+function flappyRefillPipes() {
+  const f = flappyState;
+  let last = f.pipes[f.pipes.length - 1];
+  if (!last) return;
+  while (last.x < FLAPPY_W + FLAPPY_PIPE_SPACING) {
+    last = flappyMakePipe(last.x + FLAPPY_PIPE_SPACING, last);
+    f.pipes.push(last);
+  }
 }
 
 function flappyUpdateHUD() {
   const f = flappyState;
-  ui.flappyPipes.textContent = f.pipesPassed;
   ui.flappyLives.textContent = Math.max(0, f.lives);
   ui.flappyScore.textContent = f.score.toLocaleString('pt-BR');
   ui.flappyStreak.textContent = f.streak;
   ui.flappyBest.textContent = f.bestStreak;
-  ui.flappyTier.textContent = flappyTierName(f.pipesPassed) + ' · Fase ' + f.level;
-  ui.flappyProgressLabel.textContent = f.pipesPassed + ' / ' + FLAPPY_MAX_PIPES + ' canos';
+  ui.flappyTier.textContent = flappyTierName(f.pipesPassed);
   ui.flappyProgressBar.style.width = ((f.pipesPassed / FLAPPY_MAX_PIPES) * 100).toFixed(1) + '%';
   ui.flappyLivesBox.classList.toggle('is-low', f.lives <= 1);
   if (ui.flappyStart) ui.flappyStart.hidden = f.started || !f.active || f.ended;
@@ -4860,7 +4870,7 @@ function flappyFlap() {
   Sound.unlock();
   if (!f.started) {
     f.started = true;
-    flappySetMessage('Voe pelos canos! Cada fase tem ' + f.pipeCount + ' canos.');
+    flappySetMessage('Voe entre os canos — 500 no total.');
   }
   f.birdVy = FLAPPY_FLAP_VY;
   f.flapPulse = 1;
@@ -4913,15 +4923,7 @@ function flappyCompletePhase() {
   f.gapHeight = flappyGapHeightFor(f.pipesPassed);
   f.pipeCount = flappyPipeCountFor(f.pipesPassed);
   f.passed = 0;
-  f.pipes = flappyBuildPipes();
-  f.birdY = FLAPPY_H / 2;
-  f.birdVy = -140;
-  f.birdRot = 0;
   flappyUpdateHUD();
-  flappyShowPop('FASE ' + f.level + ' · 🔥 ' + f.streak);
-  flappySetMessage('Fase ' + cleared + ' concluída! Canos: ' + f.pipesPassed + ' / ' + FLAPPY_MAX_PIPES + '.', true);
-  if (f.level % 25 === 1) Sound.fanfare();
-  else Sound.success();
 }
 
 function flappyUpdate(dt) {
@@ -4947,6 +4949,7 @@ function flappyUpdate(dt) {
   }
 
   for (const pipe of f.pipes) pipe.x -= f.speed * dt;
+  flappyRefillPipes();
   for (const pipe of f.pipes) {
     if (flappyHitsPipe(pipe)) {
       flappyLoseLife();
@@ -4966,6 +4969,7 @@ function flappyUpdate(dt) {
   }
   if (scored > 0) {
     f.score += scored * flappyPipePoints(f.pipesPassed);
+    f.pipes = f.pipes.filter((pipe) => pipe.x + FLAPPY_PIPE_W > -40);
     flappyUpdateHUD();
     Sound.pipePoint(f.level);
   }

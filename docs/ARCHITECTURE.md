@@ -316,11 +316,15 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
   `flappyEndRun(false)` abre o modal de fim de jogo.
 - Teto é apenas um limite suave (não tira vida). Passar por um cano soma
   `flappyPipePoints(pipesPassed)` (`5 + ceil(pipesPassed/5)`) e incrementa o
-  total; completar todos os canos da fase soma `flappyPhaseBonus(level)`
-  (`50 + level*2`), aumenta a sequência e avança de fase. Passar pelo 500º cano
-  é a vitória.
-- HUD mostra canos (`0 / 500 canos`), vidas, pontos, sequência, recorde, tier
-  (`Voo 1..10`, um a cada 50 canos) e a barra de progresso total de canos.
+  total; completar os canos do bloco soma `flappyPhaseBonus(level)`
+  (`50 + level*2`), aumenta a sequência e ajusta velocidade/vão/canos por fase
+  sem interromper o voo. Passar pelo 500º cano é a vitória.
+- Os canos formam um fluxo contínuo (`flappyMakePipe`/`flappyRefillPipes`):
+  novos canos entram pela direita e os antigos saem, sempre com
+  `FLAPPY_PIPE_SPACING`. Trocar de bloco não recria a fila, não reposiciona o
+  pássaro e não mostra popup/mensagem de fase — a transição é imperceptível.
+- HUD mostra vidas, pontos, sequência, recorde, tier (`Voo 1..10`, um a cada 50
+  canos) e a barra de progresso total; não há contador numérico de canos.
   Mensagens e pop-ups usam `#flappyMessage` e `.flappy-pop`; dano dispara flash
   e tremida no palco.
 - O resultado usa `mode:'flappy'` e grava `flappy.bestStreak`, `flappy.bestLevel`
