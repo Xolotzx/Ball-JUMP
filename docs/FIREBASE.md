@@ -363,7 +363,7 @@ jogo mostra o erro e o botão **Jogar novamente** continua disponível.
     - complete a fase 100 para validar a vitória.
 12. No menu, abra **Modo Flappy**:
     - voe com clique/toque/Espaço, passe pelos canos e confira pontos e a barra de progresso;
-    - bata em um cano e confirme a perda de vida, o reset dos canos e da sequência, mantendo o total de canos;
+    - bata em um cano e confirme a perda de vida, o reset dos canos e da sequência, a pausa e a tela **TOQUE PARA CONTINUAR** com as vidas restantes;
     - perca as 3 vidas e confira a tela **VIDAS ESGOTADAS** com cano e pontos;
     - entre com Google e confira **Ranking → Flappy** nas abas Streak, Canos e Pontos;
     - passe pelo 500º cano (ou force `flappyState.pipesPassed = 499`) para validar a vitória.

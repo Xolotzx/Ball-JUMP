@@ -28,7 +28,7 @@
 - Tutorial aberto pelas configurações fica por cima, mostra o guia do modo ativo (Clássico, Doce ou Flappy) e retorna a elas; **Voltar ao jogo** fecha ambos.
 - Tela de morte/vitória com login Google, perfil e ranking de streak/níveis.
 - **Modo Doce**: match-3 8×8, 100 fases, tempo em vez de vidas, ranking próprio (streak, níveis, pontos) e dificuldade crescente. Combina 3+ ou 2×2; ⚡ limpa um tipo; cadeados (2 cargas) entram na fase 21; tempo base 60 s. A meta começa em 750 e sobe 500 a cada 5 fases (10.250 na fase 100).
-- **Modo Flappy**: voo entre canos com 500 canos no total, 3 vidas e ranking próprio (streak, canos, pontos). Clique/toque/Espaço/↑/W batem as asas; canos em fluxo contínuo com espaçamento fixo, velocidade 150→300 px/s e vão 46%→28%; cano ou chão custa vida e reinicia canos/progresso/sequência, sem zerar o total; a troca de bloco de dificuldade não recria a fila nem reposiciona o pássaro; o 500º cano é vitória. HUD sem contador numérico de canos (só barra de progresso).
+- **Modo Flappy**: voo entre canos com 500 canos no total, 3 vidas e ranking próprio (streak, canos, pontos). Clique/toque/Espaço/↑/W batem as asas; canos em fluxo contínuo com espaçamento fixo, velocidade 150→300 px/s e vão 46%→28%; cano ou chão custa vida e reinicia canos/progresso/sequência, sem zerar o total; com vidas restantes o voo pausa em “TOQUE PARA CONTINUAR”; a troca de bloco de dificuldade não recria a fila nem reposiciona o pássaro; o 500º cano é vitória. HUD sem contador numérico de canos (só barra de progresso).
 - Ranking em famílias **Clássico 🧱**, **Doce 🍪** e **Flappy 🐦**: clássico com Geral/Fácil/Normal/Difícil/Hardcore e abas Streak/Níveis; doce com Streak/Níveis/Pontos; flappy com Streak/Canos/Pontos.
 - Perfil editável: nick e foto opcional (160×160 JPEG em data URL, até 90.000 caracteres); fallback para a inicial.
 - Nicks únicos: reserva transacional em `balljumpNicknames/{key}`; nomes do Google ocupados recebem sufixo automático; renomear libera o nick antigo.
@@ -48,6 +48,7 @@
 - **Meta do Flappy mudou de 500 fases para 500 canos no total**: a vitória ocorre ao passar pelo 500º cano; as fases continuam como blocos de dificuldade (4–8 canos) e o dano preserva o total de canos passados. HUD, tela final e ranking agora falam em canos.
 - **Flappy com canos em fluxo contínuo**: os canos entram um após o outro com espaçamento fixo; a troca de bloco de dificuldade não recria a fila, não reposiciona o pássaro e não exibe popup/mensagem de fase. O contador “0 / 500 canos” foi removido do HUD, mantendo a barra de progresso.
 - **Tutorial contextual por modo**: o botão **Como jogar** das configurações agora mostra o guia do modo ativo (Clássico, Doce ou Flappy), com objetivo, controles e dicas específicos.
+- **Flappy com pausa após dano**: ao perder uma vida, o voo congela e o palco mostra “TOQUE PARA CONTINUAR” com “VOCÊ AINDA TEM N VIDAS”; o próximo toque/clique/tecla retoma.
 - **Modo Flappy adicionado**: canvas 480×640, 500 canos no total, 3 vidas, 4–8 canos por fase, velocidade/vão progressivos, streak por fase, ranking próprio e tela de fim com “500 CANOS”/“VIDAS ESGOTADAS”.
 - Ranking ganhou a família **Flappy 🐦**; perfil e regras do Firestore ganharam o campo `flappy` (`bestLevel ≤ 500`).
 - Configurações do modo flappy pela engrenagem, com pausa do voo e dificuldade oculta.

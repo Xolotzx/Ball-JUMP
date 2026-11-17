@@ -1221,7 +1221,7 @@
 
     <div class="flappy-stage" id="flappyStage">
       <canvas id="flappyCanvas" width="480" height="640" aria-label="Voo do pássaro entre os canos"></canvas>
-      <span class="flappy-start" id="flappyStart">TOQUE PARA VOAR<small>ESPAÇO · CLIQUE · TOQUE</small></span>
+      <span class="flappy-start" id="flappyStart"><span id="flappyStartTitle">TOQUE PARA VOAR</span><small id="flappyStartSub">ESPAÇO · CLIQUE · TOQUE</small></span>
     </div>
 
     <p class="candy-message" id="flappyMessage" role="status">Toque, clique ou aperte Espaço para voar.</p>
@@ -1408,7 +1408,7 @@
           </li>
           <li>
             <span class="step-num" aria-hidden="true">3</span>
-            <div><strong>Evite bater</strong><p>Bater em um cano ou no chão custa <b>1 vida</b>, zera a sequência e reinicia a fase atual — mas o total de canos já passados é mantido.</p></div>
+            <div><strong>Evite bater</strong><p>Bater em um cano ou no chão custa <b>1 vida</b>, zera a sequência e pausa a corrida em <b>TOQUE PARA CONTINUAR</b> — o total de canos já passados é mantido.</p></div>
           </li>
           <li>
             <span class="step-num" aria-hidden="true">4</span>
@@ -1845,7 +1845,7 @@ const ui = {
   flappyLives: $('flappyLives'), flappyScore: $('flappyScore'), flappyStreak: $('flappyStreak'),
   flappyBest: $('flappyBest'),
   flappyProgressBar: $('flappyProgressBar'), flappyStage: $('flappyStage'),
-  flappyCanvas: $('flappyCanvas'), flappyStart: $('flappyStart'), flappyMessage: $('flappyMessage'),
+  flappyCanvas: $('flappyCanvas'), flappyStart: $('flappyStart'), flappyStartTitle: $('flappyStartTitle'), flappyStartSub: $('flappyStartSub'), flappyMessage: $('flappyMessage'),
   tutorial: $('tutorialModal'), tutorialTitle: $('tutorialTitle'), closeTutorial: $('closeTutorial'), closeTutorialBtn: $('closeTutorialBtn'),
   tutorialPlay: $('tutorialPlayBtn'),
   deathModal: $('deathModal'), deathKicker: $('deathKicker'), deathTitle: $('deathTitle'),
@@ -2387,6 +2387,7 @@ const flappyState = {
   paused: false,
   ended: false,
   started: false,
+  awaitingResume: false,
   level: 1,
   pipesPassed: 0,
   lives: FLAPPY_LIVES,
@@ -4965,7 +4966,7 @@ function flappyUpdateHUD() {
   ui.flappyTier.textContent = flappyTierName(f.pipesPassed);
   ui.flappyProgressBar.style.width = ((f.pipesPassed / FLAPPY_MAX_PIPES) * 100).toFixed(1) + '%';
   ui.flappyLivesBox.classList.toggle('is-low', f.lives <= 1);
-  if (ui.flappyStart) ui.flappyStart.hidden = f.started || !f.active || f.ended;
+  if (ui.flappyStart) ui.flappyStart.hidden = f.ended || !f.active || (f.started && !f.awaitingResume);
 }
 
 function flappySetMessage(text, good = false) {
@@ -4987,6 +4988,17 @@ function flappyFlap() {
   if (!flappyOpen || !f.active || f.ended || f.paused) return;
   if (deathOpen || rankOpen || modalOpen || profileOpen || tutorialOpen) return;
   Sound.unlock();
+  if (f.awaitingResume) {
+    f.awaitingResume = false;
+    f.birdY = FLAPPY_H / 2;
+    f.birdVy = 0;
+    f.birdRot = 0;
+    f.flapPulse = 0;
+    flappySetMessage('Continue! Vidas: ' + f.lives + '.');
+    Sound.click();
+    flappyUpdateHUD();
+    return;
+  }
   if (!f.started) {
     f.started = true;
     flappySetMessage('Voe entre os canos — 500 no total.');
@@ -5027,6 +5039,10 @@ function flappyLoseLife() {
     return;
   }
   flappySetMessage('Bateu! Perdeu 1 vida — sequência zerada. Vidas: ' + f.lives + '.');
+  f.awaitingResume = true;
+  ui.flappyStartTitle.textContent = 'TOQUE PARA CONTINUAR';
+  ui.flappyStartSub.textContent = f.lives === 1 ? 'VOCÊ AINDA TEM 1 VIDA' : 'VOCÊ AINDA TEM ' + f.lives + ' VIDAS';
+  flappyUpdateHUD();
   flappyShowPop('−1 VIDA');
 }
 
@@ -5050,7 +5066,7 @@ function flappyUpdate(dt) {
   f.time += dt;
   if (f.flash > 0) f.flash = Math.max(0, f.flash - dt * 2.6);
   if (f.flapPulse > 0) f.flapPulse = Math.max(0, f.flapPulse - dt * 4.5);
-  if (!f.active || f.ended || f.paused || !f.started) return;
+  if (!f.active || f.ended || f.paused || !f.started || f.awaitingResume) return;
 
   f.birdVy = Math.min(760, f.birdVy + FLAPPY_GRAVITY * dt);
   f.birdY += f.birdVy * dt;
@@ -5126,6 +5142,9 @@ function startFlappyMode() {
   f.ended = false;
   f.paused = false;
   f.started = false;
+  f.awaitingResume = false;
+  ui.flappyStartTitle.textContent = 'TOQUE PARA VOAR';
+  ui.flappyStartSub.textContent = 'ESPAÇO · CLIQUE · TOQUE';
   f.level = 1;
   f.pipesPassed = 0;
   f.lives = FLAPPY_LIVES;

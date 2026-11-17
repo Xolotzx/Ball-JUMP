@@ -312,8 +312,10 @@ O fundo ambiente usa SVG inline: ondas laranja desfocadas e deslocadas para a di
   46%→28% da altura (`flappyGapHeightFor`), escalados pelos canos já passados.
 - Bater em um cano ou no chão (`flappyHitsPipe`/limite inferior) chama
   `flappyLoseLife`: perde 1 vida, zera a sequência, reinicia os canos e o
-  progresso de canos da fase, mas preserva o total de canos passados. Sem vidas,
-  `flappyEndRun(false)` abre o modal de fim de jogo.
+  progresso de canos da fase, mas preserva o total de canos passados. Com vidas
+  restantes, o voo pausa e o palco mostra **TOQUE PARA CONTINUAR** com
+  **VOCÊ AINDA TEM N VIDAS**; o próximo toque, clique, Espaço/↑/W retoma. Sem
+  vidas, `flappyEndRun(false)` abre o modal de fim de jogo.
 - Teto é apenas um limite suave (não tira vida). Passar por um cano soma
   `flappyPipePoints(pipesPassed)` (`5 + ceil(pipesPassed/5)`) e incrementa o
   total; completar os canos do bloco soma `flappyPhaseBonus(level)`

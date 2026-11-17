@@ -223,6 +223,7 @@ check(index.includes('function flappyCompletePhase') && index.includes('passou p
 check(index.includes('function flappyMakePipe') && index.includes('function flappyRefillPipes'), 'fluxo contínuo de canos do flappy presente');
 check(!index.includes('flappyPipes') && !index.includes('flappyProgressLabel'), 'sem contador numérico de canos no HUD do flappy');
 check(!index.includes("flappyShowPop('FASE ") && !index.includes("' · Fase '"), 'transição de fase do flappy sem popup');
+check(index.includes('awaitingResume') && index.includes("'TOQUE PARA CONTINUAR'") && index.includes("'VOCÊ AINDA TEM '"), 'pausa e retomada após dano no flappy presentes');
 check(index.includes('id="classicMenuBtn"') && index.includes('function returnClassicToMenu'), 'botão menu do clássico presente');
 check(index.includes('id="volumeSlider"') && index.includes('function changeVolume'), 'slider de volume presente');
 check(index.includes("setVolume"), 'controle de volume do áudio presente');

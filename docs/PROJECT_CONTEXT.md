@@ -109,6 +109,7 @@ Ao concluir uma parede, o jogo procura regiões vazias conectadas. Toda região 
 - **Modo Flappy**: voo entre canos com 500 canos no total e 3 vidas. Clique, toque, **Espaço**, **↑** e **W** fazem o pássaro bater as asas.
 - Cada fase é um bloco de dificuldade com 4 a 8 canos; a velocidade sobe e o vão diminui conforme os canos passados avançam.
 - Bater em um cano ou no chão perde 1 vida, zera a sequência e reinicia os canos e o progresso da fase, mas preserva o total de canos; o teto apenas limita o voo.
+- Com vidas restantes, a batida pausa o voo e mostra **TOQUE PARA CONTINUAR** com **VOCÊ AINDA TEM N VIDAS**; o próximo toque/clique/tecla retoma a corrida.
 - Passar por um cano soma pontos; completar os canos do bloco soma um bônus e aumenta a sequência sem interromper o voo.
 - Os canos entram em fluxo contínuo: a troca de bloco de dificuldade não recria a fila, não reposiciona o pássaro e não mostra popup/mensagem de fase.
 - O HUD do flappy mostra vidas, pontos, sequência, recorde, tier e barra de progresso, sem contador numérico de canos.

@@ -232,6 +232,7 @@
     "candy ranking has streak, level and score categories and does not affect classic scores",
     "flappy mode is a 500-pipe pipe-flight game with 3 lives, 4-8 pipes per phase and its own ranking",
     "a flappy hit costs one life and resets pipes, phase pipe progress and streak; 0 lives ends the run",
+    "with lives left, a flappy hit pauses the flight on a TOQUE PARA CONTINUAR overlay showing VOCÊ AINDA TEM N VIDAS; the next tap/click/key resumes",
     "flappy victory requires passing the 500th pipe in total; phases are difficulty blocks; its profile field caps bestLevel at 500",
     "flappy pipes flow continuously with fixed spacing; a phase change never rebuilds pipes, resets the bird or shows a phase popup",
     "the flappy HUD has no numeric pipe counter, only the progress bar",

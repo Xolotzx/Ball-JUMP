@@ -194,6 +194,9 @@ Abrir `http://127.0.0.1:8765/` ou abrir `index.html` diretamente.
 - [ ] Trocar de aba (visibilidade) pausa e retoma o voo sem teleporte.
 - [ ] O ranking **Flappy** tem abas Streak, Canos e Pontos, separado dos rankings clássicos.
 - [ ] O resultado do modo flappy não altera os scores do modo clássico nem o campo `candy`.
+- [ ] Perder uma vida pausa o voo e mostra **TOQUE PARA CONTINUAR** com **VOCÊ AINDA TEM N VIDAS**; o próximo toque/clique/tecla retoma.
+- [ ] Com 1 vida restante o texto mostra **VOCÊ AINDA TEM 1 VIDA** (singular).
+- [ ] Bater com 0 vidas abre **VIDAS ESGOTADAS** sem mostrar a tela de continuar.
 - [ ] Perder uma vida preserva o total de canos passados (só reseta a fase atual e a sequência).
 - [ ] O 500º cano termina em vitória com a tela **500 CANOS**.
 - [ ] O palco do flappy e o HUD cabem em 320–390 px sem overflow horizontal.
